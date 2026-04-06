@@ -5,6 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
+import 'features/citizen/presentation/screens/citizen_home_screen.dart';
+import 'features/citizen/presentation/screens/new_request_screen.dart';
+import 'features/citizen/presentation/screens/ocr_verification_screen.dart';
+import 'features/citizen/presentation/screens/request_detail_screen.dart';
+import 'features/citizen/presentation/screens/requests_list_screen.dart';
+import 'features/citizen/presentation/screens/waiting_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,7 +36,7 @@ class MyApp extends StatelessWidget {
               child: child!,
             );
           },
-          home: const RegisterScreen(),
+          home: const OcrVerificationScreen(),
         );
       },
     );
