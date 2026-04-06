@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 
 class CustomLinearProgress extends StatelessWidget {
@@ -10,11 +11,11 @@ class CustomLinearProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 4,
+      height: 4.h,
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.border,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(2.r),
       ),
       child: FractionallySizedBox(
         alignment: Alignment.centerRight,
@@ -22,7 +23,7 @@ class CustomLinearProgress extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: color ?? AppColors.green,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(2.r),
           ),
         ),
       ),

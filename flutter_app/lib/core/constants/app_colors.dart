@@ -19,6 +19,10 @@ class AppColors {
 
   static const Color badgePendBg = Color(0xFFFEF3C7);
   static const Color badgePendText = Color(0xFF78350F);
+  static const Color warningBg = Color(0xFFFEF3C7);
+  static const Color warningText = Color(0xFF78350F);
+  static const Color flagGreen = Color(0xFF007A3D);
+  static const Color flagRed = Color(0xFFCE1126);
 
   static const LinearGradient darkGradient = LinearGradient(
     begin: Alignment.topLeft,

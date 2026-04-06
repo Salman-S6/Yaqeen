@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 import 'syrian_flag_stripe.dart';
@@ -22,7 +23,7 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 20),
+      padding: EdgeInsets.fromLTRB(16.w, 48.h, 16.w, 20.h),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppColors.black,
         gradient: backgroundColor == null ? AppColors.darkGradient : null,
@@ -33,7 +34,7 @@ class CustomAppBar extends StatelessWidget {
         children: [
           if (showFlag) ...[
             const SyrianFlagStripe(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
           ],
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,9 +42,20 @@ class CustomAppBar extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.sectionTitle.copyWith(color: Colors.white, fontSize: 16)),
+                  Text(
+                    title,
+                    style: AppTextStyles.sectionTitle.copyWith(
+                      color: AppColors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                   if (subtitle != null)
-                    Text(subtitle!, style: AppTextStyles.smallLabel.copyWith(color: Colors.white70)),
+                    Text(
+                      subtitle!,
+                      style: AppTextStyles.smallLabel.copyWith(
+                        color: AppColors.white.withOpacity(0.7),
+                      ),
+                    ),
                 ],
               ),
               if (actions != null) Row(children: actions!),
