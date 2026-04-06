@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 
@@ -18,21 +19,21 @@ class DataFieldCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.all(10.w),
+      margin: EdgeInsets.only(bottom: 8.h),
       decoration: BoxDecoration(
         color: AppColors.gray,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: AppTextStyles.smallLabel),
-          const SizedBox(height: 2),
+          SizedBox(height: 2.h),
           Text(value, style: AppTextStyles.bodyRegular),
           if (hint != null) ...[
-            const SizedBox(height: 2),
-            Text(hint!, style: AppTextStyles.smallLabel.copyWith(fontSize: 7)),
+            SizedBox(height: 2.h),
+            Text(hint!, style: AppTextStyles.smallLabel.copyWith(fontSize: 7.sp)),
           ],
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 
@@ -14,20 +15,20 @@ class AlertBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isWarning = type == AlertType.warning;
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
-        color: isWarning ? const Color(0xFFFEF3C7) : AppColors.greenPale,
-        borderRadius: BorderRadius.circular(8),
+        color: isWarning ? AppColors.warningBg : AppColors.greenPale,
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
-          Text(isWarning ? "⚠️" : "✅", style: const TextStyle(fontSize: 14)),
-          const SizedBox(width: 8),
+          Text(isWarning ? "⚠️" : "✅", style: TextStyle(fontSize: 14.sp)),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               message,
               style: AppTextStyles.smallLabel.copyWith(
-                color: isWarning ? const Color(0xFF78350F) : AppColors.greenDark,
+                color: isWarning ? AppColors.warningText : AppColors.greenDark,
                 fontWeight: FontWeight.bold,
               ),
             ),

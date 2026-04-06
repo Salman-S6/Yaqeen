@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 
 class StepProgress extends StatelessWidget {
@@ -18,28 +19,33 @@ class StepProgress extends StatelessWidget {
           bool isActive = stepNum == currentStep;
 
           return Container(
-            width: 20,
-            height: 20,
+            width: 20.w,
+            height: 20.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isDone ? AppColors.green : (isActive ? Colors.white : Colors.white24),
+              color: isDone
+                  ? AppColors.green
+                  : (isActive ? AppColors.white : AppColors.white.withOpacity(0.24)),
             ),
             alignment: Alignment.center,
             child: isDone
-                ? const Icon(Icons.check, size: 12, color: Colors.white)
-                : Text("$stepNum", style: TextStyle(
-                fontSize: 10,
+                ? Icon(Icons.check, size: 12.sp, color: AppColors.white)
+                : Text(
+              "$stepNum",
+              style: TextStyle(
+                fontSize: 10.sp,
                 fontWeight: FontWeight.bold,
-                color: isActive ? AppColors.black : Colors.white38
-            )),
+                color: isActive ? AppColors.black : AppColors.white.withOpacity(0.38),
+              ),
+            ),
           );
         } else {
           int lineNum = (index ~/ 2) + 1;
           bool isDone = lineNum < currentStep;
           return Expanded(
             child: Container(
-              height: 2,
-              color: isDone ? AppColors.green : Colors.white24,
+              height: 2.h,
+              color: isDone ? AppColors.green : AppColors.white.withOpacity(0.24),
             ),
           );
         }

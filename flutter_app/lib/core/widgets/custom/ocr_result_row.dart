@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 
@@ -18,22 +19,22 @@ class OcrResultRow extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isLow = matchPercentage < 80;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      margin: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+      margin: EdgeInsets.only(bottom: 6.h),
       decoration: BoxDecoration(
         color: AppColors.gray,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: AppTextStyles.smallLabel),
-          Text(value, style: AppTextStyles.bodyBold.copyWith(fontSize: 10)),
+          Text(value, style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp)),
           Text(
             "${matchPercentage.toInt()}%",
             style: AppTextStyles.bodyBold.copyWith(
               color: isLow ? AppColors.red : AppColors.green,
-              fontSize: 10,
+              fontSize: 10.sp,
             ),
           ),
         ],

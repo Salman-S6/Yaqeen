@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 
@@ -11,10 +12,10 @@ class CustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 65,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
+      height: 65.h,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(top: BorderSide(color: AppColors.border, width: 0.5.h)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -35,18 +36,22 @@ class CustomBottomNav extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 20)),
+          Text(icon, style: TextStyle(fontSize: 20.sp)),
           if (isActive)
             Container(
-              margin: const EdgeInsets.only(top: 2),
-              width: 4, height: 4,
-              decoration: const BoxDecoration(color: AppColors.green, shape: BoxShape.circle),
+              margin: EdgeInsets.only(top: 2.h),
+              width: 4.w,
+              height: 4.w,
+              decoration: const BoxDecoration(
+                color: AppColors.green,
+                shape: BoxShape.circle,
+              ),
             ),
           Text(
             label,
             style: AppTextStyles.smallLabel.copyWith(
               color: isActive ? AppColors.green : AppColors.grayMid,
-              fontSize: 8,
+              fontSize: 8.sp,
             ),
           ),
         ],
