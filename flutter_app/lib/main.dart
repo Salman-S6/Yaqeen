@@ -11,6 +11,9 @@ import 'features/citizen/presentation/screens/ocr_verification_screen.dart';
 import 'features/citizen/presentation/screens/request_detail_screen.dart';
 import 'features/citizen/presentation/screens/requests_list_screen.dart';
 import 'features/citizen/presentation/screens/waiting_screen.dart';
+import 'features/qr_verification/presentation/screens/qr_forged_screen.dart';
+import 'features/qr_verification/presentation/screens/qr_scan_screen.dart';
+import 'features/qr_verification/presentation/screens/qr_success_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
               child: child!,
             );
           },
-          home: const OcrVerificationScreen(),
+          home: const QrForgedScreen(),
         );
       },
     );
