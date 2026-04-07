@@ -20,7 +20,7 @@ class SyrianFlagStripe extends StatelessWidget {
             AppColors.flagGreen,
             AppColors.white,
             AppColors.white,
-            AppColors.flagRed,
+            AppColors.black,
           ],
           stops: [0.33, 0.33, 0.66, 0.66],
         ),
