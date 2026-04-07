@@ -16,7 +16,6 @@ class QrForgedScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          // 1. هيدر أحمر يرمز للخطر والفشل
           CustomAppBar(
             title: "فشل التحقق",
             subtitle: "تنبيه: لم يتم تأكيد صحة الوثيقة",
@@ -30,14 +29,12 @@ class QrForgedScreen extends StatelessWidget {
             ],
           ),
 
-          // 2. محتوى التنبيه (متمركز في الشاشة لجذب الانتباه)
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // مؤشر بصري كبير للفشل ❌
                   Container(
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
@@ -57,7 +54,6 @@ class QrForgedScreen extends StatelessWidget {
 
                   SizedBox(height: 12.h),
 
-                  // صندوق شرح السبب
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16.w),
@@ -97,15 +93,14 @@ class QrForgedScreen extends StatelessWidget {
 
                   SizedBox(height: 60.h),
 
-                  // الأزرار
                   DangerButton(
                     text: "محاولة مرة أخرى",
-                    onPressed: () => Navigator.pop(context), // يعود للماسح
+                    onPressed: () => Navigator.pop(context),
                   ),
                   SizedBox(height: 12.h),
                   CustomOutlineButton(
                     text: "العودة للقائمة",
-                    onPressed: () => Navigator.pop(context), // أو العودة للرئيسية حسب الحاجة
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),

@@ -19,6 +19,8 @@ import 'features/citizen/presentation/screens/requests_list_screen.dart';
 import 'features/citizen/presentation/screens/new_request_screen.dart';
 
 // --- استدعاء ملفات قسم الـ QR ---
+import 'features/qr_verification/data/repositories/local_qr_repository.dart';
+import 'features/qr_verification/presentation/bloc/qr_bloc.dart';
 import 'features/qr_verification/presentation/screens/qr_scan_screen.dart';
 
 void main() {
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
         return MultiRepositoryProvider(
           providers: [
             RepositoryProvider(create: (context) => AuthRepository()),
+            RepositoryProvider(create: (context) => LocalQrRepository()),
             RepositoryProvider(create: (context) => CitizenRepository()), // إضافة مستودع المواطن
           ],
 
@@ -57,6 +60,11 @@ class MyApp extends StatelessWidget {
                   repository: context.read<CitizenRepository>(),
                 ),
               ), // إضافة بلوك المواطن
+              BlocProvider(
+                create: (context) => QrBloc(
+                  repository: context.read<LocalQrRepository>(),
+                ),
+              ),
             ],
 
             // 3. إعداد الـ MaterialApp
