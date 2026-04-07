@@ -61,6 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
 
             Future.delayed(const Duration(seconds: 1), () {
+              if (!mounted) return; 
               Navigator.pushReplacementNamed(context, '/citizen_home');
             });
           }

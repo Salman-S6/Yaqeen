@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/alerts/alert_banner.dart';
@@ -9,6 +9,9 @@ import '../../../../core/widgets/headers/custom_app_bar.dart';
 import '../../../../core/widgets/indicators/step_progress.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
 import '../../../../core/widgets/buttons/outline_button.dart';
+import '../bloc/citizen_bloc.dart';
+import '../bloc/citizen_event.dart';
+import 'waiting_screen.dart';
 
 class OcrVerificationScreen extends StatelessWidget {
   const OcrVerificationScreen({super.key});
@@ -62,6 +65,19 @@ class OcrVerificationScreen extends StatelessWidget {
                   PrimaryButton(
                     text: "تأكيد ومتابعة",
                     onPressed: () {
+                      context.read<CitizenBloc>().add(
+                          const SubmitNewRequestEvent(
+                            title: "إخراج قيد فردي", //
+                            extractedData: {"name": "أحمد محمد السوري"},
+                          )
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WaitingScreen(),
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 12.h),
@@ -112,26 +128,10 @@ class OcrVerificationScreen extends StatelessWidget {
           Divider(color: AppColors.border, thickness: 1.h),
           SizedBox(height: 4.h),
 
-          const OcrResultRow(
-            label: "الاسم الكامل",
-            value: "أحمد محمد السوري",
-            matchPercentage: 98.5,
-          ),
-          const OcrResultRow(
-            label: "الرقم الوطني",
-            value: "12345678901",
-            matchPercentage: 99.9,
-          ),
-          const OcrResultRow(
-            label: "تاريخ الولادة",
-            value: "1990/05/15",
-            matchPercentage: 95.0,
-          ),
-          const OcrResultRow(
-            label: "مكان القيد",
-            value: "دمـشـق",
-            matchPercentage: 65.0,
-          ),
+          const OcrResultRow(label: "الاسم الكامل", value: "أحمد محمد السوري", matchPercentage: 98.5),
+          const OcrResultRow(label: "الرقم الوطني", value: "12345678901", matchPercentage: 99.9),
+          const OcrResultRow(label: "تاريخ الولادة", value: "1990/05/15", matchPercentage: 95.0),
+          const OcrResultRow(label: "مكان القيد", value: "دمـشـق", matchPercentage: 65.0),
         ],
       ),
     );

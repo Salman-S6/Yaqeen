@@ -34,7 +34,7 @@ class CitizenBloc extends Bloc<CitizenEvent, CitizenState> {
 
   Future<void> _onSubmitRequest(SubmitNewRequestEvent event, Emitter<CitizenState> emit) async {
     emit(CitizenLoading());
-    await Future.delayed(const Duration(seconds: 2)); // محاكاة الرفع
+    await Future.delayed(const Duration(seconds: 2));
     emit(NewRequestSubmitted());
   }
 }
