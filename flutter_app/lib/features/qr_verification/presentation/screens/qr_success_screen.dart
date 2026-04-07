@@ -8,7 +8,9 @@ import '../../../../core/widgets/buttons/primary_button.dart';
 import '../../../../core/widgets/buttons/outline_button.dart';
 
 class QrSuccessScreen extends StatelessWidget {
-  const QrSuccessScreen({super.key});
+  final Map<String, String> documentData;
+
+  const QrSuccessScreen({super.key, required this.documentData});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +37,7 @@ class QrSuccessScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 16.h),
-
                   _buildSuccessIndicator(),
-
                   SizedBox(height: 24.h),
 
                   _buildDocumentDataCard(),
@@ -51,8 +51,7 @@ class QrSuccessScreen extends StatelessWidget {
                   SizedBox(height: 12.h),
                   CustomOutlineButton(
                     text: "مشاركة إثبات الصحة",
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -68,7 +67,7 @@ class QrSuccessScreen extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.greenPale,
             shape: BoxShape.circle,
           ),
@@ -112,15 +111,15 @@ class QrSuccessScreen extends StatelessWidget {
           Divider(color: AppColors.border, height: 1.h),
           SizedBox(height: 12.h),
 
-          _buildInfoRow("نوع الوثيقة:", "إخراج قيد فردي"),
+          _buildInfoRow("نوع الوثيقة:", documentData["document_type"] ?? "غير معروف"),
           SizedBox(height: 10.h),
-          _buildInfoRow("رقم الطلب:", "REQ-2026-001"),
+          _buildInfoRow("رقم الطلب:", documentData["request_id"] ?? "غير معروف"),
           SizedBox(height: 10.h),
-          _buildInfoRow("اسم المواطن:", "أحمد محمد السوري"),
+          _buildInfoRow("اسم المواطن:", documentData["citizen_name"] ?? "غير معروف"),
           SizedBox(height: 10.h),
-          _buildInfoRow("الرقم الوطني:", "12345678901"),
+          _buildInfoRow("الرقم الوطني:", documentData["national_id"] ?? "غير معروف"),
           SizedBox(height: 10.h),
-          _buildInfoRow("تاريخ الإصدار:", "4 أبريل 2026"),
+          _buildInfoRow("تاريخ الإصدار:", documentData["issue_date"] ?? "غير معروف"),
         ],
       ),
     );
