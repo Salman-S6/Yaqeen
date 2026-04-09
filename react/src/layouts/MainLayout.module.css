@@ -1,0 +1,26 @@
+.layoutContainer {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    direction: rtl;
+    background-color: #f3f4f6;
+}
+
+.mainWrapper {
+    flex: 1;
+    /* يأخذ باقي المساحة المتبقية بعد الـ 280px الخاصة بالسايدبار */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-width: 0;
+    /* يمنع الجدول من التمدد خارج الحدود */
+    overflow: hidden;
+}
+
+.contentArea {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    /* سكرول عمودي للمحتوى فقط */
+}

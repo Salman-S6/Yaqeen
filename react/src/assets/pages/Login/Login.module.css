@@ -1,0 +1,61 @@
+/* هذا الكلاس سيغطي الشاشة رغماً عن أي ملف CSS آخر في المشروع */
+.loginPageWrapper {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    min-height: 100vh !important;
+    background-color: #00361F !important;
+    /* اللون الأخضر الإجباري */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* البطاقة البيضاء ستتوسط الشاشة الآن */
+.loginCard {
+    background-color: white;
+    padding: 45px 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 420px;
+}
+
+.logoSection {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logoTitle {
+    color: #007c4d;
+    font-size: 52px;
+    margin: 0;
+    font-weight: 800;
+}
+
+.logoSubtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.forgotPassword {
+    text-align: left;
+    margin-bottom: 25px;
+    margin-top: 10px;
+}
+
+.forgotPassword a {
+    color: #007c4d;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.alertBox {
+    margin-top: 20px;
+}
