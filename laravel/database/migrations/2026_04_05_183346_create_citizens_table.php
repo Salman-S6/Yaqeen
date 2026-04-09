@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('citizens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('first_name');
-            $table->string('last_name');
+            // $table->string('first_name');
+            // $table->string('last_name');
             $table->string('father_name');
             $table->string('mother_first_name');
             $table->string('mother_last_name');
             $table->date('date_of_birth');
             $table->string('place_of_registration');
-            $table->boolean('is_verified')->default(false);
-            $table->timestamp('verified_at')->nullable();
+            // $table->boolean('is_verified')->default(false);
+            // $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }

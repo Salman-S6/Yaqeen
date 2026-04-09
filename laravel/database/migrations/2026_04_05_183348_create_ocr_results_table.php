@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ocr_results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('attachment_id')->constrained('attachments')->cascadeOnDelete();
-            $table->string('extracted_first_name');
+            $table->string('extracted_first_name'); 
             $table->string('extracted_last_name');
             $table->string('extracted_father_name')->nullable();
             $table->string('extracted_mother_first_name')->nullable();
