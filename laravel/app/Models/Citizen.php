@@ -31,11 +31,11 @@ class Citizen extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function requests(): HasMany
     {
-        return $this->hasMany(Request::class, 'citizen_id', 'citizen_id');
+        return $this->hasMany(Request::class, 'citizen_id');
     }
 }

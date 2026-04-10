@@ -21,6 +21,6 @@ class ServiceType extends Model
 
     public function requests(): HasMany
     {
-        return $this->hasMany(Request::class, 'service_type_id', 'service_type_id');
+        return $this->hasMany(Request::class, 'service_type_id');
     }
 }

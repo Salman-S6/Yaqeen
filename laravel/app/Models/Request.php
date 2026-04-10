@@ -11,6 +11,7 @@ class Request extends Model
 {
     protected $fillable = [
         'citizen_id',
+        'request_number',
         'service_type_id',
         'assigned_employee_id',
         'status',
@@ -31,12 +32,12 @@ class Request extends Model
 
     public function citizen(): BelongsTo
     {
-        return $this->belongsTo(Citizen::class, 'citizen_id', 'citizen_id');
+        return $this->belongsTo(Citizen::class, 'citizen_id');
     }
 
     public function serviceType(): BelongsTo
     {
-        return $this->belongsTo(ServiceType::class, 'service_type_id', 'service_type_id');
+        return $this->belongsTo(ServiceType::class, 'service_type_id' );
     }
 
     public function assignedEmployee(): BelongsTo
