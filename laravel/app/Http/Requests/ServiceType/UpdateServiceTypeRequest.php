@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\ServiceType;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEmployeeRequest extends FormRequest
+class UpdateServiceTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,12 +20,12 @@ class StoreEmployeeRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-   public function rules(): array
-{
-    return [
-        'name' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-    ];
-}
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|unique:service_types,name,'.$this->route('service_type')->id,
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+        ];
+    }
 }

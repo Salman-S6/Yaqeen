@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
 {
@@ -22,18 +23,18 @@ class Notification extends Model
     protected function casts(): array
     {
         return [
-            'is_sent'  => 'boolean',
-            'sent_at'  => 'datetime',
+            'is_sent' => 'boolean',
+            'sent_at' => 'datetime',
         ];
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function request(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function request(): BelongsTo
     {
-        return $this->belongsTo(Request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Request::class);
     }
 }

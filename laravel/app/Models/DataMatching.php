@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DataMatching extends Model
 {
@@ -12,8 +13,8 @@ class DataMatching extends Model
         'created_at',
     ];
 
-    public function request(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function request(): BelongsTo
     {
-        return $this->belongsTo(Request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Request::class);
     }
 }

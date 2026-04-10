@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Request;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateServiceTypeRequest extends FormRequest
+class AssignRequestRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class UpdateServiceTypeRequest extends FormRequest
      */
     public function rules(): array
     {
-            return [
-                'name' => 'required|string|unique:service_types,name,' . $this->route('service_type')->id,
-                'description' => 'nullable|string',
-            ];
+        return [
+            'employee_id' => 'required|exists:users,user_id',
+        ];
     }
 }

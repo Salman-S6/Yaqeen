@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RequestResource extends JsonResource
@@ -21,10 +20,9 @@ class RequestResource extends JsonResource
                 'father_name' => $this->citizen?->father_name,
                 'mother_first_name' => $this->citizen?->mother_first_name,
                 'mother_last_name' => $this->citizen?->mother_last_name,
-                'national_id' => $this->citizen?->national_id,
+                'national_id' => $this->citizen?->user?->national_id,
                 'date_of_birth' => $this->citizen?->date_of_birth,
                 'place_of_registration' => $this->citizen?->place_of_registration,
-
             ],
 
             'service_type' => [
@@ -32,7 +30,7 @@ class RequestResource extends JsonResource
                 'name' => $this->serviceType?->name,
             ],
 
-            'employee' => $this->employee?->first_name,
+            'employee' => $this->assignedEmployee?->user?->first_name,
 
             'submitted_at' => $this->submitted_at,
             'assigned_at' => $this->assigned_at,

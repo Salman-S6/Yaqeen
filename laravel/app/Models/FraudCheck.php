@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FraudCheck extends Model
 {
@@ -20,8 +21,8 @@ class FraudCheck extends Model
         ];
     }
 
-    public function attachment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function attachment(): BelongsTo
     {
-        return $this->belongsTo(Attachment::class, 'attachment_id', 'attachment_id');
+        return $this->belongsTo(Attachment::class);
     }
 }

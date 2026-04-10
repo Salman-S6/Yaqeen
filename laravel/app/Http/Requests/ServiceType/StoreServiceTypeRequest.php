@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\ServiceType;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,8 +23,9 @@ class StoreServiceTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-              'name' => 'required|string|unique:service_types,name',
+            'name' => 'required|string|unique:service_types,name',
             'description' => 'nullable|string',
+            'is_active' => 'boolean',
         ];
     }
 }

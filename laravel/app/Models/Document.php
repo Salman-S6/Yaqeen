@@ -24,7 +24,7 @@ class Document extends Model
 
     public function request(): BelongsTo
     {
-        return $this->belongsTo(Request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Request::class);
     }
 
     public function issuedBy(): BelongsTo
@@ -34,11 +34,11 @@ class Document extends Model
 
     public function qrCode(): HasOne
     {
-        return $this->hasOne(QRCode::class, 'document_id', 'document_id');
+        return $this->hasOne(QRCode::class);
     }
 
     public function verificationLogs(): HasMany
     {
-        return $this->hasMany(VerificationLog::class, 'document_id', 'document_id');
+        return $this->hasMany(VerificationLog::class);
     }
 }

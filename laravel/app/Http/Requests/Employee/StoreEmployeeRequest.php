@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Employee;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequestRequest extends FormRequest
+class StoreEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,12 @@ class StoreRequestRequest extends FormRequest
      */
     public function rules(): array
     {
-         return [
-        'service_type_id' => 'required|exists:service_types,id',
-        // 'citizen_id' => 'required|exists:citizens,id'
-    ];
+        return [
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'national_id' => 'required|string|size:11|unique:users,national_id',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+        ];
     }
 }

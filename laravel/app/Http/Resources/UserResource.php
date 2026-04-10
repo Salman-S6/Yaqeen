@@ -14,21 +14,20 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
- return [
+        return [
             'id' => $this->id,
-            'name' => $this->first_name . ' ' . $this->last_name,
-            'mother_name' => $this->citizen?->mother_first_name . ' ' . $this->citizen?->mother_last_name,
+            'name' => $this->first_name.' '.$this->last_name,
+            'mother_name' => $this->citizen?->mother_first_name.' '.$this->citizen?->mother_last_name,
             'father_name' => $this->citizen?->father_name,
             'national_id' => $this->national_id,
             'date_of_birth' => $this->citizen?->date_of_birth,
             'place_of_registration' => $this->citizen?->place_of_registration,
-            
             'email' => $this->email,
             'roles' => $this->getRoleNames(),
-
-            'citizen' => [
-                'is_verified' => $this->citizen?->is_verified,
-                'verification_score' => $this->citizen?->verification_score
-            ]
-        ];    }
+            // 'citizen' => [
+            //     'is_verified' => $this->citizen?->is_verified,
+            //     'verification_score' => $this->citizen?->verification_score,
+            // ],
+        ];
+    }
 }

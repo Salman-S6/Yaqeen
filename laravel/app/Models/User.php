@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Citizen;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,9 +26,8 @@ class User extends Authenticatable
         'national_id',
         'email',
         'password',
-        'status'
+        'status',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,7 +38,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-protected $guard_name = 'api';
+
+    protected $guard_name = 'api';
+
     /**
      * Get the attributes that should be cast.
      *
@@ -53,8 +53,9 @@ protected $guard_name = 'api';
             'password' => 'hashed',
         ];
     }
-      public function citizen()
+
+    public function citizen()
     {
-        return $this->hasOne(Citizen::class, 'user_id');
+        return $this->hasOne(Citizen::class);
     }
 }

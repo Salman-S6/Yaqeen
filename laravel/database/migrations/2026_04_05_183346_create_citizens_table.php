@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('citizens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            // $table->string('first_name');
-            // $table->string('last_name');
             $table->string('father_name');
             $table->string('mother_first_name');
             $table->string('mother_last_name');

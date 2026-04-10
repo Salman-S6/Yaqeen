@@ -1,9 +1,8 @@
 <?php
 
 use App\Models\Attachment;
-use App\Services\OCRService;
 use App\Services\FraudService;
-
+use App\Services\OCRService;
 
 class IdentityVerificationService
 {
@@ -16,7 +15,7 @@ class IdentityVerificationService
             'file_path' => $path,
             'file_type' => $file->getClientMimeType(),
             'file_size_kb' => $file->getSize() / 1024,
-            'uploaded_at' => now()
+            'uploaded_at' => now(),
         ]);
 
         $ocr = app(OCRService::class)->process($attachment);
@@ -27,7 +26,7 @@ class IdentityVerificationService
         $citizen->update([
             'is_verified' => $score > 90 && $fraud->result === 'original',
             'verification_score' => $score,
-            'verified_at' => now()
+            'verified_at' => now(),
         ]);
 
         return $citizen;
@@ -37,11 +36,19 @@ class IdentityVerificationService
     {
         $score = 0;
 
-        if ($citizen->user->first_name === $ocr->extracted_first_name) $score += 25;
-        if ($citizen->user->last_name === $ocr->extracted_last_name) $score += 25;
-        if ($citizen->father_name === $ocr->extracted_father_name) $score += 25;
-        if ($citizen->date_of_birth == $ocr->extracted_dob) $score += 25;
+        if ($citizen->user->first_name === $ocr->extracted_first_name) {
+            $score += 25;
+        }
+        if ($citizen->user->last_name === $ocr->extracted_last_name) {
+            $score += 25;
+        }
+        if ($citizen->father_name === $ocr->extracted_father_name) {
+            $score += 25;
+        }
+        if ($citizen->date_of_birth == $ocr->extracted_dob) {
+            $score += 25;
+        }
 
         return $score;
     }
-};
+}

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email_to');
             $table->boolean('is_sent')->default(false);
             $table->tinyInteger('retry_count')->default(0);
-            $table->timestamps();
+            $table->timestamp('sent_at')->nullable();
         });
     }
 
