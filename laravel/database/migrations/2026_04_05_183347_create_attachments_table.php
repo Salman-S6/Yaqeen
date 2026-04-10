@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained('requests')->cascadeOnDelete();
-            $table->string('file_path');
-            $table->string('file_type');
-            $table->integer('file_size_kb');
-            $table->timestamp('uploaded_at');
+            $table->foreignId('uploaded_by')->constrained('users')->onDelete('cascade');
+            $table->nullableMorphs('attachable');
+
+            $table->string('type')->nullable();
+            $table->string('disk')->default('local');
+            $table->text('path');
+            $table->string('file_name');
+            $table->string('original_name');
+            $table->string('mime_type');
+            $table->bigInteger('file_size');
             $table->timestamps();
         });
     }
