@@ -1,29 +1,31 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Attachment;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAttachmentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true; // التحقق من الصلاحيات يتم عبر الـ Middleware
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-        'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120'
+            'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'attachable_type' => 'required|string',
+            'attachable_id' => 'required|integer',
+            'type' => 'nullable|string|max:50',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'file.max' => 'file size must be less than 5MB.',
+            'file.mimes' => 'only files of type: jpg, png, pdf are allowed.',
         ];
     }
 }

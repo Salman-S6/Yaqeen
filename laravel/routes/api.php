@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\ServiceTypeController;
@@ -34,6 +35,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // تعيين موظف
     Route::post('/requests/{id}/assign', [RequestController::class, 'assign'])
         ->middleware('check.permission:assign requests');
+
+    // مسارات المرفقات الآمنة
+    Route::prefix('attachments')->group(function () {
+
+        // مسار رفع مرفق جديد
+        Route::post('/', [AttachmentController::class, 'store'])
+            ->middleware('check.permission:upload attachments'); // استخدام الصلاحية من الـ Seeder الخاص بكم
+
+        // مسار عرض المرفق (مهم جداً إعطاؤه اسم name ليتمكن الريسورس من استدعائه)
+        Route::get('/{id}/view', [AttachmentController::class, 'view'])
+            ->name('attachments.view')
+            ->middleware('check.permission:view attachments');
+    });
 });
 
 Route::prefix('service-types')->group(function () {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Request extends Model
 {
@@ -45,9 +46,9 @@ class Request extends Model
         return $this->belongsTo(User::class, 'assigned_employee_id', 'user_id');
     }
 
-    public function attachments(): HasMany
+    public function attachments(): MorphMany
     {
-        return $this->hasMany(Attachment::class);
+        return $this->morphMany(Attachment::class, 'attachable');
     }
 
     public function document(): HasOne
@@ -68,5 +69,13 @@ class Request extends Model
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function ($request) {
+            // عندما يتم حذف الطلب، قم بالمرور على كل مرفقاته وحذفها
+            $request->attachments->each->delete();
+        });
     }
 }
