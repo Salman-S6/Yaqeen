@@ -25,19 +25,19 @@ class Request extends Model
     {
         return [
             'submitted_at' => 'datetime',
-            'assigned_at'  => 'datetime',
-            'resolved_at'  => 'datetime',
+            'assigned_at' => 'datetime',
+            'resolved_at' => 'datetime',
         ];
     }
 
     public function citizen(): BelongsTo
     {
-        return $this->belongsTo(Citizen::class, 'citizen_id');
+        return $this->belongsTo(Citizen::class);
     }
 
     public function serviceType(): BelongsTo
     {
-        return $this->belongsTo(ServiceType::class, 'service_type_id' );
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
     }
 
     public function assignedEmployee(): BelongsTo
@@ -47,26 +47,26 @@ class Request extends Model
 
     public function attachments(): HasMany
     {
-        return $this->hasMany(Attachment::class, 'request_id', 'request_id');
+        return $this->hasMany(Attachment::class);
     }
 
     public function document(): HasOne
     {
-        return $this->hasOne(Document::class, 'request_id', 'request_id');
+        return $this->hasOne(Document::class);
     }
 
     public function dataMatching(): HasOne
     {
-        return $this->hasOne(DataMatching::class, 'request_id', 'request_id');
+        return $this->hasOne(DataMatching::class);
     }
 
     public function rejectionReason(): HasOne
     {
-        return $this->hasOne(RejectionReason::class, 'request_id', 'request_id');
+        return $this->hasOne(RejectionReason::class);
     }
 
     public function notifications(): HasMany
     {
-        return $this->hasMany(Notification::class, 'request_id', 'request_id');
+        return $this->hasMany(Notification::class);
     }
 }

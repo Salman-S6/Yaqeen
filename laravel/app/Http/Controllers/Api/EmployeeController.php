@@ -1,8 +1,9 @@
 <?php
-namespace App\Http\Controllers\Api\Admin;
+
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\Employee\StoreEmployeeRequest;
 use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
@@ -18,7 +19,7 @@ class EmployeeController extends Controller
     {
         return response()->json([
             'message' => 'Employee created successfully',
-            'data' => $this->service->create($request->validated())
+            'data' => $this->service->create($request->validated()),
         ]);
     }
 
@@ -37,7 +38,7 @@ class EmployeeController extends Controller
         $this->service->delete($id);
 
         return response()->json([
-            'message' => 'Employee deleted successfully'
+            'message' => 'Employee deleted successfully',
         ]);
     }
 }

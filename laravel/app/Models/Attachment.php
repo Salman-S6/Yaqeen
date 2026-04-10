@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Attachment extends Model
 {
@@ -21,18 +23,18 @@ class Attachment extends Model
         ];
     }
 
-    public function request(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function request(): BelongsTo
     {
-        return $this->belongsTo(Request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Request::class);
     }
 
-    public function ocrResult(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function ocrResult(): HasOne
     {
-        return $this->hasOne(OCRResult::class, 'attachment_id', 'attachment_id');
+        return $this->hasOne(OCRResult::class);
     }
 
-    public function fraudCheck(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function fraudCheck(): HasOne
     {
-        return $this->hasOne(FraudCheck::class, 'attachment_id', 'attachment_id');
+        return $this->hasOne(FraudCheck::class);
     }
 }

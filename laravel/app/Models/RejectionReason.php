@@ -16,7 +16,7 @@ class RejectionReason extends Model
 
     public function request(): BelongsTo
     {
-        return $this->belongsTo(Request::class, 'request_id', 'request_id');
+        return $this->belongsTo(Request::class);
     }
 
     public function employee(): BelongsTo

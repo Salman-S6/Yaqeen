@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreServiceTypeRequest;
-use App\Http\Requests\UpdateServiceTypeRequest;
+use App\Http\Requests\ServiceType\StoreServiceTypeRequest;
+use App\Http\Requests\ServiceType\UpdateServiceTypeRequest;
 use App\Http\Resources\ServiceTypeResource;
 use App\Models\ServiceType;
 use App\Services\ServiceTypeService;

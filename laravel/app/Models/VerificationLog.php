@@ -11,7 +11,6 @@ class VerificationLog extends Model
         'document_id',
         'result',
         'verifier_organization',
-        'ip_address',
         'verified_at',
     ];
 
@@ -24,6 +23,6 @@ class VerificationLog extends Model
 
     public function document(): BelongsTo
     {
-        return $this->belongsTo(Document::class, 'document_id', 'document_id');
+        return $this->belongsTo(Document::class);
     }
 }

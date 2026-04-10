@@ -24,6 +24,7 @@ class ServiceTypeService
     public function update(ServiceType $serviceType, array $data)
     {
         $serviceType->update($data);
+
         return $serviceType;
     }
 

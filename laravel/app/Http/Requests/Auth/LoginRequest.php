@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AssignRequestRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class AssignRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'employee_id' => 'required|exists:users,user_id'
+            'email' => 'required|email',
+            'password' => 'required|min:8',
         ];
     }
 }

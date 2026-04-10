@@ -2,18 +2,19 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 🧹 تنظيف الكاش (مهم جداً)
-    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // 🟢 1. إنشاء Permissions
         $permissions = [
 
             // Users
@@ -21,6 +22,9 @@ class RolePermissionSeeder extends Seeder
             'create users',
             'edit users',
             'delete users',
+
+            // Employees
+            'manage employees',
 
             // Requests
             'view requests',
@@ -42,38 +46,30 @@ class RolePermissionSeeder extends Seeder
             'view audit logs',
         ];
 
-       
-           foreach ($permissions as $permission) {
-        Permission::create([
-            'name' => $permission,
-            'guard_name' => 'api' //  مهم
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api',
+            ]);
+        }
+
+        $admin = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => 'api',
         ]);
-    }
 
-        // 🟡 2. إنشاء Roles
+        $employee = Role::firstOrCreate([
+            'name' => 'employee',
+            'guard_name' => 'api',
+        ]);
 
-    $admin=Role::create([
-        'name' => 'admin',
-        'guard_name' => 'api'
-    ]);
+        $citizen = Role::firstOrCreate([
+            'name' => 'citizen',
+            'guard_name' => 'api',
+        ]);
 
-     $employee=Role::create([
-        'name' => 'employee',
-        'guard_name' => 'api'
-    ]);
-
-    $citizen=Role::create([
-        'name' => 'citizen',
-        'guard_name' => 'api'
-    ]);
-
-
-        // 🔴 3. إعطاء صلاحيات
-
-        // Admin → كل شيء
         $admin->givePermissionTo(Permission::all());
 
-        // Employee → إدارة الطلبات فقط
         $employee->givePermissionTo([
             'view requests',
             'assign requests',
@@ -83,11 +79,23 @@ class RolePermissionSeeder extends Seeder
             'view users',
         ]);
 
-        // Citizen → استخدام النظام فقط
         $citizen->givePermissionTo([
             'create requests',
             'view requests',
             'upload attachments',
         ]);
+
+        $adminUser = User::firstOrCreate(
+            [
+                'first_name' => 'admin',
+                'last_name' => 'admin',
+                'national_id' => '00000000000',
+                'email' => 'admin@test.sy',
+                'password' => Hash::make('12345678'),
+                'status' => 'active',
+            ]
+        );
+
+        $adminUser->assignRole($admin);
     }
 }

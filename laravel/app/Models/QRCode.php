@@ -22,6 +22,6 @@ class QRCode extends Model
 
     public function document(): BelongsTo
     {
-        return $this->belongsTo(Document::class, 'document_id', 'document_id');
+        return $this->belongsTo(Document::class);
     }
 }

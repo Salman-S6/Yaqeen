@@ -1,17 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\ServiceTypeController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\Admin\EmployeeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-
 
 Route::prefix('auth')->group(function () {
 
@@ -22,7 +15,6 @@ Route::prefix('auth')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
     });
-
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,31 +36,28 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('check.permission:assign requests');
 });
 
-Route::group(['prefix' => 'service-types', ], function () {
-    
+Route::prefix('service-types')->group(function () {
+
     // عرض جميع أنواع الخدمات
     Route::get('/', [ServiceTypeController::class, 'index'])
-        ->middleware('permission:view service types');
+        ->middleware('check.permission:view service types');
 
     // عرض نوع خدمة واحد
     Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
-        ->middleware('permission:view service types');
+        ->middleware('check.permission:view service types');
 
     // إنشاء نوع خدمة جديد
     Route::post('/', [ServiceTypeController::class, 'store']);
-        // ->middleware('permission:create service types');
+    // ->middleware('permission:create service types');
 
     // تحديث نوع خدمة
     Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
-        ->middleware('permission:update service types');
+        ->middleware('check.permission:update service types');
 
     // حذف نوع خدمة
     Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
-        ->middleware('permission:delete service types');
+        ->middleware('check.permission:delete service types');
 });
-
-
-
 
 Route::middleware(['auth:sanctum', 'check.permission:manage employees'])
     ->prefix('admin')

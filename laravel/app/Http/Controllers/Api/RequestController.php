@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AssignRequestRequest;
-use App\Http\Requests\StoreRequestRequest;
+use App\Http\Requests\Request\AssignRequestRequest;
+use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Resources\RequestResource;
 use App\Services\RequestService;
 use Illuminate\Support\Facades\Auth;

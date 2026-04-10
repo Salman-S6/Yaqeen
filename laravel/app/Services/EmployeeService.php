@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
@@ -9,19 +10,19 @@ class EmployeeService
 {
     public function create(array $data)
     {
-        // 1️⃣ إنشاء المستخدم
         $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'national_id' => $data['national_id'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
 
-        // 2️⃣ إعطاء role = employee
         $role = Role::where('name', 'employee')
             ->where('guard_name', 'api')
             ->first();
 
-        if (!$role) {
+        if (! $role) {
             throw new \Exception('Employee role not found');
         }
 
