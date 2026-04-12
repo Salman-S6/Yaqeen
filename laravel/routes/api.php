@@ -48,37 +48,37 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('attachments.view')
             ->middleware('check.permission:view attachments');
     });
-});
 
-Route::prefix('service-types')->group(function () {
+    Route::prefix('service-types')->group(function () {
 
-    // عرض جميع أنواع الخدمات
-    Route::get('/', [ServiceTypeController::class, 'index'])
-        ->middleware('check.permission:view service types');
+        // عرض جميع أنواع الخدمات
+        Route::get('/', [ServiceTypeController::class, 'index'])
+            ->middleware('check.permission:view service types');
 
-    // عرض نوع خدمة واحد
-    Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
-        ->middleware('check.permission:view service types');
+        // عرض نوع خدمة واحد
+        Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
+            ->middleware('check.permission:view service types');
 
-    // إنشاء نوع خدمة جديد
-    Route::post('/', [ServiceTypeController::class, 'store']);
-    // ->middleware('permission:create service types');
+        // إنشاء نوع خدمة جديد
+        Route::post('/', [ServiceTypeController::class, 'store']);
+        // ->middleware('permission:create service types');
 
-    // تحديث نوع خدمة
-    Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
-        ->middleware('check.permission:update service types');
+        // تحديث نوع خدمة
+        Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
+            ->middleware('check.permission:update service types');
 
-    // حذف نوع خدمة
-    Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
-        ->middleware('check.permission:delete service types');
-});
-
-Route::middleware(['auth:sanctum', 'check.permission:manage employees'])
-    ->prefix('admin')
-    ->group(function () {
-
-        Route::post('/employees', [EmployeeController::class, 'store']);
-        Route::get('/employees', [EmployeeController::class, 'index']);
-        Route::get('/employees/{id}', [EmployeeController::class, 'show']);
-        Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+        // حذف نوع خدمة
+        Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
+            ->middleware('check.permission:delete service types');
     });
+
+    Route::middleware('check.permission:manage employees')
+        ->prefix('admin')
+        ->group(function () {
+
+            Route::post('/employees', [EmployeeController::class, 'store']);
+            Route::get('/employees', [EmployeeController::class, 'index']);
+            Route::get('/employees/{id}', [EmployeeController::class, 'show']);
+            Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+        });
+});
