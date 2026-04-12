@@ -60,8 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('check.permission:view service types');
 
         // إنشاء نوع خدمة جديد
-        Route::post('/', [ServiceTypeController::class, 'store']);
-        // ->middleware('permission:create service types');
+        Route::post('/', [ServiceTypeController::class, 'store'])
+            ->middleware('permission:create service types');
 
         // تحديث نوع خدمة
         Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
