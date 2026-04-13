@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('file_name');
             $table->string('original_name');
             $table->string('mime_type');
-            $table->bigInteger('file_size');
+            $table->integer('file_size');
             $table->timestamps();
         });
     }
