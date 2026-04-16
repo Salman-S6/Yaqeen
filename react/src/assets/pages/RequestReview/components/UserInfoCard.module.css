@@ -1,0 +1,56 @@
+.cardContainer {
+  width: 100%;
+  direction: rtl;
+}
+
+.sectionTitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.whiteRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  height: 60px;
+}
+
+.rightInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.grayLabel {
+  font-size: 0.75rem;
+  color: #9ca3af; /* الرمادي */
+  margin-bottom: 2px;
+}
+
+.blackValue {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #111827; /* الأسود */
+}
+
+.percentText {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.warningBox {
+  background: #fff9c4;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #827717;
+  text-align: right;
+  margin-top: 10px;
+}

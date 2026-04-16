@@ -1,0 +1,67 @@
+.pageWrapper {
+  background-color: #f3f4f6;
+  margin-right: 280px; /* لضمان عدم التداخل مع السايدبار الأسود */
+  min-height: 100vh;
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* بيجبر المحتوى يمتد بالعرض */
+}
+
+.topHeader {
+  background: white;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* بيقسم الشاشة لعمودين متساويين تماماً */
+  gap: 30px;
+  padding: 40px;
+  width: 100%; /* بياخد كل العرض المتاح */
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* القسم اليميني (الهوية) */
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* القسم اليساري (البيانات) */
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.blackCard {
+  width: 100%; /* لتاخد عرض العمود اليميني كامل */
+  max-width: 600px; /* عشان ما تكبر بشكل مبالغ فيه على الشاشات العملاقة */
+  background: #1a1a1a;
+  border-radius: 12px;
+  height: 280px;
+  padding: 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+/* إلغاء أي تحديد للعرض في المكونات الفرعية */
+.leftCol > div {
+  width: 100%;
+}
+
+.actionsContainer {
+  margin-top: 20px;
+  width: 100%;
+}
