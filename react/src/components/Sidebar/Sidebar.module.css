@@ -1,0 +1,151 @@
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+    background-color: #111827;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    direction: rtl;
+    flex-shrink: 0;
+    z-index: 1000;
+}
+
+.logoSection {
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logoText {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+}
+
+.navMenu {
+    flex: 1;
+    padding: 20px 15px;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #9ca3af;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.navItem:hover,
+.active {
+    background-color: #007c4d;
+    color: white;
+}
+
+.navIcon {
+    font-size: 20px;
+    margin-left: 15px;
+}
+
+.navBadge {
+    margin-right: auto;
+    background-color: #dc3545;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.userSection {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    background-color: #007c4d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.userName {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+.userRole {
+    margin: 0;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.profileMenu {
+    position: absolute;
+    bottom: 85px;
+    right: 15px;
+    left: 15px;
+    background: #1f2937;
+    border-radius: 12px;
+    border: 1px solid #374151;
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+.profileHeader {
+    padding: 12px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+    border-bottom: 1px solid #374151;
+}
+
+.profileMenu ul {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.profileMenu li {
+    padding: 12px 15px;
+    font-size: 13px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+}
+
+.profileMenu li:hover {
+    background: #374151;
+}
+
+.logoutBtn {
+    color: #fca5a5 !important;
+}

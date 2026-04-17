@@ -30,7 +30,7 @@ class RequestResource extends JsonResource
                 'name' => $this->serviceType?->name,
             ],
 
-            'employee' => $this->assignedEmployee?->user?->first_name,
+            'employee' => $this->assignedEmployee?->user,
 
             'submitted_at' => $this->submitted_at,
             'assigned_at' => $this->assigned_at,
