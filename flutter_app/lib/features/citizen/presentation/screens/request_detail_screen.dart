@@ -34,10 +34,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       backgroundColor: AppColors.background,
       body: BlocBuilder<CitizenBloc, CitizenState>(
         builder: (context, state) {
-          String appBarSubtitle = "رقم الطلب: ${widget.requestId}";
+          String appBarSubtitle = "جاري التحميل...";
 
           if (state is RequestDetailLoaded) {
-            appBarSubtitle = "رقم الطلب: ${state.request.id}";
+            appBarSubtitle = "رقم الطلب: ${state.request.requestNumber}";
           }
 
           return Column(
@@ -196,12 +196,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("صورة_الهوية_الامامية.jpg", style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp)),
-                Text("2.4 MB", style: AppTextStyles.smallLabel.copyWith(fontSize: 8.sp)),
+                Text("وثيقة_التحقق_المرفقة.jpg", style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp)),
+                Text("تلقائي من النظام", style: AppTextStyles.smallLabel.copyWith(fontSize: 8.sp)),
               ],
             ),
           ),
-          Icon(Icons.remove_red_eye, color: AppColors.green, size: 20.sp),
+          Icon(Icons.check_circle, color: AppColors.green, size: 20.sp),
         ],
       ),
     );
@@ -212,7 +212,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: AppTextStyles.smallLabel.copyWith(fontSize: 10.sp)),
-        Text(value, style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp)),
+        Text(value, style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp, color: AppColors.black)),
       ],
     );
   }

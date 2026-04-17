@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/widgets/custom/custom_text_field.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
 import '../../../../core/widgets/alerts/alert_banner.dart';
@@ -18,6 +19,9 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  // 1. إضافة مفتاح النموذج (Form Key)
+  final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
   bool _isLinkSent = false;
 
@@ -56,95 +60,88 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               Expanded(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-                  child: Column(
-                    children: [
+                  // 2. تغليف المحتوى بـ Form
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
 
-                      if (_isLinkSent) ...[
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(12.w),
-                          decoration: BoxDecoration(color: AppColors.badgeRevBg, borderRadius: BorderRadius.circular(8.r)),
-                          child: Row(
-                            children: [
-                              Text("📧", style: TextStyle(fontSize: 14.sp)),
-                              SizedBox(width: 8.w),
-                              Expanded(
-                                child: Text(
-                                  "الرابط صالح 30 دقيقة — لاستخدام واحد فقط",
-                                  style: AppTextStyles.smallLabel.copyWith(color: AppColors.badgeRevText, fontSize: 9.sp),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 24.h),
-                      ],
-
-                      _buildResponsiveInputField(label: "البريد الإلكتروني", controller: _emailController, hint: "ahmed@mail.com"),
-
-                      SizedBox(height: 24.h),
-
-                      PrimaryButton(
-                        text: "إرسال رابط الاستعادة",
-                        isLoading: state is AuthLoading,
-                        onPressed: () {
-                          if (_emailController.text.isNotEmpty) {
-                            context.read<AuthBloc>().add(
-                              ForgotPasswordEvent(email: _emailController.text.trim()),
-                            );
-                            _emailController.clear();
-                          }
-                        },
-                      ),
-                      if (_isLinkSent) ...[
-                        SizedBox(height: 30.h),
-                        const AlertBanner(message: "تم إرسال الرابط! تحقق من بريدك الإلكتروني", type: AlertType.success),
-                      ],
-
-                      SizedBox(height: 40.h),
-
-                      Center(
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: RichText(
-                            text: TextSpan(
-                              style: AppTextStyles.captionSemiBold.copyWith(color: AppColors.grayMid, fontSize: 9.sp),
+                        if (_isLinkSent) ...[
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(12.w),
+                            decoration: BoxDecoration(color: AppColors.badgeRevBg, borderRadius: BorderRadius.circular(8.r)),
+                            child: Row(
                               children: [
-                                const TextSpan(text: "تذكرت كلمة المرور؟ "),
-                                TextSpan(text: "تسجيل الدخول", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
+                                Text("📧", style: TextStyle(fontSize: 14.sp)),
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: Text(
+                                    "الرابط صالح 30 دقيقة — لاستخدام واحد فقط",
+                                    style: AppTextStyles.smallLabel.copyWith(color: AppColors.badgeRevText, fontSize: 9.sp),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
+                          SizedBox(height: 24.h),
+                        ],
+
+                        CustomTextField(
+                            label: "البريد الإلكتروني",
+                            hint: "ahmed@mail.com",
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (v) {
+                              if (v!.isEmpty) return "البريد الإلكتروني مطلوب";
+                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) return "صيغة البريد غير صحيحة";
+                              return null;
+                            }
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: 24.h),
+
+                        PrimaryButton(
+                          text: "إرسال رابط الاستعادة",
+                          isLoading: state is AuthLoading,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(
+                                ForgotPasswordEvent(email: _emailController.text.trim()),
+                              );
+                            }
+                          },
+                        ),
+
+                        if (_isLinkSent) ...[
+                          SizedBox(height: 30.h),
+                          const AlertBanner(message: "تم إرسال الرابط! تحقق من بريدك الإلكتروني", type: AlertType.success),
+                        ],
+
+                        SizedBox(height: 40.h),
+
+                        Center(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: RichText(
+                              text: TextSpan(
+                                style: AppTextStyles.captionSemiBold.copyWith(color: AppColors.grayMid, fontSize: 9.sp),
+                                children: [
+                                  const TextSpan(text: "تذكرت كلمة المرور؟ "),
+                                  TextSpan(text: "تسجيل الدخول", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildResponsiveInputField({required String label, required TextEditingController controller, required String hint}) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(color: AppColors.gray, borderRadius: BorderRadius.circular(8.r)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTextStyles.smallLabel.copyWith(color: AppColors.grayMid, fontSize: 8.sp)),
-          SizedBox(height: 4.h),
-          TextField(
-            controller: controller,
-            keyboardType: TextInputType.emailAddress,
-            style: AppTextStyles.bodyRegular.copyWith(color: AppColors.black, fontSize: 11.sp),
-            decoration: InputDecoration(hintText: hint, isDense: true, border: InputBorder.none, hintStyle: TextStyle(color: AppColors.grayMid, fontSize: 11.sp)),
-          ),
-        ],
       ),
     );
   }

@@ -23,7 +23,8 @@ class QrFrameOverlay extends StatelessWidget {
             child: Container(
               height: 2.h,
               width: actualSize * 0.8,
-              color: AppColors.greenLight.withOpacity(0.6),
+              // التعديل هنا باستخدام withValues بدلاً من withOpacity
+              color: AppColors.greenLight.withValues(alpha: 0.6),
             ),
           ),
         ],

@@ -9,6 +9,7 @@ class CitizenBloc extends Bloc<CitizenEvent, CitizenState> {
   CitizenBloc({required this.repository}) : super(CitizenInitial()) {
     on<FetchRequestsEvent>(_onFetchRequests);
     on<FetchRequestDetailEvent>(_onFetchDetail);
+    on<FetchServiceTypesEvent>(_onFetchServiceTypes);
     on<SubmitNewRequestEvent>(_onSubmitRequest);
   }
 
@@ -18,7 +19,7 @@ class CitizenBloc extends Bloc<CitizenEvent, CitizenState> {
       final requests = await repository.getRequests();
       emit(RequestsLoaded(requests));
     } catch (e) {
-      emit(const CitizenError("فشل تحميل الطلبات"));
+      emit(CitizenError(e.toString().replaceAll("Exception: ", "")));
     }
   }
 
@@ -28,13 +29,31 @@ class CitizenBloc extends Bloc<CitizenEvent, CitizenState> {
       final detail = await repository.getRequestDetail(event.requestId);
       emit(RequestDetailLoaded(detail));
     } catch (e) {
-      emit(const CitizenError("فشل تحميل تفاصيل الطلب"));
+      emit(CitizenError(e.toString().replaceAll("Exception: ", "")));
+    }
+  }
+
+  Future<void> _onFetchServiceTypes(FetchServiceTypesEvent event, Emitter<CitizenState> emit) async {
+    emit(CitizenLoading());
+    try {
+      final services = await repository.getServiceTypes();
+      emit(ServiceTypesLoaded(services));
+    } catch (e) {
+      emit(CitizenError(e.toString().replaceAll("Exception: ", "")));
     }
   }
 
   Future<void> _onSubmitRequest(SubmitNewRequestEvent event, Emitter<CitizenState> emit) async {
     emit(CitizenLoading());
-    await Future.delayed(const Duration(seconds: 2));
-    emit(NewRequestSubmitted());
+    try {
+      await repository.submitRequest(
+        serviceTypeId: event.serviceTypeId,
+        notes: event.notes,
+        quantity: event.quantity,
+      );
+      emit(NewRequestSubmitted());
+    } catch (e) {
+      emit(CitizenError(e.toString().replaceAll("Exception: ", "")));
+    }
   }
 }
