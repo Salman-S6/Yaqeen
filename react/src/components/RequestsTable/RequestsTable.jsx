@@ -1,8 +1,11 @@
 import React from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import styles from './RequestsTable.module.css';
 
-const RequestsTable = ({ data = [], onReview }) => {
+const RequestsTable = ({ data = [] }) => {
+    const navigate = useNavigate();
+
     if (data.length === 0) {
         return <div className={styles.noData}>لا توجد طلبات معلقة حالياً.</div>;
     }
@@ -36,7 +39,8 @@ const RequestsTable = ({ data = [], onReview }) => {
                             <td>
                                 <button
                                     className={req.isUrgent ? styles.btnUrgent : styles.btnNormal}
-                                    onClick={() => onReview(req.id)}
+                                    // 3. التوجيه لصفحة المراجعة عند الضغط
+                                    onClick={() => navigate('/review')}
                                 >
                                     مراجعة
                                 </button>

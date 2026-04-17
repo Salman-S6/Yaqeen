@@ -13,13 +13,11 @@
     opacity: 0.9;
 }
 
-/* التنسيق الأساسي (الأخضر) */
 .primary {
     background-color: #007c4d;
     color: white;
 }
 
-/* تنسيق التحذير (الأصفر الفاتح كما في التصميم) */
 .warning {
     background-color: #fcf4ce;
     color: #856404;

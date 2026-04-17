@@ -1,12 +1,9 @@
-/* 1. استدعاء الخط في بداية الملف تماماً */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
 :root {
-  /* ألوان منصة يقين الأساسية */
   --primary-green: #007c4d;
   --primary-green-hover: #00603b;
 
-  /* ألوان النصوص والخلفيات (الوضع الفاتح دائماً) */
   --text: #4b5563;
   --text-h: #111827;
   --bg: #f5f6fa;
@@ -20,19 +17,15 @@
 
   --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  /* تطبيق خط Tajawal على المتغيرات */
   --sans: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --heading: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  /* تعديل إعدادات الخط الأساسية */
   font: 16px/1.5 var(--sans);
   letter-spacing: 0px;
 
-  /* التوجيه العربي */
   direction: rtl;
 
-  /* إجبار المتصفح على الوضع الفاتح فقط */
   color-scheme: light;
   color: var(--text);
   background: var(--bg);
@@ -42,8 +35,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* تم إزالة كتلة الوضع الداكن بالكامل لضمان مطابقة التصميم الأصلي */
-
 * {
   box-sizing: border-box;
 }
@@ -52,7 +43,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--bg);
-  /* لضمان تطبيق الخط على كامل الجسم */
   font-family: var(--sans);
 }
 
@@ -71,7 +61,6 @@ h5,
 h6 {
   font-family: var(--heading);
   font-weight: 700;
-  /* Tajawal يبدو رائعاً بالوزن الثقيل للعناوين */
   color: var(--text-h);
   margin-top: 0;
 }

@@ -89,7 +89,6 @@
 .tableContainer {
     width: 100%;
     overflow-x: auto;
-    /* يسمح بالسكرول داخل الجدول فقط إذا صغرت الشاشة جداً */
     background: white;
     border-radius: 8px;
 }
@@ -98,5 +97,4 @@
     width: 100%;
     border-collapse: collapse;
     min-width: 700px;
-    /* لضمان عدم تداخل النصوص داخل الجدول في الشاشات الصغيرة */
 }

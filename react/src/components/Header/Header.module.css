@@ -4,11 +4,8 @@
     align-items: center;
     padding: 20px 30px;
     background-color: white;
-    /* إعادة اللون الأبيض */
     border-bottom: 1px solid #e5e7eb;
-    /* إضافة خط سفلي ناعم يفصله عن الصفحة */
     margin-bottom: 30px;
-    /* زيادة المسافة السفلية قليلاً */
 }
 
 .titleSection {
@@ -29,7 +26,6 @@
     font-size: 14px;
 }
 
-/* الجرس */
 .bellWrapper {
     position: relative;
     cursor: pointer;
@@ -44,36 +40,25 @@
 .badge {
     position: absolute;
     top: 2px;
-    /* تحريكها قليلاً للأسفل لتكون متوازنة */
     right: 2px;
-    /* تحريكها لليسار قليلاً */
     background-color: #dc3545;
     color: white;
 
-    /* تصغير الحجم */
     font-size: 9px;
-    /* حجم خط أصغر */
     font-weight: bold;
     min-width: 14px;
-    /* عرض أدنى لضمان الدائرية */
     height: 14px;
-    /* ارتفاع متساوي مع العرض */
 
-    /* التوسيط داخل الدائرة */
     display: flex;
     align-items: center;
     justify-content: center;
 
     border-radius: 50%;
-    /* دائرة كاملة */
     border: 1.5px solid white;
-    /* إطار أبيض ناعم يفصلها عن الجرس لتبدو أجمل */
     padding: 0;
     pointer-events: none;
-    /* لكي لا تعيق الضغط على الجرس */
 }
 
-/* قائمة الإشعارات المنسدلة */
 .notifDropdown {
     position: absolute;
     top: 45px;

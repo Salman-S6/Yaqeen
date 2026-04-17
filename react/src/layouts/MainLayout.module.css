@@ -9,12 +9,10 @@
 
 .mainWrapper {
     flex: 1;
-    /* يأخذ باقي المساحة المتبقية بعد الـ 280px الخاصة بالسايدبار */
     display: flex;
     flex-direction: column;
     height: 100vh;
     min-width: 0;
-    /* يمنع الجدول من التمدد خارج الحدود */
     overflow: hidden;
 }
 
@@ -22,5 +20,4 @@
     flex: 1;
     padding: 30px;
     overflow-y: auto;
-    /* سكرول عمودي للمحتوى فقط */
 }
