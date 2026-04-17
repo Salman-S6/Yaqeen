@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import MainLayout from './layouts/MainLayout';
 import Login from "./assets/pages/login/login";
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
+import RequestReview from './assets/pages/RequestReview/RequestReview';
 
 function App() {
   // 1. تعريف المستخدم (ليظهر اسمه وإيميله في السايدبار)
@@ -53,7 +54,17 @@ function App() {
             <PendingRequests requests={requests} onReview={handleDelete} />
           </MainLayout>
         } />
-
+{/* مسار صفحة مراجعة الطلب */}
+        <Route path="/review" element={
+          <MainLayout
+            currentUser={user}
+            pendingCount={requests.length}
+            headerTitle="مراجعة الطلب"
+            headerSubtitle="تدقيق البيانات المستخرجة من الوثائق"
+          >
+            <RequestReview />
+          </MainLayout>
+        } />
       </Routes>
     </Router>
   );

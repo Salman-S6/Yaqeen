@@ -1,0 +1,95 @@
+.pageWrapper {
+  background-color: #f3f4f6;
+  /* تأكدي أن الـ 280px هي نفس عرض السايدبار الأسود عندك */
+  margin-right: 280px; 
+  min-height: 100vh;
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+}
+
+.topHeader {
+  background: white;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mainTitle { font-size: 1.4rem; margin: 0; font-weight: bold; color: #111; }
+.subTitle { font-size: 0.85rem; color: #6b7280; margin: 5px 0 0 0; }
+
+.contentGrid {
+  display: grid;
+  /* تقسيم الشاشة لنصفين متساويين تماماً */
+  grid-template-columns: 1fr 1fr; 
+  gap: 40px;
+  padding: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* القسم اليميني (الهوية) - رح يلزق بجهة السايدبار */
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* القسم اليساري (البيانات) - رح يروح لأقصى اليسار */
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.blackCard {
+  width: 100%;
+  max-width: 550px; /* لضمان شكل الهوية ما يمط زيادة */
+  background: #1a1a1a;
+  border-radius: 12px;
+  height: 280px;
+  padding: 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.sectionLabel {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.statusSuccess {
+  background-color: #ecfdf5;
+  color: #065f46;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.matchRateBox {
+  background-color: #f0fdf4;
+  color: #166534;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.boldGreen { font-weight: bold; color: #16a34a; }
+
+.actionsContainer {
+  margin-top: 30px;
+  width: 100%;
+}
