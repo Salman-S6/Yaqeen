@@ -54,5 +54,4 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     );
 };
 
-// السطر الذي كان ينقص ويسبب الخطأ:
 export default Sidebar;

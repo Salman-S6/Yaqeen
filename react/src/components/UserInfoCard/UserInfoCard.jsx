@@ -9,13 +9,11 @@ const UserInfoCard = ({ data }) => {
       <div className={styles.fieldsList}>
         {data?.map((item, index) => (
           <div key={index} className={styles.whiteRow}>
-            {/* جهة اليمين: العنوان فوق الاسم */}
             <div className={styles.rightInfo}>
               <span className={styles.grayLabel}>{item.label}</span>
               <span className={styles.blackValue}>{item.value}</span>
             </div>
 
-            {/* جهة اليسار: النسبة المئوية */}
             <div className={styles.leftConfidence}>
               <span 
                 className={styles.percentText} 

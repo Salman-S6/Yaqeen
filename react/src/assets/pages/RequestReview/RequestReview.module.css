@@ -1,7 +1,6 @@
 .pageWrapper {
   background-color: #f3f4f6;
-  /* تأكدي أن الـ 280px هي نفس عرض السايدبار الأسود عندك */
-  margin-right: 280px; 
+  margin-right: 280px;
   min-height: 100vh;
   direction: rtl;
   display: flex;
@@ -16,13 +15,22 @@
   box-sizing: border-box;
 }
 
-.mainTitle { font-size: 1.4rem; margin: 0; font-weight: bold; color: #111; }
-.subTitle { font-size: 0.85rem; color: #6b7280; margin: 5px 0 0 0; }
+.mainTitle {
+  font-size: 1.4rem;
+  margin: 0;
+  font-weight: bold;
+  color: #111;
+}
+
+.subTitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 5px 0 0 0;
+}
 
 .contentGrid {
   display: grid;
-  /* تقسيم الشاشة لنصفين متساويين تماماً */
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
   padding: 40px;
   width: 100%;
@@ -30,14 +38,12 @@
   align-items: start;
 }
 
-/* القسم اليميني (الهوية) - رح يلزق بجهة السايدبار */
 .rightCol {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-/* القسم اليساري (البيانات) - رح يروح لأقصى اليسار */
 .leftCol {
   display: flex;
   flex-direction: column;
@@ -46,7 +52,7 @@
 
 .blackCard {
   width: 100%;
-  max-width: 550px; /* لضمان شكل الهوية ما يمط زيادة */
+  max-width: 550px;
   background: #1a1a1a;
   border-radius: 12px;
   height: 280px;
@@ -87,7 +93,10 @@
   font-size: 0.85rem;
 }
 
-.boldGreen { font-weight: bold; color: #16a34a; }
+.boldGreen {
+  font-weight: bold;
+  color: #16a34a;
+}
 
 .actionsContainer {
   margin-top: 30px;

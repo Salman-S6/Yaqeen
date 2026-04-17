@@ -7,7 +7,6 @@ const AttachmentsView = ({ imageSrc, matchRate = 96 }) => {
       <h3 className={styles.title}>صورة الهوية الأصلية المرفوعة</h3>
       
       <div className={styles.imageCard}>
-        {/* هنا نضع الصورة، واستخدمت placeholder مؤقتاً */}
         <img 
           src={imageSrc || 'https://via.placeholder.com/400x250?text=ID+Card+Preview'} 
           alt="Original ID" 
