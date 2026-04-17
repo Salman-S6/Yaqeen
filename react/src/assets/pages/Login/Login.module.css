@@ -1,4 +1,4 @@
-/* هذا الكلاس سيغطي الشاشة رغماً عن أي ملف CSS آخر في المشروع */
+
 .loginPageWrapper {
     position: absolute !important;
     top: 0 !important;
@@ -6,7 +6,6 @@
     width: 100vw !important;
     min-height: 100vh !important;
     background-color: #00361F !important;
-    /* اللون الأخضر الإجباري */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -15,7 +14,6 @@
     padding: 0 !important;
 }
 
-/* البطاقة البيضاء ستتوسط الشاشة الآن */
 .loginCard {
     background-color: white;
     padding: 45px 40px;

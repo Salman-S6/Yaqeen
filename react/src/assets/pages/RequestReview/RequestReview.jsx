@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import UserInfoCard from './components/UserInfoCard';
 import DecisionActions from './components/DecisionActions';
 import ConfirmModal from './components/ConfirmModal';
-import RejectModal from './components/RejectModal'; // استيراد نافذة الرفض الجديدة
+import RejectModal from './components/RejectModal';
 import styles from './RequestReview.module.css';
 
 const RequestReview = () => {
-  // حالات التحكم بفتح وإغلاق النوافذ
+
   const [showConfirm, setShowConfirm] = useState(false);
   const [showReject, setShowReject] = useState(false);
 
@@ -20,14 +20,13 @@ const RequestReview = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* الهيدر العلوي */}
       <header className={styles.topHeader}>
         <h2 className={styles.mainTitle}>مراجعة طلب</h2>
         <p className={styles.subTitle}>خالد محمد الأحمد</p>
       </header>
 
       <div className={styles.contentGrid}>
-        {/* القسم اليميني: الهوية */}
+       
         <div className={styles.rightCol}>
           <div className={styles.sectionLabel}>صورة الهوية الأصلية المرفوعة</div>
           <div className={styles.blackCard}>
@@ -41,11 +40,11 @@ const RequestReview = () => {
           </div>
         </div>
 
-        {/* القسم اليساري: البيانات والأزرار */}
+      
         <div className={styles.leftCol}>
           <UserInfoCard data={mockData} />
           <div className={styles.actionsContainer}>
-            {/* مررنا وظائف الفتح للمكون المسؤول عن الأزرار */}
+          
             <DecisionActions 
               onAccept={() => setShowConfirm(true)} 
               onReject={() => setShowReject(true)} 
@@ -54,7 +53,6 @@ const RequestReview = () => {
         </div>
       </div>
 
-      {/* نافذة تأكيد الاعتماد (الخضراء) */}
       <ConfirmModal 
         isOpen={showConfirm} 
         onClose={() => setShowConfirm(false)} 
@@ -64,7 +62,6 @@ const RequestReview = () => {
         }} 
       />
 
-      {/* نافذة تأكيد الرفض (الحمراء) */}
       <RejectModal 
         isOpen={showReject} 
         onClose={() => setShowReject(false)} 

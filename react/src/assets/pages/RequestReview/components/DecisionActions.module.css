@@ -14,8 +14,8 @@
   border-radius: 6px;
   font-weight: bold;
   font-size: 1rem;
-  cursor: pointer; /* بيغير الماوس لشكل يد */
-  transition: all 0.3s ease; /* بيخلي التغيير ناعم */
+  cursor: pointer; 
+  transition: all 0.3s ease;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,9 +23,9 @@
 }
 
 .acceptBtn:hover {
-  background-color: #005e3a; /* بصير أغمق شوي */
-  transform: translateY(-2px); /* بيرتفع شعرة لفوق */
-  box-shadow: 0 4px 12px rgba(0, 124, 77, 0.3); /* ظل خفيف */
+  background-color: #005e3a; 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 124, 77, 0.3); 
 }
 
 .rejectBtn {
@@ -37,7 +37,7 @@
   border-radius: 6px;
   font-weight: bold;
   font-size: 1rem;
-  cursor: pointer; /* بيغير الماوس لشكل يد */
+  cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   justify-content: center;

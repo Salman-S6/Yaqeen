@@ -15,7 +15,7 @@ const Login = () => {
     };
 
     return (
-        /* استخدمنا الكلاس الجديد هنا */
+       
         <div className={styles.loginPageWrapper}>
             <div className={styles.loginCard}>
 

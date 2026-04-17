@@ -13,7 +13,7 @@
 }
 
 .imageCard {
-  background: #111827; /* اللون الأسود العميق للخلفية */
+  background: #111827;
   border-radius: 10px;
   padding: 10px;
   display: flex;
@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #007c4d; /* الأخضر الخاص بـ يقين */
+  color: #007c4d; 
   font-weight: 500;
   font-size: 0.9rem;
 }

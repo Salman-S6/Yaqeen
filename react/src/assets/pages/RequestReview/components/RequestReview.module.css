@@ -1,11 +1,11 @@
 .pageWrapper {
   background-color: #f3f4f6;
-  margin-right: 280px; /* لضمان عدم التداخل مع السايدبار الأسود */
+  margin-right: 280px;
   min-height: 100vh;
   direction: rtl;
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* بيجبر المحتوى يمتد بالعرض */
+  align-items: stretch;
 }
 
 .topHeader {
@@ -18,22 +18,21 @@
 
 .contentGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* بيقسم الشاشة لعمودين متساويين تماماً */
+  grid-template-columns: 1fr 1fr; 
   gap: 30px;
   padding: 40px;
-  width: 100%; /* بياخد كل العرض المتاح */
+  width: 100%;
   box-sizing: border-box;
   align-items: start;
 }
 
-/* القسم اليميني (الهوية) */
+
 .rightCol {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-/* القسم اليساري (البيانات) */
 .leftCol {
   display: flex;
   flex-direction: column;
@@ -41,8 +40,8 @@
 }
 
 .blackCard {
-  width: 100%; /* لتاخد عرض العمود اليميني كامل */
-  max-width: 600px; /* عشان ما تكبر بشكل مبالغ فيه على الشاشات العملاقة */
+  width: 100%;
+  max-width: 600px; 
   background: #1a1a1a;
   border-radius: 12px;
   height: 280px;
@@ -56,7 +55,6 @@
   margin-bottom: 20px;
 }
 
-/* إلغاء أي تحديد للعرض في المكونات الفرعية */
 .leftCol > div {
   width: 100%;
 }
