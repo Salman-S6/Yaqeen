@@ -13,8 +13,16 @@ class FetchRequestDetailEvent extends CitizenEvent {
   const FetchRequestDetailEvent(this.requestId);
 }
 
+class FetchServiceTypesEvent extends CitizenEvent {}
+
 class SubmitNewRequestEvent extends CitizenEvent {
-  final String title;
-  final Map<String, String> extractedData;
-  const SubmitNewRequestEvent({required this.title, required this.extractedData});
+  final int serviceTypeId;
+  final String notes;
+  final int quantity;
+
+  const SubmitNewRequestEvent({
+    required this.serviceTypeId,
+    required this.notes,
+    required this.quantity,
+  });
 }
