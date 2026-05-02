@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import Login from "./assets/pages/login/login";
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
+import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
 
 function App() {
   const user = {
@@ -57,7 +58,22 @@ function App() {
           >
             <RequestReview />
           </MainLayout>
+
         } />
+{/* ... المسارات القديمة (Login, Pending, Review) تبقى كما هي ... */}
+
+<Route path="/dashboard" element={
+  <MainLayout
+    currentUser={user}
+    pendingCount={requests.length}
+    headerTitle="لوحة الموظف"
+    headerSubtitle="نظرة عامة على الأداء والطلبات"
+  >
+    <EmployeeDashboard />
+  </MainLayout>
+} />
+
+
       </Routes>
     </Router>
   );
