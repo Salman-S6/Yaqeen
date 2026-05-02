@@ -20,54 +20,39 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // عرض كل الطلبات
     Route::get('/requests', [RequestController::class, 'index'])
         ->middleware('check.permission:view requests');
 
-    // إنشاء طلب
     Route::post('/requests', [RequestController::class, 'store'])
         ->middleware('check.permission:create requests');
 
-    // عرض طلب واحد
     Route::get('/requests/{id}', [RequestController::class, 'show'])
         ->middleware('check.permission:view requests');
 
-    // تعيين موظف
     Route::post('/requests/{id}/assign', [RequestController::class, 'assign'])
         ->middleware('check.permission:assign requests');
 
-    // مسارات المرفقات الآمنة
     Route::prefix('attachments')->group(function () {
 
-        // مسار رفع مرفق جديد
         Route::post('/', [AttachmentController::class, 'store'])
-            ->middleware('check.permission:upload attachments'); // استخدام الصلاحية من الـ Seeder الخاص بكم
+            ->middleware('check.permission:upload attachments');
 
-        // مسار عرض المرفق (مهم جداً إعطاؤه اسم name ليتمكن الريسورس من استدعائه)
-        Route::get('/{id}/view', [AttachmentController::class, 'view'])
-            ->name('attachments.view')
-            ->middleware('check.permission:view attachments');
     });
 
     Route::prefix('service-types')->group(function () {
 
-        // عرض جميع أنواع الخدمات
         Route::get('/', [ServiceTypeController::class, 'index'])
             ->middleware('check.permission:view service types');
 
-        // عرض نوع خدمة واحد
         Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
             ->middleware('check.permission:view service types');
 
-        // إنشاء نوع خدمة جديد
         Route::post('/', [ServiceTypeController::class, 'store'])
             ->middleware('check.permission:create service types');
 
-        // تحديث نوع خدمة
         Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
             ->middleware('check.permission:update service types');
 
-        // حذف نوع خدمة
         Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
             ->middleware('check.permission:delete service types');
     });
@@ -82,3 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
         });
 });
+
+Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
+    ->name('attachments.view')
+    ->middleware('signed');

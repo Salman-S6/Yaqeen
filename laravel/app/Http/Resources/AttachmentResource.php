@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class AttachmentResource extends JsonResource
 {
@@ -15,7 +16,11 @@ class AttachmentResource extends JsonResource
             'file_type' => $this->mime_type,
             'file_size_kb' => round($this->file_size / 1024, 2),
 
-            'view_url' => route('attachments.view', $this->id),
+            'view_url'      => URL::temporarySignedRoute(
+                'attachments.view',
+                now()->addMinutes(60),
+                ['id' => $this->id]
+            ),
 
             'uploaded_by' => new UserResource($this->uploader),
             'uploaded_at' => $this->created_at,
