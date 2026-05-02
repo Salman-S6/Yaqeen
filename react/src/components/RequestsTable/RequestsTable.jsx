@@ -1,10 +1,9 @@
 import React from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 import styles from './RequestsTable.module.css';
 
-const RequestsTable = ({ data = [] }) => {
-    const navigate = useNavigate();
+// ✅ أضفنا onReview هنا لكي نستخدم الدالة القادمة من الأب
+const RequestsTable = ({ data = [], onReview }) => {
 
     if (data.length === 0) {
         return <div className={styles.noData}>لا توجد طلبات معلقة حالياً.</div>;
@@ -39,8 +38,8 @@ const RequestsTable = ({ data = [] }) => {
                             <td>
                                 <button
                                     className={req.isUrgent ? styles.btnUrgent : styles.btnNormal}
-                                    // 3. التوجيه لصفحة المراجعة عند الضغط
-                                    onClick={() => navigate('/review')}
+                                    /* ✅ الحل هنا: استدعاء الدالة الممررة بدلاً من navigate المباشر */
+                                    onClick={() => onReview(req.id)}
                                 >
                                     مراجعة
                                 </button>

@@ -1,0 +1,187 @@
+/* الحاوية الرئيسية مع أنميشن دخول ناعم */
+.container {
+    padding: 25px;
+    direction: rtl;
+    animation: fadeInPage 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* الهيدر والعناوين */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.titleArea h1 {
+    font-size: 1.85rem;
+    color: #1a202c;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.titleArea p {
+    color: #718096;
+    font-size: 1rem;
+}
+
+/* زر إضافة موظف - تصميم عصري */
+.addBtn {
+    background: #00a651;
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.addBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 166, 81, 0.2);
+    background: #008f45;
+}
+
+.addBtn:active {
+    transform: translateY(-1px);
+}
+
+/* التبويبات (Tabs) */
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.tab,
+.activeTab {
+    padding: 14px 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    color: #718096;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+}
+
+.tab:hover {
+    color: #4a5568;
+    background: #f7fafc;
+}
+
+.activeTab {
+    color: #00a651;
+}
+
+.activeTab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #00a651;
+    border-radius: 3px;
+}
+
+/* قسم البحث والتصفية */
+.searchSection {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.searchBar {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+}
+
+.searchBar input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.searchBar input:focus {
+    border-color: #00a651;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 166, 81, 0.08);
+}
+
+/* كارت الجدول */
+.tableCard {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    border: 1px solid #f0f4f8;
+}
+
+/* رسالة لا يوجد بيانات */
+.noData {
+    padding: 60px 20px;
+    text-align: center;
+    color: #a0aec0;
+}
+
+.noData p {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* تحسينات لجدول المستخدمين (المكون الفرعي) */
+/* ملاحظة: هذه الفئات قد يتم تمريرها للمكون الفرعي UserTable */
+.bold {
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.badge {
+    background: #f7fafc;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.statusActive {
+    color: #00a651;
+    background: #f0fff4;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.statusInactive {
+    color: #e53e3e;
+    background: #fff5f5;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
