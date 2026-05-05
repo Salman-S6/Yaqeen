@@ -3,13 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import { FaBell } from 'react-icons/fa';
 import styles from './Header.module.css';
 
-const Header = ({ title, subtitle }) => {
+const Header = ({ title, subtitle, currentUser = {} }) => {
   const navigate = useNavigate();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
+  // ✅ تحديد روابط الإشعارات بناءً على دور المستخدم الحالي
+  const isAdmin = currentUser.role === "مدير النظام";
+
   const [notifications, setNotifications] = useState([
-    { id: 1, text: "طلب جديد (بيان عائلي) بحاجة لمراجعة فورية", time: "قبل 5 دقائق", unread: true, link: "/pending-requests" },
-    { id: 2, text: "تنبيه: 3 طلبات تجاوزت وقت SLA", time: "قبل 15 دقيقة", unread: true, link: "/pending-requests" },
+    {
+      id: 1,
+      text: isAdmin ? "هناك مستخدم جديد بانتظار التفعيل" : "طلب جديد بحاجة لمراجعة فورية",
+      time: "قبل 5 دقائق",
+      unread: true,
+      // ✅ توجيه الآدمن لصفحة المستخدمين والموظف لصفحة الطلبات
+      link: isAdmin ? "/admin/users" : "/employee/pending-requests"
+    },
+    {
+      id: 2,
+      text: isAdmin ? "تقرير النظام الأسبوعي جاهز" : "تنبيه: طلبات تجاوزت وقت SLA",
+      time: "قبل 15 دقيقة",
+      unread: true,
+      link: isAdmin ? "/admin/users" : "/employee/pending-requests"
+    },
     { id: 3, text: "تم تحديث صلاحيات حسابك بنجاح", time: "قبل ساعتين", unread: false, link: "#" }
   ]);
 
@@ -19,9 +35,7 @@ const Header = ({ title, subtitle }) => {
     setNotifications(prevNotifs =>
       prevNotifs.map(n => n.id === id ? { ...n, unread: false } : n)
     );
-
     setIsNotifOpen(false);
-
     if (link !== "#") {
       navigate(link);
     }
@@ -40,13 +54,16 @@ const Header = ({ title, subtitle }) => {
 
       <div className={styles.actions}>
         <div className={styles.bellWrapper}>
-          <div onClick={() => setIsNotifOpen(!isNotifOpen)} style={{ position: 'relative' }}>
+          <div onClick={(e) => {
+            e.stopPropagation();
+            setIsNotifOpen(!isNotifOpen);
+          }} style={{ position: 'relative', cursor: 'pointer' }}>
             <FaBell className={styles.bellIcon} />
             {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
           </div>
 
           {isNotifOpen && (
-            <div className={styles.notifDropdown}>
+            <div className={styles.notifDropdown} onClick={(e) => e.stopPropagation()}>
               <div className={styles.notifHeader}>
                 <h4>الإشعارات</h4>
                 <span className={styles.markRead} onClick={markAllAsRead}>تحديد كـ مقروء</span>

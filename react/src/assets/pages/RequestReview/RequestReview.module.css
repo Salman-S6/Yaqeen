@@ -1,10 +1,13 @@
 .pageWrapper {
   background-color: #f3f4f6;
+  /* تغيير الهامش ليكون مرناً مع السايدبار */
   margin-right: 280px;
   min-height: 100vh;
   direction: rtl;
   display: flex;
   flex-direction: column;
+  /* منع أي تسريب عرضي */
+  overflow-x: hidden;
 }
 
 .topHeader {
@@ -15,47 +18,25 @@
   box-sizing: border-box;
 }
 
-.mainTitle {
-  font-size: 1.4rem;
-  margin: 0;
-  font-weight: bold;
-  color: #111;
-}
-
-.subTitle {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin: 5px 0 0 0;
-}
-
 .contentGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding: 40px;
+  /* ✅ الحل: استخدام grid مرن ينزل للسطر التالي تلقائياً */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  padding: 30px;
   width: 100%;
   box-sizing: border-box;
   align-items: start;
 }
 
-.rightCol {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.leftCol {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
 .blackCard {
   width: 100%;
-  max-width: 550px;
+  /* التأكد من أن الكارت لا يتجاوز عرض الحاوية */
+  max-width: 100%;
   background: #1a1a1a;
   border-radius: 12px;
-  height: 280px;
+  min-height: 280px;
+  /* استخدام min-height بدلاً من height ثابت */
   padding: 30px;
   color: white;
   display: flex;
@@ -64,41 +45,42 @@
   align-items: center;
   box-sizing: border-box;
   margin-bottom: 20px;
+  /* لضمان تناسق المحتوى الداخلي */
+  text-align: center;
+  line-height: 1.6;
 }
 
-.sectionLabel {
-  font-size: 0.95rem;
-  color: #374151;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.statusSuccess {
-  background-color: #ecfdf5;
-  color: #065f46;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  margin-bottom: 10px;
+/* تحسين استجابة الأعمدة */
+.rightCol,
+.leftCol {
   display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.matchRateBox {
-  background-color: #f0fdf4;
-  color: #166534;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-}
-
-.boldGreen {
-  font-weight: bold;
-  color: #16a34a;
-}
-
-.actionsContainer {
-  margin-top: 30px;
+  flex-direction: column;
   width: 100%;
+  min-width: 0;
+  /* يمنع تمدد العناصر خارج الـ Grid */
+}
+
+/* ✅ إضافة Media Queries للشاشات الصغيرة */
+@media (max-width: 1024px) {
+  .pageWrapper {
+    margin-right: 0;
+    /* إلغاء الهامش إذا كان السايدبار مخفياً في الموبايل */
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+    /* تحويلها لعمود واحد */
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .topHeader {
+    padding: 15px 20px;
+  }
+}
+
+/* تحسين شكل البطاقات الصغيرة (بيانات OCR) */
+.ocrDataCard {
+  width: 100%;
+  margin-bottom: 10px;
 }
