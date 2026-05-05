@@ -6,8 +6,8 @@ import Login from "./assets/pages/login/login";
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
-
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
+
 function App() {
   const employeeUser = {
     name: "أحمد المحمود",
@@ -22,6 +22,8 @@ function App() {
     initials: "ع.س",
     email: "admin@yaqeen.gov.sy"
   };
+
+  const user = employeeUser;
 
   const [requests] = useState([
     { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
@@ -41,7 +43,6 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<Navigate to="pending-requests" replace />} />
-          {/* نمرر العنوان هنا ليتم استخدامه في الصفحة */}
           <Route path="pending-requests" element={<PendingRequests requests={requests} title="الطلبات المعلّقة" />} />
           <Route path="review" element={<RequestReview title="مراجعة طلب" />} />
           <Route path="notifications" element={<div>صفحة الإشعارات</div>} />
@@ -50,7 +51,6 @@ function App() {
         {/* 🛡️ مسارات المدير */}
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin']}>
-            {/* جعل الهيدر ثابتاً للمدير أو متغيراً */}
             <MainLayout currentUser={adminUser} headerTitle="إدارة النظام" />
           </ProtectedRoute>
         }>
@@ -58,16 +58,16 @@ function App() {
           <Route path="users" element={<AdminUsersPage />} />
         </Route>
 
-<Route path="/review" element={
+        <Route path="/review" element={
           <MainLayout
             currentUser={user}
             pendingCount={requests.length}
             headerTitle="مراجعة الطلب"
             headerSubtitle="تدقيق البيانات المستخرجة من الوثائق"
-          >
-            <RequestReview />
-          </MainLayout>
-        } />
+          />
+        }>
+          <Route index element={<RequestReview />} />
+        </Route>
 
         <Route path="/employee-dashboard" element={
           <MainLayout
@@ -75,12 +75,11 @@ function App() {
             pendingCount={requests.length}
             headerTitle="لوحة الموظف"
             headerSubtitle="نظرة عامة على الأداء والطلبات"
-          >
-            <EmployeeDashboard />
-          </MainLayout>
-        } />
+          />
+        }>
+          <Route index element={<EmployeeDashboard />} />
+        </Route>
 
-        {/* مسار الحماية: يجب أن يكون دائماً في أسفل القائمة لالتقاط أي مسار خاطئ */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

@@ -8,28 +8,20 @@ const Login = () => {
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(''); // لإظهار رسائل الخطأ
+    const [error, setError] = useState('');
 
     const handleLogin = (e) => {
         e.preventDefault();
-        setError(''); // تصفير الأخطاء عند محاولة الدخول
+        setError('');
 
-        // تنظيف المدخلات (Normalization)
         const input = userId.trim().toLowerCase();
 
-        // لوجيك الدخول الافتراضي للاختبار
         if (input.includes('admin')) {
-            // 1. تخزين الدور ليتعرف عليه ProtectedRoute
             localStorage.setItem('userRole', 'admin');
-
-            // 2. التوجيه لمسار الإدارة المركزية
             navigate('/admin/users');
         }
-        else if (input.length > 3) { // فرضاً أن أي إيميل موظف أطول من 3 حروف
-            // 1. تخزين الدور كموظف
+        else if (input.length > 3) {
             localStorage.setItem('userRole', 'employee');
-
-            // 2. التوجيه لبوابة الموظفين (الطلبات المعلقة)
             navigate('/employee/pending-requests');
         } else {
             setError('يرجى التأكد من البيانات المدخلة');
@@ -69,7 +61,6 @@ const Login = () => {
                         <a href="#">نسيت كلمة المرور؟ تواصل مع الدعم الفني</a>
                     </div>
 
-                    {/* تأكد أن الـ Button يمرر type="submit" للوسم الداخلي */}
                     <Button text="دخول إلى النظام" type="submit" variant="primary" />
 
                     <div className={styles.alertBox}>
