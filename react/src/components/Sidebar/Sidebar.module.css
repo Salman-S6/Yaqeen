@@ -149,3 +149,29 @@
 .logoutBtn {
     color: #fca5a5 !important;
 }
+
+
+/* --- إضافات لوحة التحكم (Batool) --- */
+
+/* تأكيد تنسيق الروابط عند استخدام NavLink لضمان عدم ظهور خط تحت النص */
+.navItem {
+    text-decoration: none;
+}
+
+/* لضمان بقاء الأيقونة في مكانها الصحيح داخل لوحة التحكم */
+.navIcon {
+    flex-shrink: 0;
+}
+
+/* تحسين شكل الـ Active ليعمل مع NavLink بشكل تلقائي */
+:global(.active) .navItem, 
+.active {
+    background-color: #007c4d !important;
+    color: white !important;
+}
+
+/* تنسيق إضافي لـ نص الرابط لضمان وضوحه */
+.navItem span {
+    font-size: 15px;
+    font-weight: 500;
+}

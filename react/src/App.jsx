@@ -5,7 +5,6 @@ import Login from "./assets/pages/login/login";
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
-
 function App() {
   const user = {
     name: "أحمد المحمود",
@@ -62,7 +61,7 @@ function App() {
         } />
 {/* ... المسارات القديمة (Login, Pending, Review) تبقى كما هي ... */}
 
-<Route path="/dashboard" element={
+  <Route path="/employee-dashboard" element={
   <MainLayout
     currentUser={user}
     pendingCount={requests.length}

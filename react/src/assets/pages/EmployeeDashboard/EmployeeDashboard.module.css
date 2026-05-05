@@ -1,24 +1,44 @@
 .dashboardWrapper {
-  /* التعديل السحري للالتصاق */
-  position: absolute;
-  right: 280px; /* عرض السايدبار عندك */
-  left: 0;
-  top: 0;
-  min-height: 100vh;
-  background-color: #f8fafc;
+  margin: -30px; 
+  padding: 30px; 
+  background-color: #f3f4f6;
+  min-height: calc(100vh + 60px);
   direction: rtl;
-  display: block;
 }
 
-.contentContainer {
-  padding: 30px 40px;
-  width: 100%;
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.viewAllBtn {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: auto; 
+}
+
+.tableSection {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 30px;
 }
 
 .statsGrid {
-  display: grid;
-  /* هي اللي بتعمل المستطيلات العريضة */
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 20px;
+  display: flex;   
+  gap: 15px;         
   margin-top: 25px;
+  width: 100%;         
 }
+
+.statsGrid > div {
+  flex: 1;             
+}
+
