@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/alerts/alert_banner.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
+import '../../../../core/widgets/custom/custom_text_field.dart';
 import '../../../../core/widgets/headers/syrian_flag_stripe.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -18,10 +19,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   int _failedAttempts = 0;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -84,89 +88,90 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-                  child: Column(
-                    children: [
-                      _buildResponsiveInput(label: "البريد الإلكتروني", hint: "ahmed@mail.com", controller: _emailController),
-                      _buildResponsiveInput(label: "كلمة المرور", hint: "••••••••", isPassword: true, controller: _passwordController),
-
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextButton(
-                          onPressed: () => Navigator.pushNamed(context, '/forgot_password'),
-                          child: Text("نسيت كلمة المرور؟", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
+                  // 2. تغليف الحقول بـ Form
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                            label: "البريد الإلكتروني",
+                            hint: "ahmed@mail.com",
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (v) {
+                              if (v!.isEmpty) return "البريد الإلكتروني مطلوب";
+                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) return "صيغة البريد غير صحيحة";
+                              return null;
+                            }
                         ),
-                      ),
 
-                      SizedBox(height: 10.h),
+                        CustomTextField(
+                            label: "كلمة المرور",
+                            hint: "••••••••",
+                            isPassword: true,
+                            controller: _passwordController,
+                            validator: (v) {
+                              if (v!.isEmpty) return "كلمة المرور مطلوبة";
+                              return null;
+                            }
+                        ),
 
-                      PrimaryButton(
-                        text: "دخول",
-                        isLoading: state is AuthLoading,
-                        onPressed: () {
-                          if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-                            context.read<AuthBloc>().add(
-                              LoginEvent(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            onPressed: () => Navigator.pushNamed(context, '/forgot_password'),
+                            child: Text("نسيت كلمة المرور؟", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
+                          ),
+                        ),
+
+                        SizedBox(height: 10.h),
+
+                        PrimaryButton(
+                          text: "دخول",
+                          isLoading: state is AuthLoading,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(
+                                LoginEvent(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        SizedBox(height: 12.h),
+
+                        if (_failedAttempts >= 5)
+                          const AlertBanner(
+                            message: "بعد 5 محاولات — تجميد 15 دقيقة",
+                            type: AlertType.warning,
+                          ),
+
+                        SizedBox(height: 80.h),
+
+                        Center(
+                          child: GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, '/register'),
+                            child: RichText(
+                              text: TextSpan(
+                                style: AppTextStyles.captionSemiBold.copyWith(color: AppColors.grayMid, fontSize: 9.sp),
+                                children: [
+                                  const TextSpan(text: "ليس لديك حساب؟ "),
+                                  TextSpan(text: "إنشاء حساب", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
+                                ],
                               ),
-                            );
-
-                            _emailController.clear();
-                            _passwordController.clear();
-                          }
-                        },
-                      ),
-                      SizedBox(height: 12.h),
-
-                      if (_failedAttempts >= 5)
-                        const AlertBanner(
-                          message: "بعد 5 محاولات — تجميد 15 دقيقة",
-                          type: AlertType.warning,
-                        ),
-
-                      SizedBox(height: 80.h),
-
-                      Center(
-                        child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/register'),
-                          child: RichText(
-                            text: TextSpan(
-                              style: AppTextStyles.captionSemiBold.copyWith(color: AppColors.grayMid, fontSize: 9.sp),
-                              children: [
-                                const TextSpan(text: "ليس لديك حساب؟ "),
-                                TextSpan(text: "إنشاء حساب", style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 9.sp)),
-                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildResponsiveInput({required String label, required String hint, required TextEditingController controller, bool isPassword = false}) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(color: AppColors.gray, borderRadius: BorderRadius.circular(8.r)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTextStyles.smallLabel.copyWith(fontSize: 8.sp)),
-          TextField(
-            controller: controller,
-            obscureText: isPassword,
-            style: AppTextStyles.bodyRegular.copyWith(fontSize: 11.sp),
-            decoration: InputDecoration(hintText: hint, isDense: true, border: InputBorder.none, hintStyle: TextStyle(fontSize: 11.sp, color: AppColors.grayMid)),
-          ),
-        ],
       ),
     );
   }

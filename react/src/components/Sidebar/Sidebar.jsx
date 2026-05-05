@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog } from 'react-icons/fa';
+import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
@@ -43,8 +43,18 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                 ) : (
                     /* روابط واجهة الموظف */
                     <>
+                        {/* الرابط الجديد: لوحة التحكم (تم دمجه من برانش بتول) */}
                         <div
-                            className={`${styles.navItem} ${isActive('/employee/pending-requests') ? styles.active : ''}`}
+                            className={`${styles.navItem} ${isActive('/employee-dashboard') ? styles.active : ''}`}
+                            onClick={() => navigate('/employee-dashboard')}
+                        >
+                            <FaThLarge className={styles.navIcon} />
+                            <span>لوحة التحكم</span>
+                        </div>
+
+                        {/* رابط الطلبات المعلقة */}
+                        <div
+                            className={`${styles.navItem} ${isActive('/employee/pending-requests') || isActive('/pending-requests') ? styles.active : ''}`}
                             onClick={() => navigate('/employee/pending-requests')}
                         >
                             <FaFileAlt className={styles.navIcon} />

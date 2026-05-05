@@ -1,0 +1,18 @@
+.alertBar {
+  background-color: #fef08a; /* أصفر أغمق وأوضح */
+  border: 1px solid #facc15; 
+  padding: 15px 25px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  direction: rtl;
+}
+
+.alertText {
+  color: #713f12; /* بني غامق للنص لزيادة التباين */
+  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 500;
+}

@@ -7,6 +7,7 @@ import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 
+import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
 function App() {
   const employeeUser = {
     name: "أحمد المحمود",
@@ -57,6 +58,29 @@ function App() {
           <Route path="users" element={<AdminUsersPage />} />
         </Route>
 
+<Route path="/review" element={
+          <MainLayout
+            currentUser={user}
+            pendingCount={requests.length}
+            headerTitle="مراجعة الطلب"
+            headerSubtitle="تدقيق البيانات المستخرجة من الوثائق"
+          >
+            <RequestReview />
+          </MainLayout>
+        } />
+
+        <Route path="/employee-dashboard" element={
+          <MainLayout
+            currentUser={user}
+            pendingCount={requests.length}
+            headerTitle="لوحة الموظف"
+            headerSubtitle="نظرة عامة على الأداء والطلبات"
+          >
+            <EmployeeDashboard />
+          </MainLayout>
+        } />
+
+        {/* مسار الحماية: يجب أن يكون دائماً في أسفل القائمة لالتقاط أي مسار خاطئ */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

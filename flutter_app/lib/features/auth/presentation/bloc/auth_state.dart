@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/user_model.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -9,18 +10,20 @@ abstract class AuthState extends Equatable {
 
 class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
+
 class Authenticated extends AuthState {
   final String role;
-  final String token;
+  final UserModel user;
 
-  const Authenticated({required this.role, required this.token});
+  const Authenticated({required this.role, required this.user});
 
   @override
-  List<Object?> get props => [role, token];
+  List<Object?> get props => [role, user];
 }
 
 class Unauthenticated extends AuthState {}
 class PasswordResetLinkSent extends AuthState {}
+
 class AuthError extends AuthState {
   final String message;
 

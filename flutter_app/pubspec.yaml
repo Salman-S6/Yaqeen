@@ -24,12 +24,15 @@ dependencies:
   crypto: ^3.0.3
   elliptic: ^0.3.0
   ecdsa: ^0.1.2
+  get: ^4.7.3
+  cached_network_image: ^3.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   # إضافة مكتبة توليد الأيقونات في قسم التطوير
   flutter_launcher_icons: ^0.13.1
+  shared_preferences: ^2.2.2 # رح نحتاجها لحفظ الـ Token تبع تسجيل الدخول
 
 # إعدادات أيقونة التطبيق
 flutter_launcher_icons:
