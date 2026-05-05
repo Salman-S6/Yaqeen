@@ -1,10 +1,13 @@
 import React from 'react';
-import StatCard from './components/StatCard';
-import RecentRequestsTable from './components/RecentRequestsTable';
-import SLAAlert from './components/SLAAlert';
+import { useNavigate } from 'react-router-dom'; // استيراد دالة التنقل
+import StatCard from '../../../components/StatCard/StatCard';
+import RecentRequestsTable from '../../../components/RecentRequestsTable/RecentRequestsTable';
+import SLAAlert from '../../../components/SLAAlert/SLAAlert';
 import styles from './EmployeeDashboard.module.css';
 
 const EmployeeDashboard = () => {
+  const navigate = useNavigate(); // تعريف دالة navigate
+
   // مصفوفة بيانات الطلبات (تم ترتيبها لتسهيل القراءة)
   const requestsData = [
     { id: 'REQ-000044', citizen: 'خالد الأحمد', service: 'إخراج قيد فردي', waitTime: '26 ساعة', status: 'معلق' },
@@ -37,7 +40,13 @@ const EmployeeDashboard = () => {
         <div className={styles.tableSection}>
           <div className={styles.tableHeader}>
             <h3 className={styles.tableTitle}>آخر طلبات مسندة</h3>
-            <button className={styles.viewAllBtn}>عرض الكل</button>
+            {/* 💡 تم ربط الزر هنا لينقلك لصفحة الطلبات المعلقة */}
+            <button 
+              className={styles.viewAllBtn}
+              onClick={() => navigate('/employee/pending-requests')}
+            >
+              عرض الكل
+            </button>
           </div>
           
           <RecentRequestsTable 

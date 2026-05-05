@@ -8,7 +8,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    // فحص هل المستخدم الحالي هو مدير النظام
+    // التحقق من الدور بناءً على النص العربي كما في كودك الأصلي
     const isAdmin = currentUser?.role === "مدير النظام";
 
     const handleLogout = () => {
@@ -26,7 +26,6 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
 
             <nav className={styles.navMenu}>
                 {isAdmin ? (
-                    /* روابط واجهة المدير */
                     <>
                         <div
                             className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`}
@@ -41,9 +40,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                         </div>
                     </>
                 ) : (
-                    /* روابط واجهة الموظف */
                     <>
-                        {/* الرابط الجديد: لوحة التحكم (تم دمجه من برانش بتول) */}
                         <div
                             className={`${styles.navItem} ${isActive('/employee-dashboard') ? styles.active : ''}`}
                             onClick={() => navigate('/employee-dashboard')}
@@ -52,7 +49,6 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <span>لوحة التحكم</span>
                         </div>
 
-                        {/* رابط الطلبات المعلقة */}
                         <div
                             className={`${styles.navItem} ${isActive('/employee/pending-requests') || isActive('/pending-requests') ? styles.active : ''}`}
                             onClick={() => navigate('/employee/pending-requests')}
