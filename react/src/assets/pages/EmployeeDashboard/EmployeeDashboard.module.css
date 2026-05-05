@@ -1,0 +1,44 @@
+.dashboardWrapper {
+  margin: -30px; 
+  padding: 30px; 
+  background-color: #f3f4f6;
+  min-height: calc(100vh + 60px);
+  direction: rtl;
+}
+
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.viewAllBtn {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: auto; 
+}
+
+.tableSection {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.statsGrid {
+  display: flex;   
+  gap: 15px;         
+  margin-top: 25px;
+  width: 100%;         
+}
+
+.statsGrid > div {
+  flex: 1;             
+}
+

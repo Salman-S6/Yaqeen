@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaFileAlt, FaSignOutAlt, FaCog } from 'react-icons/fa'; 
+import { useNavigate, NavLink } from 'react-router-dom';
+import { FaFileAlt, FaSignOutAlt, FaCog,FaThLarge } from 'react-icons/fa'; // أضفت أيقونة FaLayout
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
@@ -18,13 +18,30 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
             </div>
 
             <nav className={styles.navMenu}>
-                <div className={`${styles.navItem} ${styles.active}`}>
+                {/* الرابط الجديد: لوحة التحكم */}
+                <NavLink 
+                    to="/employee-dashboard" 
+                    className={({ isActive }) => 
+                        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    }
+                >
+                    <FaThLarge className={styles.navIcon} />
+                    <span>لوحة التحكم</span>
+                </NavLink>
+
+                {/* رابط الطلبات المعلقة */}
+                <NavLink 
+                    to="/pending-requests" 
+                    className={({ isActive }) => 
+                        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    }
+                >
                     <FaFileAlt className={styles.navIcon} />
                     <span>الطلبات المعلّقة</span>
                     {pendingCount > 0 && (
                         <span className={styles.navBadge}>{pendingCount}</span>
                     )}
-                </div>
+                </NavLink>
             </nav>
 
             <div className={styles.userSection}>
