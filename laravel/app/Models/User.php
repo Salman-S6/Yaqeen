@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Request;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -57,5 +58,10 @@ class User extends Authenticatable
     public function citizen()
     {
         return $this->hasOne(Citizen::class);
+    }
+
+     public function assignedRequests()
+    {
+        return $this->hasMany(Request::class, 'assigned_employee_id');
     }
 }
