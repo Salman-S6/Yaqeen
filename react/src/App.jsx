@@ -7,6 +7,7 @@ import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
+import AdminStatsPage from './assets/pages/AdminStatsPage/AdminStatsPage'; // 👈 تم إضافة استيراد صفحة الإحصائيات
 
 function App() {
   const employeeUser = {
@@ -23,6 +24,7 @@ function App() {
     email: "admin@yaqeen.gov.sy"
   };
 
+  // ملاحظة: يمكنك تغيير هذا المتغير إلى adminUser لتجربة الواجهات الأخرى بشكل افتراضي
   const user = employeeUser;
 
   const [requests] = useState([
@@ -56,6 +58,7 @@ function App() {
         }>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="stats" element={<AdminStatsPage />} /> {/* 👈 تم إضافة مسار الإحصائيات هنا */}
         </Route>
 
         <Route path="/review" element={
