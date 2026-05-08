@@ -15,13 +15,11 @@ function App() {
   const employeeUser = { name: "أحمد المحمود", role: "موظف", initials: "أ.م", email: "ahmed.m@yaqeen.gov.sy" };
   const adminUser = { name: "عبد الرحمن سماق", role: "مدير النظام", initials: "ع.س", email: "admin@yaqeen.gov.sy" };
 
-  // 💡 تحويل المصفوفة إلى State لكي نستطيع الحذف منها
   const [requests, setRequests] = useState([
     { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
     { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', date: '2026/04/09', status: 'pending' }
   ]);
 
-  // 💡 دالة حذف الطلب من القائمة (ستجعل العداد ينقص تلقائياً)
   const handleRemoveRequest = (id) => {
     setRequests(prev => prev.filter(req => req.id !== id));
   };
@@ -32,23 +30,22 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 مسارات الموظف */}
+        {/* 🔒 مسارات الموظف (الجهة التنفيذية) */}
         <Route path="/employee" element={
           <ProtectedRoute allowedRoles={['employee', 'موظف']}>
-            {/* 💡 نمرر requests.length لضمان تحديث السايد بار فوراً */}
             <MainLayout currentUser={employeeUser} pendingCount={requests.length} />
           </ProtectedRoute>
         }>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<EmployeeDashboard requests={requests} />} />
           <Route path="pending-requests" element={<PendingRequests requests={requests} title="الطلبات المعلّقة" />} />
-          {/* 💡 نمرر دالة الحذف للمراجعة */}
+          {/* الموظف هو الوحيد الذي يملك حق الدخول للمراجعة واتخاذ الإجراء */}
           <Route path="review/:requestId" element={
             <RequestReview isAdminMode={false} onActionComplete={handleRemoveRequest} />
           } />
         </Route>
 
-        {/* 🛡️ مسارات المدير */}
+        {/* 🛡️ مسارات المدير (الجهة الرقابية) */}
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin', 'مدير النظام']}>
             <MainLayout currentUser={adminUser} headerTitle="إدارة النظام" />
@@ -59,7 +56,7 @@ function App() {
           <Route path="stats" element={<AdminStatsPage />} />
           <Route path="performance" element={<AdminPerfPage />} />
           <Route path="ocr" element={<AdminOCRPage />} />
-          <Route path="review/:requestId" element={<RequestReview isAdminMode={true} onActionComplete={handleRemoveRequest} />} />
+          {/* 💡 ملاحظة: تم حذف مسار review من هنا لالتزام المدير بدوره الرقابي فقط */}
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
