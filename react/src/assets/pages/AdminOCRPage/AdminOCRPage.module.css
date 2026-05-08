@@ -1,0 +1,48 @@
+.container {
+    padding: 24px;
+    direction: rtl;
+    font-family: inherit;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.titleInfo h1 {
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+}
+
+.titleInfo p {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 35px;
+}
+
+@media (max-width: 1100px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.loading {
+    text-align: center;
+    padding: 50px;
+    color: #64748b;
+    font-size: 1.1rem;
+}
