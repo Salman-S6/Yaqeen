@@ -2,7 +2,6 @@ import React from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import styles from './RequestsTable.module.css';
 
-// ✅ أضفنا onReview هنا لكي نستخدم الدالة القادمة من الأب
 const RequestsTable = ({ data = [], onReview }) => {
 
     if (data.length === 0) {
@@ -38,7 +37,7 @@ const RequestsTable = ({ data = [], onReview }) => {
                             <td>
                                 <button
                                     className={req.isUrgent ? styles.btnUrgent : styles.btnNormal}
-                                    /* ✅ الحل هنا: استدعاء الدالة الممررة بدلاً من navigate المباشر */
+                                    /* ✅ استدعاء الدالة الممررة مع الـ ID */
                                     onClick={() => onReview(req.id)}
                                 >
                                     مراجعة

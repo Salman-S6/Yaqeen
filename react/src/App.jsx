@@ -12,16 +12,19 @@ import AdminPerfPage from './assets/pages/AdminPerfPage/AdminPerfPage';
 import AdminOCRPage from './assets/pages/AdminOCRPage/AdminOCRPage';
 
 function App() {
-  const adminUser = {
-    name: "عبد الرحمن سماق",
-    role: "مدير النظام",
-    initials: "ع.س",
-    email: "admin@yaqeen.gov.sy"
-  };
+  const employeeUser = { name: "أحمد المحمود", role: "موظف", initials: "أ.م", email: "ahmed.m@yaqeen.gov.sy" };
+  const adminUser = { name: "عبد الرحمن سماق", role: "مدير النظام", initials: "ع.س", email: "admin@yaqeen.gov.sy" };
 
-  const [requests] = useState([
+  // 💡 تحويل المصفوفة إلى State لكي نستطيع الحذف منها
+  const [requests, setRequests] = useState([
     { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
+    { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', date: '2026/04/09', status: 'pending' }
   ]);
+
+  // 💡 دالة حذف الطلب من القائمة (ستجعل العداد ينقص تلقائياً)
+  const handleRemoveRequest = (id) => {
+    setRequests(prev => prev.filter(req => req.id !== id));
+  };
 
   return (
     <Router>
@@ -29,9 +32,25 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
+        {/* 🔒 مسارات الموظف */}
+        <Route path="/employee" element={
+          <ProtectedRoute allowedRoles={['employee', 'موظف']}>
+            {/* 💡 نمرر requests.length لضمان تحديث السايد بار فوراً */}
+            <MainLayout currentUser={employeeUser} pendingCount={requests.length} />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<EmployeeDashboard requests={requests} />} />
+          <Route path="pending-requests" element={<PendingRequests requests={requests} title="الطلبات المعلّقة" />} />
+          {/* 💡 نمرر دالة الحذف للمراجعة */}
+          <Route path="review/:requestId" element={
+            <RequestReview isAdminMode={false} onActionComplete={handleRemoveRequest} />
+          } />
+        </Route>
+
         {/* 🛡️ مسارات المدير */}
         <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['admin']}>
+          <ProtectedRoute allowedRoles={['admin', 'مدير النظام']}>
             <MainLayout currentUser={adminUser} headerTitle="إدارة النظام" />
           </ProtectedRoute>
         }>
@@ -40,15 +59,7 @@ function App() {
           <Route path="stats" element={<AdminStatsPage />} />
           <Route path="performance" element={<AdminPerfPage />} />
           <Route path="ocr" element={<AdminOCRPage />} />
-          {/* مسار المراجعة الذكي للمدير */}
-          <Route path="review/:requestId" element={<RequestReview isAdminMode={true} />} />
-        </Route>
-
-        {/* مسار المراجعة الافتراضي للموظف */}
-        <Route path="/review" element={
-          <MainLayout currentUser={adminUser} pendingCount={requests.length} headerTitle="مراجعة الطلب" />
-        }>
-          <Route index element={<RequestReview isAdminMode={false} />} />
+          <Route path="review/:requestId" element={<RequestReview isAdminMode={true} onActionComplete={handleRemoveRequest} />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

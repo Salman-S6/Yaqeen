@@ -1,23 +1,27 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // استيراد دالة التنقل
+import { useNavigate } from 'react-router-dom';
 import StatCard from '../../../components/StatCard/StatCard';
-import RecentRequestsTable from '../../../components/RecentRequestsTable/RecentRequestsTable';
+import RequestsTable from '../../../components/RequestsTable/RequestsTable'; // 👈 تأكد من تطابق الاسم
 import SLAAlert from '../../../components/SLAAlert/SLAAlert';
 import styles from './EmployeeDashboard.module.css';
 
 const EmployeeDashboard = () => {
-  const navigate = useNavigate(); // تعريف دالة navigate
+  const navigate = useNavigate();
 
-  // مصفوفة بيانات الطلبات (تم ترتيبها لتسهيل القراءة)
+  // مصفوفة بيانات الطلبات (تمت إضافة isUrgent و date لتتوافق مع الجدول)
   const requestsData = [
-    { id: 'REQ-000044', citizen: 'خالد الأحمد', service: 'إخراج قيد فردي', waitTime: '26 ساعة', status: 'معلق' },
-    { id: 'REQ-000043', citizen: 'سارة محمود', service: 'بيان عائلي', waitTime: '4 ساعات', status: 'معلق' },
-    { id: 'REQ-000042', citizen: 'أحمد المحمود', service: 'إخراج قيد فردي', waitTime: '-', status: 'معتمد' },
-    { id: 'REQ-000041', citizen: 'ليلى حسن', service: 'بيان عائلي', waitTime: '22 ساعة', status: 'معلق' },
-    { id: 'REQ-000040', citizen: 'يوسف العمر', service: 'وثيقة أخرى', waitTime: '1 ساعة', status: 'معتمد' }
+    { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', waitTime: '26 ساعة', date: '2026/04/09', isUrgent: true },
+    { id: 'REQ-000043', name: 'سارة محمود', type: 'بيان عائلي', waitTime: '4 ساعات', date: '2026/04/09', isUrgent: false },
+    { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', waitTime: '22 ساعة', date: '2026/04/09', isUrgent: true },
   ];
 
-  // بيانات بطاقات الإحصائيات (Stat Cards)
+  // 💡 الحل الجذري: دالة التنقل بالرابط الكامل مع الـ ID
+  const handleReview = (id) => {
+    if (id) {
+      navigate(`/employee/review/${id}`);
+    }
+  };
+
   const statsData = [
     { title: "طلبات معلقة", value: "12", icon: "📁", color: "#f59e0b" },
     { title: "طلبات معتمدة", value: "47", icon: "✅", color: "#10b981" },
@@ -28,7 +32,6 @@ const EmployeeDashboard = () => {
   return (
     <div className={styles.dashboardWrapper}>
       <div className={styles.contentContainer}>
-
         <SLAAlert />
         
         <div className={styles.statsGrid}>
@@ -40,7 +43,6 @@ const EmployeeDashboard = () => {
         <div className={styles.tableSection}>
           <div className={styles.tableHeader}>
             <h3 className={styles.tableTitle}>آخر طلبات مسندة</h3>
-            {/* 💡 تم ربط الزر هنا لينقلك لصفحة الطلبات المعلقة */}
             <button 
               className={styles.viewAllBtn}
               onClick={() => navigate('/employee/pending-requests')}
@@ -49,12 +51,12 @@ const EmployeeDashboard = () => {
             </button>
           </div>
           
-          <RecentRequestsTable 
+          {/* ✅ تمرير الدالة هنا للجدول */}
+          <RequestsTable 
             data={requestsData} 
-            className={styles.customTable} 
+            onReview={handleReview} 
           />
         </div>
-        
       </div>
     </div>
   );
