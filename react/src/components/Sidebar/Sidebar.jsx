@@ -34,7 +34,11 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
-                        <div className={styles.navItem}>
+                        {/* 👈 تم تفعيل زر الإحصائيات وربطه بالمسار */}
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`}
+                            onClick={() => navigate('/admin/stats')}
+                        >
                             <FaChartBar className={styles.navIcon} />
                             <span>إحصائيات النظام</span>
                         </div>

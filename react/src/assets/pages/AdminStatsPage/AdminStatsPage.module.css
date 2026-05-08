@@ -1,0 +1,76 @@
+.container {
+    padding: 25px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* شبكة البطاقات العلوية */
+.statsGrid {
+    display: grid;
+    /* مرونة تلقائية: أقل عرض للبطاقة 220 بكسل، وتتمدد لتملأ الفراغ */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* شبكة المخططات الرئيسية */
+.chartsGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* المخطط الخطي يأخذ ثلثي المساحة، والدائري الثلث */
+    gap: 20px;
+}
+
+.chartCard {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    width: 100%;
+    /* ضروري جداً لمنع المخططات من الخروج عن الحاوية في الجوال */
+    overflow: hidden;
+}
+
+.chartTitle {
+    font-size: 1rem;
+    color: #1e293b;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+/* =========================================
+   📱 الميديا كويريز (التجاوب مع الشاشات)
+   ========================================= */
+
+/* شاشات التابلت والشاشات المتوسطة (أصغر من 1024px) */
+@media (max-width: 1024px) {
+    .chartsGrid {
+        /* جعل المخططات تظهر تحت بعضها بدلاً من بجانب بعضها */
+        grid-template-columns: 1fr;
+    }
+
+    .statsGrid {
+        /* إجبار البطاقات العلوية لتكون بطاقتين في كل صف */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* شاشات الجوال (أصغر من 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        /* تقليل الحواف الجانبية لإعطاء مساحة أكبر للمحتوى */
+        gap: 15px;
+    }
+
+    .statsGrid {
+        /* بطاقة واحدة في كل صف لتناسب عرض الجوال */
+        grid-template-columns: 1fr;
+    }
+
+    .chartCard {
+        padding: 15px;
+    }
+}
