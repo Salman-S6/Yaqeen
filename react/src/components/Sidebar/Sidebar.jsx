@@ -1,7 +1,8 @@
 // src/components/Sidebar/Sidebar.jsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge, FaChartLine } from 'react-icons/fa'; // استيراد FaChartLine
+// 👇 أضفنا FaEye للاستيرادات
+import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge, FaChartLine, FaEye } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
@@ -43,13 +44,21 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <span>إحصائيات النظام</span>
                         </div>
 
-                        {/* 👈 الخيار الجديد: أداء الموظفين */}
                         <div
                             className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`}
                             onClick={() => navigate('/admin/performance')}
                         >
                             <FaChartLine className={styles.navIcon} />
                             <span>أداء الموظفين</span>
+                        </div>
+
+                        {/* 👈 الخيار الجديد: مراقبة OCR */}
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`}
+                            onClick={() => navigate('/admin/ocr')}
+                        >
+                            <FaEye className={styles.navIcon} />
+                            <span>مراقبة OCR</span>
                         </div>
                     </>
                 ) : (
