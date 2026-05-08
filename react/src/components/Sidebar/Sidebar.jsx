@@ -1,8 +1,15 @@
-// src/components/Sidebar/Sidebar.jsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-// 👇 أضفنا FaEye للاستيرادات
-import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge, FaChartLine, FaEye } from 'react-icons/fa';
+import {
+    FaUsers,
+    FaFileAlt,
+    FaChartBar,
+    FaSignOutAlt,
+    FaCog,
+    FaThLarge,
+    FaChartLine,
+    FaEye
+} from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
@@ -10,14 +17,20 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    const isAdmin = currentUser?.role === "مدير النظام";
+    // التحقق من الصلاحية
+    const isAdmin = currentUser?.role === "مدير النظام" || currentUser?.role === "admin";
 
     const handleLogout = () => {
         localStorage.clear();
         navigate('/login');
     };
 
-    const isActive = (path) => location.pathname.includes(path);
+    const isActive = (path) => {
+        if (path === '/admin' || path === '/employee') {
+            return location.pathname === path;
+        }
+        return location.pathname.startsWith(path);
+    };
 
     return (
         <aside className={styles.sidebar}>
@@ -28,55 +41,38 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
             <nav className={styles.navMenu}>
                 {isAdmin ? (
                     <>
-                        <div
-                            className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`}
-                            onClick={() => navigate('/admin/users')}
-                        >
+                        <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => navigate('/admin/users')}>
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
-
-                        <div
-                            className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`}
-                            onClick={() => navigate('/admin/stats')}
-                        >
+                        <div className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`} onClick={() => navigate('/admin/stats')}>
                             <FaChartBar className={styles.navIcon} />
                             <span>إحصائيات النظام</span>
                         </div>
-
-                        <div
-                            className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`}
-                            onClick={() => navigate('/admin/performance')}
-                        >
+                        <div className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`} onClick={() => navigate('/admin/performance')}>
                             <FaChartLine className={styles.navIcon} />
                             <span>أداء الموظفين</span>
                         </div>
-
-                        {/* 👈 الخيار الجديد: مراقبة OCR */}
-                        <div
-                            className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`}
-                            onClick={() => navigate('/admin/ocr')}
-                        >
+                        <div className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`} onClick={() => navigate('/admin/ocr')}>
                             <FaEye className={styles.navIcon} />
                             <span>مراقبة OCR</span>
                         </div>
                     </>
                 ) : (
                     <>
-                        <div
-                            className={`${styles.navItem} ${isActive('/employee-dashboard') ? styles.active : ''}`}
-                            onClick={() => navigate('/employee-dashboard')}
-                        >
+                        <div className={`${styles.navItem} ${isActive('/employee/dashboard') ? styles.active : ''}`} onClick={() => navigate('/employee/dashboard')}>
                             <FaThLarge className={styles.navIcon} />
                             <span>لوحة التحكم</span>
                         </div>
 
                         <div
-                            className={`${styles.navItem} ${isActive('/employee/pending-requests') || isActive('/pending-requests') ? styles.active : ''}`}
+                            className={`${styles.navItem} ${isActive('/employee/pending-requests') ? styles.active : ''}`}
                             onClick={() => navigate('/employee/pending-requests')}
                         >
                             <FaFileAlt className={styles.navIcon} />
                             <span>الطلبات المعلّقة</span>
+
+                            {/* 💡 التعديل هنا: نستخدم pendingCount الممرر من Props مباشرة */}
                             {pendingCount > 0 && (
                                 <span className={styles.navBadge}>{pendingCount}</span>
                             )}
@@ -88,22 +84,20 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
             <div className={styles.userSection}>
                 {isProfileMenuOpen && (
                     <div className={styles.profileMenu}>
-                        <div className={styles.profileHeader}>
-                            {currentUser?.email}
-                        </div>
-                        <ul>
-                            <li><FaCog style={{ marginLeft: '10px' }} /> إعدادات الحساب</li>
+                        <div className={styles.profileHeader}>{currentUser?.email}</div>
+                        <ul className={styles.menuList}>
+                            <li><FaCog className={styles.menuIcon} /><span>إعدادات الحساب</span></li>
                             <li onClick={handleLogout} className={styles.logoutBtn}>
-                                <FaSignOutAlt style={{ marginLeft: '10px' }} /> تسجيل الخروج
+                                <FaSignOutAlt className={styles.menuIcon} /><span>تسجيل الخروج</span>
                             </li>
                         </ul>
                     </div>
                 )}
 
                 <div className={styles.userInfo} onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
-                    <div className={styles.avatar}>{currentUser?.initials}</div>
+                    <div className={styles.avatar}>{currentUser?.initials || '??'}</div>
                     <div className={styles.userDetails}>
-                        <h4 className={styles.userName}>{currentUser?.name}</h4>
+                        <h4 className={styles.userName}>{currentUser?.name || 'مستخدم'}</h4>
                         <p className={styles.userRole}>{currentUser?.role}</p>
                     </div>
                 </div>

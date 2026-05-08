@@ -7,20 +7,33 @@ import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import RejectModal from '../../../components/RejectModal/RejectModal';
 import styles from './RequestReview.module.css';
 
-const RequestReview = ({ isAdminMode = false }) => {
+// 💡 أضفنا onActionComplete للـ Props
+const RequestReview = ({ isAdminMode = false, onActionComplete }) => {
   const { requestId } = useParams();
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showReject, setShowReject] = useState(false);
 
-  // بيانات المحاكاة مع تفاوت نسب الثقة
   const mockData = [
     { label: "الاسم الكامل", value: "خالد محمد الأحمد", confidence: 98 },
     { label: "الرقم الوطني", value: "12345678901", confidence: 99 },
     { label: "تاريخ الميلاد", value: "1988 / 3 / 15", confidence: 95 },
-    { label: "مكان القيد", value: "دمشق - ريف دمشق", confidence: 52 }, // ثقة منخفضة
+    { label: "مكان القيد", value: "دمشق - ريف دمشق", confidence: 52 },
     { label: "تاريخ الإصدار", value: "2018 / 1 / 20", confidence: 91 },
   ];
+
+  // 💡 دالة الإنهاء الموحدة
+  const finalizeAction = () => {
+    if (onActionComplete) {
+      onActionComplete(requestId); // حذف الطلب من القائمة
+    }
+
+    if (isAdminMode) {
+      navigate('/admin/ocr');
+    } else {
+      navigate('/employee/pending-requests');
+    }
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -46,7 +59,7 @@ const RequestReview = ({ isAdminMode = false }) => {
             <div className={styles.userNameDisplay}>خالد محمد الأحمد</div>
           </div>
           <div className={styles.statusSuccess}>✔️ التحقق الحيوي: الوثيقة مطابقة للأصل</div>
-          
+
           <div className={styles.matchRateBox}>
             <FaRobot style={{ marginLeft: '8px' }} />
             كفاءة الاستخراج (OCR): <span className={styles.boldGreen}>96%</span>
@@ -55,9 +68,7 @@ const RequestReview = ({ isAdminMode = false }) => {
         </div>
 
         <div className={styles.leftCol}>
-          {/* تمرير خاصية التمييز للبطاقة */}
           <UserInfoCard data={mockData} isAdminMode={isAdminMode} />
-          
           <div className={styles.actionsContainer}>
             <DecisionActions
               onAccept={() => setShowConfirm(true)}
@@ -72,7 +83,7 @@ const RequestReview = ({ isAdminMode = false }) => {
         onClose={() => setShowConfirm(false)}
         onConfirm={() => {
           setShowConfirm(false);
-          if(isAdminMode) navigate('/admin/ocr');
+          finalizeAction(); // 👈 استدعاء الحذف والعودة
         }}
       />
 
@@ -81,7 +92,7 @@ const RequestReview = ({ isAdminMode = false }) => {
         onClose={() => setShowReject(false)}
         onConfirm={() => {
           setShowReject(false);
-          if(isAdminMode) navigate('/admin/ocr');
+          finalizeAction(); // 👈 استدعاء الحذف والعودة
         }}
       />
     </div>
