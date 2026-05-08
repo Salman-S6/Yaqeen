@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
@@ -7,7 +8,8 @@ import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
-import AdminStatsPage from './assets/pages/AdminStatsPage/AdminStatsPage'; // 👈 تم إضافة استيراد صفحة الإحصائيات
+import AdminStatsPage from './assets/pages/AdminStatsPage/AdminStatsPage';
+import AdminPerfPage from './assets/pages/AdminPerfPage/AdminPerfPage'; // 👈 استيراد صفحة الأداء
 
 function App() {
   const employeeUser = {
@@ -24,8 +26,8 @@ function App() {
     email: "admin@yaqeen.gov.sy"
   };
 
-  // ملاحظة: يمكنك تغيير هذا المتغير إلى adminUser لتجربة الواجهات الأخرى بشكل افتراضي
-  const user = employeeUser;
+  // 💡 لتمكين واجهة المدير، اجعل القيمة adminUser
+  const user = adminUser; 
 
   const [requests] = useState([
     { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
@@ -58,27 +60,19 @@ function App() {
         }>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
-          <Route path="stats" element={<AdminStatsPage />} /> {/* 👈 تم إضافة مسار الإحصائيات هنا */}
+          <Route path="stats" element={<AdminStatsPage />} />
+          <Route path="performance" element={<AdminPerfPage />} /> {/* 👈 إضافة مسار أداء الموظفين */}
         </Route>
 
+        {/* المسارات الأخرى تبقى كما هي... */}
         <Route path="/review" element={
-          <MainLayout
-            currentUser={user}
-            pendingCount={requests.length}
-            headerTitle="مراجعة الطلب"
-            headerSubtitle="تدقيق البيانات المستخرجة من الوثائق"
-          />
+          <MainLayout currentUser={user} pendingCount={requests.length} headerTitle="مراجعة الطلب" headerSubtitle="تدقيق البيانات المستخرجة من الوثائق" />
         }>
           <Route index element={<RequestReview />} />
         </Route>
 
         <Route path="/employee-dashboard" element={
-          <MainLayout
-            currentUser={user}
-            pendingCount={requests.length}
-            headerTitle="لوحة الموظف"
-            headerSubtitle="نظرة عامة على الأداء والطلبات"
-          />
+          <MainLayout currentUser={user} pendingCount={requests.length} headerTitle="لوحة الموظف" headerSubtitle="نظرة عامة على الأداء والطلبات" />
         }>
           <Route index element={<EmployeeDashboard />} />
         </Route>

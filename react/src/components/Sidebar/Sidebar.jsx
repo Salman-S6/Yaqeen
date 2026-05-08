@@ -1,6 +1,7 @@
+// src/components/Sidebar/Sidebar.jsx
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge } from 'react-icons/fa';
+import { FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt, FaCog, FaThLarge, FaChartLine } from 'react-icons/fa'; // استيراد FaChartLine
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
@@ -8,7 +9,6 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    // التحقق من الدور بناءً على النص العربي كما في كودك الأصلي
     const isAdmin = currentUser?.role === "مدير النظام";
 
     const handleLogout = () => {
@@ -34,13 +34,22 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
-                        {/* 👈 تم تفعيل زر الإحصائيات وربطه بالمسار */}
+
                         <div
                             className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`}
                             onClick={() => navigate('/admin/stats')}
                         >
                             <FaChartBar className={styles.navIcon} />
                             <span>إحصائيات النظام</span>
+                        </div>
+
+                        {/* 👈 الخيار الجديد: أداء الموظفين */}
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`}
+                            onClick={() => navigate('/admin/performance')}
+                        >
+                            <FaChartLine className={styles.navIcon} />
+                            <span>أداء الموظفين</span>
                         </div>
                     </>
                 ) : (
