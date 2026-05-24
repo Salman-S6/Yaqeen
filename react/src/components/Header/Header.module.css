@@ -1,0 +1,128 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 30px;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    margin: 0;
+    color: #111827;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.subtitle {
+    margin: 5px 0 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.bellWrapper {
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.bellIcon {
+    font-size: 22px;
+    color: #4b5563;
+}
+
+.badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #dc3545;
+    color: white;
+
+    font-size: 9px;
+    font-weight: bold;
+    min-width: 14px;
+    height: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 1.5px solid white;
+    padding: 0;
+    pointer-events: none;
+}
+
+.notifDropdown {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 320px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.notifHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.notifHeader h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.markRead {
+    font-size: 12px;
+    color: #007c4d;
+    cursor: pointer;
+}
+
+.notifList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notifList li {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: right;
+}
+
+.notifList p {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.4;
+}
+
+.notifList small {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.unreadItem {
+    background-color: #f0fdf4;
+    border-right: 3px solid #007c4d;
+}
+
+.readItem {
+    background-color: white;
+}

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('request_id')->nullable()->constrained('requests')->cascadeOnDelete();
             $table->enum('type', ['accepted', 'rejected', 'received']);
             $table->string('subject');
             $table->text('message');
-            $table->string('email_to');
+            $table->string('email_to')->required();
             $table->boolean('is_sent')->default(false);
             $table->tinyInteger('retry_count')->default(0);
             $table->timestamp('sent_at')->nullable();

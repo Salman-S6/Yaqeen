@@ -1,0 +1,146 @@
+.tableWrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+}
+
+.table th {
+    background: #f8fafc;
+    padding: 16px;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.nameCell {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.roleBadge {
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.statusActive {
+    background: #dcfce7;
+    color: #166534;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.statusInactive {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+}
+
+.actionBtn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.deleteBtn {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+}
+
+.deleteBtn:hover {
+    background: #e11d48;
+    color: white;
+}
+
+/* ✨ التجاوب المثالي للشاشات الصغيرة ✨ */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    /* إخفاء الهيدر تماماً */
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        padding: 0.5rem;
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        /* دفع التسمية لليمين والقيمة لليسار */
+        align-items: center;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 12px 15px;
+    }
+
+    .table td:last-child {
+        border-bottom: none;
+    }
+
+    /* إظهار اسم العمود من خلال الـ data-label */
+    .table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.8rem;
+    }
+
+    .actions {
+        justify-content: flex-end;
+        /* موازنة الأزرار في أسفل البطاقة */
+        padding-top: 10px;
+    }
+}

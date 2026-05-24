@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
@@ -24,7 +23,7 @@ class AuthController extends Controller
         $user = $this->service->register($request->validated());
 
         return response()->json([
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -34,16 +33,17 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => new UserResource($data['user']),
-            'token' => $data['token']
+            'token' => $data['token'],
         ]);
     }
 
     public function me(Request $request)
     {
-        $user = $request->user()->load('citizen');
+        $user = $request->user()->load('citizen.attachments');
 
         return new UserResource($user);
     }
+
     public function logout()
     {
         $this->service->logout(Auth::user());

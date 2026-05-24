@@ -1,0 +1,100 @@
+.tableContainer {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 14px;
+}
+
+.table th {
+    padding: 15px 10px;
+    color: #6b7280;
+    font-weight: bold;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.table td {
+    padding: 16px 10px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    vertical-align: middle;
+}
+
+.urgentRow {
+    background-color: #fff5f5;
+}
+
+.textRed {
+    color: #dc3545;
+}
+
+.textGreen {
+    color: #007c4d;
+}
+
+.textRedBold {
+    color: #dc3545;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.smallAlertIcon {
+    color: #dc3545;
+    font-size: 12px;
+}
+
+.btnUrgent {
+    background-color: #007c4d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btnUrgent:hover {
+    background-color: #00603b;
+}
+
+.btnNormal {
+    background-color: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btnNormal:hover {
+    background-color: #f3f4f6;
+}
+
+.noData {
+    text-align: center;
+    padding: 40px;
+    color: #9ca3af;
+    font-size: 15px;
+}
+
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}

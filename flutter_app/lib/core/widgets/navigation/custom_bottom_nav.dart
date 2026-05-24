@@ -22,8 +22,9 @@ class CustomBottomNav extends StatelessWidget {
         children: [
           _buildNavItem(0, "🏠", "الرئيسية"),
           _buildNavItem(1, "📁", "طلباتي"),
-          _buildNavItem(2, "➕", "جديد"),
-          _buildNavItem(3, "🔐", "تحقق"),
+          _buildNavItem(2, "🔐", "تحقق"),
+          _buildNavItem(3, "⚙️", "إعدادات"),
+
         ],
       ),
     );

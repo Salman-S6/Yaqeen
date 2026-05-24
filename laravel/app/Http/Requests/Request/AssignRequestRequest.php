@@ -23,7 +23,7 @@ class AssignRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_id' => 'required|exists:users,user_id',
+            'employee_id' => 'required|exists:users,id',
         ];
     }
 }

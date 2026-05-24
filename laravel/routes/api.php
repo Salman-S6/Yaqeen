@@ -1,3 +1,4 @@
+cat > /home/claude/yaqeen/routes/api.php << 'EOF'
 <?php
 
 use App\Http\Controllers\Api\AttachmentController;
@@ -7,78 +8,113 @@ use App\Http\Controllers\Api\ServiceTypeController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Auth Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('auth')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login',    [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('me', [AuthController::class, 'me']);
-        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me',       [AuthController::class, 'me']);
+        Route::post('logout',  [AuthController::class, 'logout']);
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
 
-    // عرض كل الطلبات
-    Route::get('/requests', [RequestController::class, 'index'])
-        ->middleware('check.permission:view requests');
+    /*
+    |----------------------------------------------------------------------
+    | Requests
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('requests')->group(function () {
 
-    // إنشاء طلب
-    Route::post('/requests', [RequestController::class, 'store'])
-        ->middleware('check.permission:create requests');
+        Route::get('/', [RequestController::class, 'index'])
+            ->middleware('check.permission:view requests');
 
-    // عرض طلب واحد
-    Route::get('/requests/{id}', [RequestController::class, 'show'])
-        ->middleware('check.permission:view requests');
+        Route::post('/', [RequestController::class, 'store'])
+            ->middleware('check.permission:create requests');
 
-    // تعيين موظف
-    Route::post('/requests/{id}/assign', [RequestController::class, 'assign'])
-        ->middleware('check.permission:assign requests');
+        Route::get('/{id}', [RequestController::class, 'show'])
+            ->middleware('check.permission:view requests');
 
-    // مسارات المرفقات الآمنة
+        // Route::post('/{id}/assign', [RequestController::class, 'assign'])
+        //     ->middleware('check.permission:assign requests');
+
+        Route::post('/{id}/approve', [RequestController::class, 'approve'])
+            ->middleware('check.permission:approve requests');
+
+        Route::post('/{id}/reject', [RequestController::class, 'reject'])
+            ->middleware('check.permission:reject requests');
+    });
+
+    /*
+    |----------------------------------------------------------------------
+    | Attachments
+    |----------------------------------------------------------------------
+    */
     Route::prefix('attachments')->group(function () {
 
-        // مسار رفع مرفق جديد
         Route::post('/', [AttachmentController::class, 'store'])
-            ->middleware('check.permission:upload attachments'); // استخدام الصلاحية من الـ Seeder الخاص بكم
-
-        // مسار عرض المرفق (مهم جداً إعطاؤه اسم name ليتمكن الريسورس من استدعائه)
-        Route::get('/{id}/view', [AttachmentController::class, 'view'])
-            ->name('attachments.view')
-            ->middleware('check.permission:view attachments');
+            ->middleware('check.permission:upload attachments');
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Service Types
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('service-types')->group(function () {
+
+        Route::get('/', [ServiceTypeController::class, 'index'])
+            ->middleware('check.permission:view service types');
+
+        Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
+            ->middleware('check.permission:view service types');
+
+        Route::post('/', [ServiceTypeController::class, 'store'])
+            ->middleware('check.permission:create service types');
+
+        Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
+            ->middleware('check.permission:update service types');
+
+        Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
+            ->middleware('check.permission:delete service types');
+    });
+
+    /*
+    |----------------------------------------------------------------------
+    | Admin — Employee Management
+    |----------------------------------------------------------------------
+    */
+    Route::middleware('check.permission:manage employees')
+        ->prefix('admin')
+        ->group(function () {
+
+            Route::get('/employees',        [EmployeeController::class, 'index']);
+            Route::post('/employees',       [EmployeeController::class, 'store']);
+            Route::get('/employees/{id}',   [EmployeeController::class, 'show']);
+            Route::put('/employees/{id}',   [EmployeeController::class, 'update']);
+            Route::delete('/employees/{id}',[EmployeeController::class, 'destroy']);
+        });
 });
 
-Route::prefix('service-types')->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
-    // عرض جميع أنواع الخدمات
-    Route::get('/', [ServiceTypeController::class, 'index'])
-        ->middleware('check.permission:view service types');
-
-    // عرض نوع خدمة واحد
-    Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
-        ->middleware('check.permission:view service types');
-
-    // إنشاء نوع خدمة جديد
-    Route::post('/', [ServiceTypeController::class, 'store']);
-    // ->middleware('permission:create service types');
-
-    // تحديث نوع خدمة
-    Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
-        ->middleware('check.permission:update service types');
-
-    // حذف نوع خدمة
-    Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
-        ->middleware('check.permission:delete service types');
-});
-
-Route::middleware(['auth:sanctum', 'check.permission:manage employees'])
-    ->prefix('admin')
-    ->group(function () {
-
-        Route::post('/employees', [EmployeeController::class, 'store']);
-        Route::get('/employees', [EmployeeController::class, 'index']);
-        Route::get('/employees/{id}', [EmployeeController::class, 'show']);
-        Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
-    });
+// رابط عرض المرفق — موقّع (Signed URL) لا يحتاج auth لكنه محمي بالتوقيع
+Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
+    ->name('attachments.view')
+    ->middleware('signed');

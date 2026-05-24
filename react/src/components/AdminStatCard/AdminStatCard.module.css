@@ -1,0 +1,87 @@
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.headerRow {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.iconBox {
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.textGroup {
+    text-align: right;
+}
+
+.title {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.value {
+    color: #1e293b;
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin: 5px 0;
+}
+
+.footerRow {
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.up {
+    color: #10b981;
+}
+
+.down {
+    color: #ef4444;
+}
+
+.indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+/* ... أبقِ الكود القديم كما هو، وأضف هذا في نهاية الملف ... */
+
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+        gap: 8px;
+    }
+
+    .value {
+        font-size: 1.5rem;
+        /* تصغير الرقم قليلاً في الجوال */
+    }
+
+    .title {
+        font-size: 0.8rem;
+    }
+
+    .iconBox {
+        padding: 8px;
+    }
+}

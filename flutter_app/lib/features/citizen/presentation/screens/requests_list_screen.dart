@@ -12,7 +12,6 @@ import '../bloc/citizen_bloc.dart';
 import '../bloc/citizen_state.dart';
 import 'request_detail_screen.dart';
 
-// 1. تحويل الشاشة لـ StatefulWidget
 class RequestsListScreen extends StatefulWidget {
   const RequestsListScreen({super.key});
 
@@ -21,7 +20,6 @@ class RequestsListScreen extends StatefulWidget {
 }
 
 class _RequestsListScreenState extends State<RequestsListScreen> {
-  // 2. متغير لحفظ الفلتر المحدد حالياً
   String _selectedFilter = "الكل";
 
   @override
@@ -57,7 +55,6 @@ class _RequestsListScreenState extends State<RequestsListScreen> {
                     );
                   }
 
-                  // 3. فلترة القائمة بناءً على الخيار المحدد
                   final filteredRequests = allRequests.where((request) {
                     if (_selectedFilter == "الكل") return true;
                     if (_selectedFilter == "مقبول" && request.status == RequestStatus.accepted) return true;
@@ -66,7 +63,6 @@ class _RequestsListScreenState extends State<RequestsListScreen> {
                     return false;
                   }).toList();
 
-                  // إذا كانت القائمة فارغة بعد الفلترة (مثلاً اختار "مرفوض" وما عنده طلبات مرفوضة)
                   if (filteredRequests.isEmpty) {
                     return Center(
                       child: Column(
@@ -90,7 +86,7 @@ class _RequestsListScreenState extends State<RequestsListScreen> {
                       final request = filteredRequests[index];
                       return RequestListTile(
                         title: request.title,
-                        requestId: request.id,
+                        requestId: request.id.toString(),
                         date: request.date,
                         icon: request.icon,
                         status: request.status,
@@ -98,7 +94,7 @@ class _RequestsListScreenState extends State<RequestsListScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RequestDetailScreen(requestId: request.id),
+                              builder: (context) => RequestDetailScreen(requestId: request.id.toString(),),
                             ),
                           );
                         },

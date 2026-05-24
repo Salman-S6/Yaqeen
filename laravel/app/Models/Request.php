@@ -43,7 +43,7 @@ class Request extends Model
 
     public function assignedEmployee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_employee_id', 'user_id');
+        return $this->belongsTo(User::class, 'assigned_employee_id', 'id');
     }
 
     public function attachments(): MorphMany

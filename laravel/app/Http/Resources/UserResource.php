@@ -24,10 +24,7 @@ class UserResource extends JsonResource
             'place_of_registration' => $this->citizen?->place_of_registration,
             'email' => $this->email,
             'roles' => $this->getRoleNames(),
-            // 'citizen' => [
-            //     'is_verified' => $this->citizen?->is_verified,
-            //     'verification_score' => $this->citizen?->verification_score,
-            // ],
+            'citizen_details' => new CitizenResource($this->whenLoaded('citizen')),
         ];
     }
 }

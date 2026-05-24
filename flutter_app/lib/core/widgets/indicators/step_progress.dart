@@ -13,7 +13,6 @@ class StepProgress extends StatelessWidget {
     return Row(
       children: List.generate(totalSteps * 2 - 1, (index) {
         if (index % 2 == 0) {
-          // دائرة الخطوة
           int stepNum = (index ~/ 2) + 1;
           bool isDone = stepNum < currentStep;
           bool isActive = stepNum == currentStep;
@@ -25,7 +24,9 @@ class StepProgress extends StatelessWidget {
               shape: BoxShape.circle,
               color: isDone
                   ? AppColors.green
-                  : (isActive ? AppColors.white : AppColors.white.withOpacity(0.24)),
+                  : (isActive
+                  ? AppColors.white
+                  : AppColors.white.withValues(alpha: 0.24)),
             ),
             alignment: Alignment.center,
             child: isDone
@@ -35,7 +36,9 @@ class StepProgress extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.bold,
-                color: isActive ? AppColors.black : AppColors.white.withOpacity(0.38),
+                color: isActive
+                    ? AppColors.black
+                    : AppColors.white.withValues(alpha: 0.38),
               ),
             ),
           );
@@ -45,7 +48,9 @@ class StepProgress extends StatelessWidget {
           return Expanded(
             child: Container(
               height: 2.h,
-              color: isDone ? AppColors.green : AppColors.white.withOpacity(0.24),
+              color: isDone
+                  ? AppColors.green
+                  : AppColors.white.withValues(alpha: 0.24),
             ),
           );
         }

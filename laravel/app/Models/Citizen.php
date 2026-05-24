@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Citizen extends Model
 {
@@ -36,5 +37,17 @@ class Citizen extends Model
     public function requests(): HasMany
     {
         return $this->hasMany(Request::class);
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function ($citizen) {
+            $citizen->attachments->each->delete();
+        });
     }
 }

@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
-import '../../../../core/widgets/navigation/custom_bottom_nav.dart';
 import '../../../../core/widgets/cards_and_tiles/request_list_tile.dart';
-import '../../../../core/widgets/indicators/status_badge.dart';
 import '../bloc/citizen_bloc.dart';
 import '../bloc/citizen_event.dart';
 import '../bloc/citizen_state.dart';
+
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
+
 import 'new_request_screen.dart';
 import 'request_detail_screen.dart';
 
@@ -21,11 +23,14 @@ class CitizenHomeScreen extends StatefulWidget {
 }
 
 class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
-  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadRequests();
+  }
+
+  void _loadRequests() {
     context.read<CitizenBloc>().add(FetchRequestsEvent());
   }
 
@@ -35,17 +40,29 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          CustomAppBar(
-            title: "مرحبًا، أحمد 👋",
-            subtitle: "مواطن — الرقم الوطني: 12345678901",
-            backgroundColor: AppColors.green,
-            showFlag: false,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.notifications_none, color: AppColors.white, size: 24.sp),
-                onPressed: () {},
-              ),
-            ],
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              String name = "جاري التحميل...";
+              String nationalId = "---";
+
+              if (authState is Authenticated) {
+                name = "${authState.user.firstName} ${authState.user.lastName}";
+                nationalId = authState.user.nationalId;
+              }
+
+              return CustomAppBar(
+                title: "مرحبًا، $name 👋",
+                subtitle: "مواطن — الرقم الوطني: $nationalId",
+                backgroundColor: AppColors.green,
+                showFlag: false,
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.notifications_none, color: AppColors.white, size: 24.sp),
+                    onPressed: () {},
+                  ),
+                ],
+              );
+            },
           ),
 
           _buildQuickStats(),
@@ -63,9 +80,12 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
 
           Expanded(
             child: BlocBuilder<CitizenBloc, CitizenState>(
+              buildWhen: (previous, current) {
+                return current is CitizenLoading || current is RequestsLoaded || current is CitizenError;
+              },
               builder: (context, state) {
                 if (state is CitizenLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(color: AppColors.green));
                 }
                 else if (state is RequestsLoaded) {
                   if (state.requests.isEmpty) {
@@ -78,7 +98,7 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
                       final request = state.requests[index];
                       return RequestListTile(
                         title: request.title,
-                        requestId: request.id,
+                        requestId: request.id.toString(),
                         date: request.date,
                         icon: request.icon,
                         status: request.status,
@@ -86,16 +106,18 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RequestDetailScreen(requestId: request.id),
+                              builder: (context) => RequestDetailScreen(requestId: request.id.toString()),
                             ),
-                          );
+                          ).then((_) {
+                            _loadRequests();
+                          });
                         },
                       );
                     },
                   );
                 }
                 else if (state is CitizenError) {
-                  return Center(child: Text(state.message, style: TextStyle(color: AppColors.red)));
+                  return Center(child: Text(state.message, style: const TextStyle(color: AppColors.red)));
                 }
                 return const SizedBox();
               },
@@ -103,8 +125,6 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
           ),
         ],
       ),
-
-
     );
   }
 
@@ -152,7 +172,9 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const NewRequestScreen()),
-          );
+          ).then((_) {
+            _loadRequests();
+          });
         },
         borderRadius: BorderRadius.circular(8.r),
         child: Container(

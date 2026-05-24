@@ -19,8 +19,7 @@ return new class extends Migration
             $table->bigInteger('entity_id');
             $table->text('old_value')->nullable();
             $table->text('new_value')->nullable();
-            $table->string('user_agent')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
