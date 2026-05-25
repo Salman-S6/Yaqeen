@@ -1,4 +1,3 @@
-cat > /home/claude/yaqeen/routes/api.php << 'EOF'
 <?php
 
 use App\Http\Controllers\Api\AttachmentController;
@@ -115,6 +114,6 @@ Route::middleware('auth:sanctum')->group(function () {
 */
 
 // رابط عرض المرفق — موقّع (Signed URL) لا يحتاج auth لكنه محمي بالتوقيع
-Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
-    ->name('attachments.view')
-    ->middleware('signed');
+// Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
+//     ->name('attachments.view')
+//     ->middleware('signed');
