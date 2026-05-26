@@ -1,79 +1,258 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.pageContainer {
+    padding: 24px 32px;
+    direction: rtl;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
-.alertBanner {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-    padding: 15px 20px;
+/* 🚨 إبادة وقمع الجرس المكرر والزائد جهة اليمين تماماً وضمان نظافة اللوحة 🚨 */
+.pageContainer :global(.notification-icon),
+.pageContainer :global(.bell-btn),
+.pageContainer :global(.notificationContainer),
+.pageContainer :global([class*="notification"]),
+.pageContainer :global([class*="bell"]) {
+    display: none !important;
+}
+
+.mainContentCard {
+    background-color: #ffffff;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: bold;
-    font-size: 14px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
-.alertIcon {
-    color: #ffc107;
-    font-size: 18px;
-}
-
-.card {
-    background-color: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: var(--shadow);
-    border: 1px solid #eaeaea;
-}
-
-.cardHeader {
+.tableTopHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 16px;
 }
 
-.cardTitle {
+.tableTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a202c;
     margin: 0;
-    color: #1f2937;
-    font-size: 18px;
 }
 
-.searchBox {
-    position: relative;
-    width: 300px;
+.controlsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.searchBox input {
-    width: 100%;
-    padding: 10px 35px 10px 15px;
-    border: 1px solid #e5e7eb;
+.searchBarContainer {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
-    background-color: #f9fafb;
-    font-size: 13px;
-    outline: none;
-}
-
-.searchBox input:focus {
-    border-color: #007c4d;
-    background-color: white;
+    padding: 8px 14px;
+    width: 320px;
+    gap: 10px;
 }
 
 .searchIcon {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
+    color: #00a65a;
+    font-size: 13px;
 }
 
-.loading {
+.searchInput {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    color: #2d3748;
+}
+
+.filterDropdownContainer {
+    position: relative;
+}
+
+.filterBtn {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #718096;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.filterBtn:hover,
+.filterActive {
+    background-color: #e6f6ec;
+    border-color: #00a65a;
+    color: #00a65a;
+}
+
+.filterMenu {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 180px;
+    z-index: 100;
+    padding: 6px 0;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.filterMenuTitle {
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #a0aec0;
+    border-bottom: 1px solid #edf2f7;
+    margin-bottom: 4px;
+}
+
+.filterOption {
+    width: 100%;
+    text-align: right;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+.filterOption:hover {
+    background-color: #f7fafc;
+    color: #00a65a;
+}
+
+.optionActive {
+    background-color: #e6f6ec;
+    color: #00a65a;
+    font-weight: 700;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.requestsTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 13px;
+}
+
+.requestsTable th {
+    color: #718096;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-bottom: 2px solid #edf2f7;
+    background-color: #ffffff;
+}
+
+.requestsTable td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f5;
+    color: #495057;
+}
+
+.requestsTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.reqIdText {
+    font-weight: 700;
+}
+
+.normalIdText {
+    color: #00a65a;
+}
+
+.citizenName {
+    font-weight: 600;
+    color: #212529;
+}
+
+.serviceName {
+    color: #495057;
+}
+
+.dateText {
+    color: #868e96;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.pendingBadge {
+    background-color: #fff9db;
+    color: #f08c00;
+}
+
+.reviewBadge {
+    background-color: #e3fafc;
+    color: #0c8599;
+}
+
+.approvedBadge {
+    background-color: #e6f6ec;
+    color: #117b34;
+}
+
+.rejectedBadge {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+.reviewBtn {
+    padding: 6px 18px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btnActiveGreen {
+    background-color: #00a65a;
+    color: #ffffff;
+    border: 1px solid #00a65a;
+}
+
+.btnActiveGreen:hover {
+    background-color: #008d4c;
+}
+
+.loadingText {
     text-align: center;
     padding: 40px;
-    color: #007c4d;
+    color: #00a65a;
     font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

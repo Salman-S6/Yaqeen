@@ -1,0 +1,106 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modalContent {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    direction: rtl;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.confirmTitle {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.confirmDescription {
+    text-align: center;
+    font-size: 14px;
+    color: #718096;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.modalActions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.deleteConfirmBtn {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.deleteConfirmBtn:hover {
+    background-color: #c53030;
+}
+
+.saveBtn {
+    background-color: #00a65a;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+    background-color: #008d4c;
+}
+
+.cancelBtn {
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cancelBtn:hover {
+    background-color: #e2e8f0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

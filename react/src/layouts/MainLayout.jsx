@@ -15,15 +15,25 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
         return 'نظام يقين الرقمي';
     };
 
+    // 💡 استخراج الصلاحية بنفس الطريقة الذكية التي استخدمناها في القائمة الجانبية
+    let activeRole = '';
+    if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
+        activeRole = currentUser.roles[0]; // سحب الكلمة من المصفوفة
+    } else if (currentUser?.role) {
+        activeRole = currentUser.role;
+    } else {
+        activeRole = localStorage.getItem('userRole') || 'جاري التحقق...';
+    }
+
     return (
         <div className={styles.layoutContainer}>
             <Sidebar currentUser={currentUser} pendingCount={pendingCount} />
             <div className={styles.mainWrapper}>
-                {/* ✅ تمرير currentUser للهيدر ضروري جداً لحل مشكلة الإشعارات */}
                 <Header
                     title={getDynamicTitle()}
-                    subtitle={currentUser.role}
+                    subtitle={activeRole} // 👈 نمرر الصلاحية بعد استخراجها بشكل صحيح
                     currentUser={currentUser}
+                    activeRole={activeRole} // 👈 نمررها لكي يستخدمها الهيدر في الإشعارات
                 />
                 <main className={styles.contentArea}>
                     <Outlet />

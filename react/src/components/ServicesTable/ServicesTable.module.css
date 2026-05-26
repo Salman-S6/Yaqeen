@@ -1,0 +1,214 @@
+.tableContainer {
+    background-color: #ffffff;
+    padding: 24px;
+    margin-top: 24px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.tableHeaderControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.controlsLeft {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.tableTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 12px;
+    width: 200px;
+    gap: 8px;
+}
+
+.searchIcon {
+    color: #00a65a; /* تم توحيد اللون للأخضر */
+    font-size: 14px;
+}
+
+.customSearchInput {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.addServiceBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #00a65a;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.addServiceBtn:hover {
+    background-color: #008d4c;
+}
+
+.btnIcon {
+    font-size: 11px;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.mainTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 13px;
+}
+
+.mainTable th {
+    color: #718096;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 1px solid #edf2f7;
+    background-color: #ffffff;
+}
+
+.mainTable td {
+    padding: 16px;
+    border-bottom: 1px solid #edf2f7;
+    color: #2d3748;
+}
+
+.serviceInfoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.serviceName {
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.serviceDescription {
+    font-size: 11px;
+    color: #a0aec0;
+    font-weight: 400;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    gap: 6px;
+}
+
+.active {
+    background-color: #e6f6ec;
+    color: #117b34;
+}
+
+.inactive {
+    background-color: #fdebee;
+    color: #cb2431;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.dateText {
+    color: #718096;
+    font-size: 12px;
+}
+
+.actionsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 🟢 تم تحويل زر التعديل داخل الجدول إلى اللون الأخضر الموحد */
+.actionBtn {
+    background: none;
+    border: 1px solid #00a65a;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #00a65a;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.actionBtn:hover {
+    background-color: #e6f6ec;
+    border-color: #008d4c;
+    color: #008d4c;
+}
+
+.deleteBtn {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.deleteBtn:hover {
+    background-color: #fff5f5;
+}
+
+@media (max-width: 768px) {
+    .tableHeaderControls {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .controlsLeft {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .searchContainer {
+        width: 100%;
+    }
+}
