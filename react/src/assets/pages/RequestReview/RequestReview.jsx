@@ -25,21 +25,33 @@ const RequestReview = () => {
       </header>
 
       <div className={styles.contentGrid}>
+        {/* العمود الأيمن (صورة الهوية) */}
         <div className={styles.rightCol}>
           <div className={styles.sectionLabel}>صورة الهوية الأصلية المرفوعة</div>
+          
           <div className={styles.blackCard}>
             <div className={styles.cardHeader}>الجمهورية العربية السورية</div>
             <div className={styles.idNumberDisplay}>1 0 9 8 7 6 5 4 3 2 1</div>
             <div className={styles.userNameDisplay}>خالد محمد الأحمد</div>
           </div>
+          
           <div className={styles.statusSuccess}>✔️ الصورة أصلية - لا توجد علامات تلاعب</div>
           <div className={styles.matchRateBox}>
             نسبة التطابق الإجمالية مع OCR: <span className={styles.boldGreen}>96%</span>
           </div>
         </div>
 
+        {/* العمود الأيسر (البيانات المستخرجة والأزرار) */}
         <div className={styles.leftCol}>
+          
+          {/* تم حذف العنوان المكرر من هنا، والاعتماد على العنوان الموجود داخل UserInfoCard */}
           <UserInfoCard data={mockData} />
+          
+          {/* مربع التنبيه الأصفر اللي كان ناقص */}
+          <div className={styles.warningBox}>
+            ⚠️ حقل "مكان القيد" نسبة ثقته أقل من 80% - يُنصح بالتحقق اليدوي قبل الاعتماد
+          </div>
+
           <div className={styles.actionsContainer}>
             <DecisionActions
               onAccept={() => setShowConfirm(true)}

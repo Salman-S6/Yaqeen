@@ -7,6 +7,8 @@ import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
 import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
+import AdminAuditPage from './assets/pages/AdminAuditPage/AdminAuditPage';
+import Reports from './assets/pages/Reports/Reports';
 
 function App() {
   const employeeUser = {
@@ -48,7 +50,7 @@ function App() {
           <Route path="notifications" element={<div>صفحة الإشعارات</div>} />
         </Route>
 
-        {/* 🛡️ مسارات المدير */}
+        {/* 🛡 مسارات المدير */}
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout currentUser={adminUser} headerTitle="إدارة النظام" />
@@ -56,6 +58,26 @@ function App() {
         }>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
+        </Route>
+
+        {/* 📊 مسار صفحة التقارير - تم جعل العناوين فارغة تماماً لتختفي ويبدأ كود التقارير فوراً في الأعلى */}
+        <Route path="/admin/reports" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <MainLayout currentUser={adminUser} headerTitle="التقارير و التصدير" />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Reports />} />
+        </Route>
+
+        {/* صفحة سجلات التدقيق */}
+        <Route path="/admin-audit" element={          
+          <MainLayout 
+            currentUser={adminUser} 
+            headerTitle="سجلات التطبيق" 
+            headerSubtitle="سجل غير قابل للحذف - Audit Log" 
+          />
+        }>
+          <Route index element={<AdminAuditPage />} />
         </Route>
 
         <Route path="/review" element={

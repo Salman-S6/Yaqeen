@@ -8,7 +8,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    // التحقق من الدور بناءً على النص العربي كما في كودك الأصلي
+    // التحقق من الدور بناءً على النص العربي
     const isAdmin = currentUser?.role === "مدير النظام";
 
     const handleLogout = () => {
@@ -16,7 +16,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
         navigate('/login');
     };
 
-    const isActive = (path) => location.pathname.includes(path);
+    const isActive = (path) => location.pathname === path;
 
     return (
         <aside className={styles.sidebar}>
@@ -34,9 +34,25 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin-audit') ? styles.active : ''}`}
+                            onClick={() => navigate('/admin-audit')}
+                        >
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>سجلات التدقيق</span>
+                        </div>
                         <div className={styles.navItem}>
                             <FaChartBar className={styles.navIcon} />
                             <span>إحصائيات النظام</span>
+                        </div>
+                        
+                        {/* 📊 زر التقارير المضاف بنمط الـ onClick المتوافق مع مشروعك */}
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/reports') ? styles.active : ''}`}
+                            onClick={() => navigate('/admin/reports')}
+                        >
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>التقارير</span>
                         </div>
                     </>
                 ) : (
