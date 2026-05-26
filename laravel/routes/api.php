@@ -7,38 +7,71 @@ use App\Http\Controllers\Api\ServiceTypeController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Auth Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('auth')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login',    [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('me', [AuthController::class, 'me']);
-        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me',       [AuthController::class, 'me']);
+        Route::post('logout',  [AuthController::class, 'logout']);
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/requests', [RequestController::class, 'index'])
-        ->middleware('check.permission:view requests');
+    /*
+    |----------------------------------------------------------------------
+    | Requests
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('requests')->group(function () {
 
-    Route::post('/requests', [RequestController::class, 'store'])
-        ->middleware('check.permission:create requests');
+        Route::get('/', [RequestController::class, 'index'])
+            ->middleware('check.permission:view requests');
 
-    Route::get('/requests/{id}', [RequestController::class, 'show'])
-        ->middleware('check.permission:view requests');
+        Route::post('/', [RequestController::class, 'store'])
+            ->middleware('check.permission:create requests');
 
-    Route::post('/requests/{id}/assign', [RequestController::class, 'assign'])
-        ->middleware('check.permission:assign requests');
+        Route::get('/{id}', [RequestController::class, 'show'])
+            ->middleware('check.permission:view requests');
 
+        // Route::post('/{id}/assign', [RequestController::class, 'assign'])
+        //     ->middleware('check.permission:assign requests');
+
+        Route::post('/{id}/approve', [RequestController::class, 'approve'])
+            ->middleware('check.permission:approve requests');
+
+        Route::post('/{id}/reject', [RequestController::class, 'reject'])
+            ->middleware('check.permission:reject requests');
+    });
+
+    /*
+    |----------------------------------------------------------------------
+    | Attachments
+    |----------------------------------------------------------------------
+    */
     Route::prefix('attachments')->group(function () {
 
         Route::post('/', [AttachmentController::class, 'store'])
             ->middleware('check.permission:upload attachments');
-
     });
 
+    /*
+    |----------------------------------------------------------------------
+    | Service Types
+    |----------------------------------------------------------------------
+    */
     Route::prefix('service-types')->group(function () {
 
         Route::get('/', [ServiceTypeController::class, 'index'])
@@ -57,17 +90,30 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('check.permission:delete service types');
     });
 
+    /*
+    |----------------------------------------------------------------------
+    | Admin — Employee Management
+    |----------------------------------------------------------------------
+    */
     Route::middleware('check.permission:manage employees')
         ->prefix('admin')
         ->group(function () {
 
-            Route::post('/employees', [EmployeeController::class, 'store']);
-            Route::get('/employees', [EmployeeController::class, 'index']);
-            Route::get('/employees/{id}', [EmployeeController::class, 'show']);
-            Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+            Route::get('/employees',        [EmployeeController::class, 'index']);
+            Route::post('/employees',       [EmployeeController::class, 'store']);
+            Route::get('/employees/{id}',   [EmployeeController::class, 'show']);
+            Route::put('/employees/{id}',   [EmployeeController::class, 'update']);
+            Route::delete('/employees/{id}',[EmployeeController::class, 'destroy']);
         });
 });
 
-Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
-    ->name('attachments.view')
-    ->middleware('signed');
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
+
+// رابط عرض المرفق — موقّع (Signed URL) لا يحتاج auth لكنه محمي بالتوقيع
+// Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
+//     ->name('attachments.view')
+//     ->middleware('signed');

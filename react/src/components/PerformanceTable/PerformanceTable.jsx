@@ -1,0 +1,119 @@
+import React, { useState } from 'react';
+import { FaSearch, FaChevronRight, FaChevronLeft } from 'react-icons/fa'; // استيراد الأيقونات
+import styles from './PerformanceTable.module.css';
+
+const PerformanceTable = ({ data }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 5; // عدد الصفوف في كل صفحة
+
+    // 💡 دالة الفلترة الفعالة بناءً على مصطلح البحث
+    const filteredData = data.filter((emp) =>
+        emp.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // 💡 منطق الترقيم الفعال (Pagination)
+    const indexOfLastRow = currentPage * rowsPerPage;
+    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+    const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow); // الصفوف الحالية فقط
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage); // إجمالي الصفحات
+
+    // دالة تحديث البحث والعودة للصفحة الأولى
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
+
+    // دوال التنقل بين الصفحات
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    return (
+        <div className={styles.tableCard}>
+            {/* شريط البحث والـ UI العلوي */}
+            <div className={styles.cardHeader}>
+                <h3>تقرير أداء الموظفين - الأسبوع الأخير</h3>
+                <div className={styles.searchBox}>
+                    <FaSearch className={styles.searchIcon} />
+                    <input
+                        type="text"
+                        placeholder="ابحث عن موظف..."
+                        value={searchTerm}
+                        onChange={handleSearchChange} // ربط مصطلح البحث بالـ State
+                        className={styles.searchInput}
+                    />
+                </div>
+            </div>
+
+            {/* الجدول */}
+            <div className={styles.tableContainer}>
+                <table className={styles.table}>
+                    <thead>
+                        <tr>
+                            <th>الموظف</th>
+                            <th>طلبات مُعالجة</th>
+                            <th>متوسط وقت المعالجة</th>
+                            <th>تجاوزات SLA</th>
+                            <th>نسبة القبول</th>
+                            <th>الأداء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentRows.length > 0 ? (
+                            currentRows.map((emp) => (
+                                <tr key={emp.id}>
+                                    <td className={styles.empName}>{emp.name}</td>
+                                    <td>{emp.requests}</td>
+                                    <td>{emp.avgTime}</td>
+                                    <td className={emp.slaViolations > 2 ? styles.dangerText : ''}>
+                                        {emp.slaViolations}
+                                    </td>
+                                    <td>{emp.approvalRate}</td>
+                                    <td className={styles.progressCell}>
+                                        <div className={styles.progressBarBg}>
+                                            <div
+                                                className={styles.progressBarFill}
+                                                style={{
+                                                    width: `${emp.performance}%`,
+                                                    backgroundColor: emp.performance > 80 ? '#10b981' : emp.performance > 60 ? '#f59e0b' : '#ef4444'
+                                                }}
+                                            ></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" style={{ textAlign: 'center', color: '#64748b', padding: '30px' }}>
+                                    لا يوجد نتائج لمصطلح البحث: "{searchTerm}"
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* 💡 الترقيم (Pagination) */}
+            <div className={styles.pagination}>
+                <button onClick={handlePrevPage} disabled={currentPage === 1} className={styles.pageBtn}>
+                    <FaChevronRight /> السابق
+                </button>
+                <span className={styles.pageInfo}>صفحة {currentPage} من {totalPages}</span>
+                <button onClick={handleNextPage} disabled={currentPage === totalPages} className={styles.pageBtn}>
+                    التالي <FaChevronLeft />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default PerformanceTable;

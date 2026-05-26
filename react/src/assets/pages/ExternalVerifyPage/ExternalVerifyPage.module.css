@@ -1,0 +1,51 @@
+/* src/assets/pages/ExternalVerifyPage/ExternalVerifyPage.module.css */
+
+.pageContainer {
+    padding: 20px 32px;
+    direction: rtl;
+    background-color: #f8f9fa; /* خلفية ناعمة لتبز الكروت البيضاء */
+    min-height: 100vh;
+}
+
+/* 🚨 خدعة الـ Lead لإخفاء الجرس المكرر والزائد داخل هذه الواجهة فقط 🚨 */
+.pageContainer :global(.notification-icon), 
+.pageContainer :global(.bell-btn),
+.pageContainer :global(.notificationContainer),
+.pageContainer :global([class*="notification"]),
+.pageContainer :global([class*="bell"]) {
+    display: none !important; 
+}
+
+/* تحسين توزيع شبكة الكروت الثلاثية لتبدو متناسقة */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+/* حاوية البحث لضمان دفع الحقل لجهة اليمين تماماً في الواجهة العربية */
+.searchBarContainer {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.searchBarSection {
+    width: 100%;
+    max-width: 320px; /* تحديد عرض مريح لحقل البحث مثل التصميم الأصلي */
+}
+
+/* التجاوب مع شاشات التابلت والموبايل */
+@media (max-width: 992px) {
+    .statsGrid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+    
+    .pageContainer {
+        padding: 16px; /* تقليل الحواف في الشاشات الصغيرة */
+    }
+}

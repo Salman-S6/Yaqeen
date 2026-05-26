@@ -1,36 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { authService } from './api/authService';
+import { employeeRequestService } from './api/employeeRequestService'; // جلب الخدمة المركزية ديناميكياً
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Login from "./assets/pages/login/login";
+
+// استيراد واجهات الموظفين والطلبات
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
-import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
+
+// استيراد واجهات الإدارة والتحليلات
+import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
+import AdminStatsPage from './assets/pages/AdminStatsPage/AdminStatsPage';
+import AdminPerfPage from './assets/pages/AdminPerfPage/AdminPerfPage';
+import AdminOCRPage from './assets/pages/AdminOCRPage/AdminOCRPage';
+import ExternalVerifyPage from "./assets/pages/ExternalVerifyPage/ExternalVerifyPage";
+import AdminServicesPage from "./assets/pages/AdminServicesPage/AdminServicesPage";
+
+// استيراد واجهات بتول (سجلات التدقيق والتقارير)
 import AdminAuditPage from './assets/pages/AdminAuditPage/AdminAuditPage';
 import Reports from './assets/pages/Reports/Reports';
 
 function App() {
-  const employeeUser = {
-    name: "أحمد المحمود",
-    role: "مدقق بيانات",
-    initials: "أ.م",
-    email: "ahmed.m@yaqeen.gov.sy"
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser && savedUser !== "undefined" && savedUser !== "null") {
+      try {
+        return JSON.parse(savedUser);
+      } catch (e) { return null; }
+    }
+    return null;
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [requests, setRequests] = useState([]); // مصفوفة حية تنتظر داتا الباك-إند الحقيقية
+
+  useEffect(() => {
+    const checkAuthAndFetchData = async () => {
+      const token = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+
+      if (!token) {
+        setIsLoading(false);
+        return; // حماية التطبيق من الانهيار إذا لم يسجل دخول بعد
+      }
+
+      try {
+        // 1. جلب بيانات الملف الشخصي
+        const response = await authService.getProfile();
+        const responseData = response.data;
+        const userData = responseData.user || responseData.data || responseData;
+
+        if (userData && typeof userData === 'object') {
+          setCurrentUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
+
+          let role = 'employee';
+          if (userData.roles && Array.isArray(userData.roles) && userData.roles.length > 0) {
+              role = userData.roles[0];
+          } else if (userData.role) {
+              role = userData.role;
+          } else {
+              role = localStorage.getItem('userRole') || 'employee';
+          }
+          localStorage.setItem('userRole', role);
+
+          // 2. جلب داتا المعاملات الحية فوراً من السيرفر لتحديث عداد الـ Sidebar ديناميكياً
+          try {
+            const reqResponse = await employeeRequestService.getPendingRequests();
+            const reqData = reqResponse.data && reqResponse.data.data ? reqResponse.data.data : reqResponse.data;
+            setRequests(Array.isArray(reqData) ? reqData : []);
+          } catch (reqError) {
+            console.error("فشل جلب العداد المركزي للطلبات:", reqError);
+          }
+        }
+      } catch (error) {
+        console.warn("فشل جلب الملف الشخصي، الاعتماد على البيانات المحلية.");
+        if (savedUser && savedUser !== "undefined" && savedUser !== "null") {
+          setCurrentUser(JSON.parse(savedUser));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthAndFetchData();
+  }, []);
+
+  const handleRemoveRequest = (id) => {
+    setRequests(prev => prev.filter(req => req.id !== id));
   };
 
-  const adminUser = {
-    name: "عبد الرحمن سماق",
-    role: "مدير النظام",
-    initials: "ع.س",
-    email: "admin@yaqeen.gov.sy"
-  };
-
-  const user = employeeUser;
-
-  const [requests] = useState([
-    { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
-    { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', date: '2026/04/09', status: 'pending' }
-  ]);
+  if (isLoading) {
+    return (
+      <div style={{
+        display: 'flex', justifyContent: 'center', alignItems: 'center',
+        height: '100vh', backgroundColor: '#f4f7f6', color: '#2d5a4c',
+        flexDirection: 'column', fontFamily: 'Arial, sans-serif'
+      }}>
+        <div style={{
+          border: '4px solid #f3f3f3', borderTop: '4px solid #2d5a4c',
+          borderRadius: '50%', width: '40px', height: '40px',
+          animation: 'spin 1s linear infinite', marginBottom: '15px'
+        }}></div>
+        <h2>جاري تشغيل نظام يَقِين...</h2>
+      </div>
+    );
+  }
 
   return (
     <Router>
@@ -38,68 +116,37 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 مسارات الموظف */}
+        {/* 🏢 مسارات الموظف (Employee Portal) */}
         <Route path="/employee" element={
-          <ProtectedRoute allowedRoles={['employee']}>
-            <MainLayout currentUser={employeeUser} pendingCount={requests.length} />
+          <ProtectedRoute allowedRoles={['employee', 'موظف']}>
+            <MainLayout currentUser={currentUser} pendingCount={requests.length} />
           </ProtectedRoute>
         }>
-          <Route index element={<Navigate to="pending-requests" replace />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<EmployeeDashboard requests={requests} />} />
           <Route path="pending-requests" element={<PendingRequests requests={requests} title="الطلبات المعلّقة" />} />
-          <Route path="review" element={<RequestReview title="مراجعة طلب" />} />
-          <Route path="notifications" element={<div>صفحة الإشعارات</div>} />
+          <Route path="review-request/:requestId" element={
+            <RequestReview isAdminMode={false} onActionComplete={handleRemoveRequest} />
+          } />
         </Route>
 
-        {/* 🛡 مسارات المدير */}
+        {/* 🛡️ مسارات الأدمن (مدير النظام) */}
         <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <MainLayout currentUser={adminUser} headerTitle="إدارة النظام" />
+          <ProtectedRoute allowedRoles={['admin', 'مدير النظام']}>
+            <MainLayout currentUser={currentUser} headerTitle="إدارة النظام" />
           </ProtectedRoute>
         }>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
-        </Route>
-
-        {/* 📊 مسار صفحة التقارير - تم جعل العناوين فارغة تماماً لتختفي ويبدأ كود التقارير فوراً في الأعلى */}
-        <Route path="/admin/reports" element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <MainLayout currentUser={adminUser} headerTitle="التقارير و التصدير" />
-          </ProtectedRoute>
-        }>
-          <Route index element={<Reports />} />
-        </Route>
-
-        {/* صفحة سجلات التدقيق */}
-        <Route path="/admin-audit" element={          
-          <MainLayout 
-            currentUser={adminUser} 
-            headerTitle="سجلات التطبيق" 
-            headerSubtitle="سجل غير قابل للحذف - Audit Log" 
-          />
-        }>
-          <Route index element={<AdminAuditPage />} />
-        </Route>
-
-        <Route path="/review" element={
-          <MainLayout
-            currentUser={user}
-            pendingCount={requests.length}
-            headerTitle="مراجعة الطلب"
-            headerSubtitle="تدقيق البيانات المستخرجة من الوثائق"
-          />
-        }>
-          <Route index element={<RequestReview />} />
-        </Route>
-
-        <Route path="/employee-dashboard" element={
-          <MainLayout
-            currentUser={user}
-            pendingCount={requests.length}
-            headerTitle="لوحة الموظف"
-            headerSubtitle="نظرة عامة على الأداء والطلبات"
-          />
-        }>
-          <Route index element={<EmployeeDashboard />} />
+          <Route path="stats" element={<AdminStatsPage />} />
+          <Route path="performance" element={<AdminPerfPage />} />
+          <Route path="ocr" element={<AdminOCRPage />} />
+          <Route path="verify-qr" element={<ExternalVerifyPage />} />
+          <Route path="services" element={<AdminServicesPage />} />
+          
+          {/* دمج مسارات صفحات بتول بشكل متداخل وسليم هندسياً */}
+          <Route path="reports" element={<Reports />} />
+          <Route path="audit-logs" element={<AdminAuditPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

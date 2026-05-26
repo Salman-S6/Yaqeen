@@ -23,6 +23,16 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function update(StoreEmployeeRequest $request, int $id)
+    {
+        $employee = $this->service->find($id);
+
+        return response()->json([
+            'message' => 'Employee updated successfully',
+            'data' => $this->service->update($employee, $request->validated()),
+        ]);
+    }
+
     public function index()
     {
         return $this->service->all();

@@ -1,0 +1,23 @@
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 6px;
+}
+
+.valid {
+    background-color: #e6f6ec;
+    color: #117b34;
+}
+
+.forged {
+    background-color: #fdebee;
+    color: #cb2431;
+}
+
+.warningIcon {
+    font-size: 12px;
+}
