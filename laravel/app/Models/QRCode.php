@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QRCode extends Model
 {
+    protected $table = 'qr_codes';
+    
     protected $fillable = [
         'document_id',
         'payload',

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Request;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -55,12 +55,19 @@ class User extends Authenticatable
         ];
     }
 
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => trim("{$this->first_name} {$this->father_name} {$this->last_name}")
+        );
+    }
+
     public function citizen()
     {
         return $this->hasOne(Citizen::class);
     }
 
-     public function assignedRequests()
+    public function assignedRequests()
     {
         return $this->hasMany(Request::class, 'assigned_employee_id');
     }

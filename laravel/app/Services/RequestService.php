@@ -4,19 +4,20 @@ namespace App\Services;
 
 use App\Models\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RequestService
 {
     public function __construct(
         protected NotificationService $notificationService,
-        protected AutoAssignService   $autoAssignService,
-        protected SignatureService    $signatureService
+        protected AutoAssignService $autoAssignService,
+        protected SignatureService $signatureService
     ) {}
 
-    public function getAll(User $user, array $filters = []): \Illuminate\Pagination\LengthAwarePaginator
+    public function getAll(User $user, array $filters = []): LengthAwarePaginator
     {
         $query = Request::with(['citizen.user', 'serviceType', 'assignedEmployee'])->latest();
 
@@ -26,7 +27,7 @@ class RequestService
             $query->where('assigned_employee_id', $user->id);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
@@ -47,11 +48,11 @@ class RequestService
         return DB::transaction(function () use ($data, $citizen) {
 
             $request = Request::create([
-                'request_number'  => $this->generateRequestNumber(),
-                'citizen_id'      => $citizen->id,
+                'request_number' => $this->generateRequestNumber(),
+                'citizen_id' => $citizen->id,
                 'service_type_id' => $data['service_type_id'],
-                'status'          => 'pending',
-                'submitted_at'    => now(),
+                'status' => 'pending',
+                'submitted_at' => now(),
             ]);
 
             // تعيين تلقائي للموظف الأقل عبئاً فور إنشاء الطلب
@@ -73,24 +74,26 @@ class RequestService
 
             // 1. تحديث حالة الطلب
             $request->update([
-                'status'      => 'approved',
+                'status' => 'approved',
                 'resolved_at' => now(),
             ]);
 
             // 2. إنشاء الوثيقة (SD-09: 3.1.2 INSERT INTO documents)
-            $document = $request->documents()->create([
-                'issued_by'    => Auth::id(), // الموظف الذي أصدر الوثيقة
+            $document = $request->document()->create([
+                'issued_by' => Auth::id(), // الموظف الذي أصدر الوثيقة
                 'generated_at' => now(),
             ]);
 
             // 3. تجهيز البيانات المراد توقيعها (Payload)
+            $user = $request->citizen->user;
+
             $payloadData = [
-                'document_id'    => $document->id,
+                'document_id' => $document->id,
                 'request_number' => $request->request_number,
-                'citizen_name'   => $request->citizen->user->first_name . ' ' . $request->citizen->user->last_name,
-                'national_id'    => $request->citizen->user->national_id,
-                'service'        => $request->serviceType->name,
-                'issued_at'      => $document->generated_at->toIso8601String(),
+                'citizen_name' => $user->full_name,
+                'national_id' => $user->national_id,
+                'service' => $request->serviceType->name,
+                'issued_at' => $document->generated_at->toIso8601String(),
             ];
 
             // 4. توليد التوقيع الرقمي (SD-09: 3.1.5 signJSON)
@@ -98,15 +101,15 @@ class RequestService
 
             // إضافة التوقيع إلى الـ Payload ليكون جاهزاً للـ QR
             $finalPayload = [
-                'data'      => $payloadData,
-                'signature' => $signature
+                'data' => $payloadData,
+                'signature' => $signature,
             ];
 
             $jsonPayload = json_encode($finalPayload);
 
             // 5. حفظ الـ QR Code في قاعدة البيانات (SD-09: 3.1.6 INSERT INTO qr_codes)
             $document->qrCode()->create([
-                'payload'      => $jsonPayload,
+                'payload' => $jsonPayload,
                 'generated_at' => now(),
             ]);
 
@@ -135,14 +138,14 @@ class RequestService
             ])->findOrFail($requestId);
 
             $request->update([
-                'status'      => 'rejected',
+                'status' => 'rejected',
                 'resolved_at' => now(),
             ]);
 
             // تسجيل سبب الرفض في جدول منفصل
             $request->rejectionReason()->create([
                 'employee_id' => $employee->id,
-                'reason'      => $reason,
+                'reason' => $reason,
             ]);
 
             // إرسال إشعار البريد للمواطن مع السبب بشكل Async
@@ -177,6 +180,6 @@ class RequestService
 
         $count = Request::whereDate('created_at', today())->count() + 1;
 
-        return 'REQ-' . $today . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+        return 'REQ-'.$today.'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }
 }
