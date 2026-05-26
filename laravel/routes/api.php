@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AttachmentController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\ServiceTypeController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login',    [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('me',       [AuthController::class, 'me']);
-        Route::post('logout',  [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('logout', [AuthController::class, 'logout']);
     });
 });
 
@@ -45,9 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/{id}', [RequestController::class, 'show'])
             ->middleware('check.permission:view_requests');
-
-        // Route::post('/{id}/assign', [RequestController::class, 'assign'])
-        //     ->middleware('check.permission:assign requests');
 
         Route::post('/{id}/approve', [RequestController::class, 'approve'])
             ->middleware('check.permission:approve_requests');
@@ -99,11 +96,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ->prefix('admin')
         ->group(function () {
 
-            Route::get('/employees',        [EmployeeController::class, 'index']);
-            Route::post('/employees',       [EmployeeController::class, 'store']);
-            Route::get('/employees/{id}',   [EmployeeController::class, 'show']);
-            Route::put('/employees/{id}',   [EmployeeController::class, 'update']);
-            Route::delete('/employees/{id}',[EmployeeController::class, 'destroy']);
+            Route::get('/employees', [EmployeeController::class, 'index']);
+            Route::post('/employees', [EmployeeController::class, 'store']);
+            Route::get('/employees/{id}', [EmployeeController::class, 'show']);
+            Route::put('/employees/{id}', [EmployeeController::class, 'update']);
+            Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
         });
 });
 
