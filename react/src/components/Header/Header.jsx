@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { FaBell } from 'react-icons/fa';
 import styles from './Header.module.css';
 
-const Header = ({ title, subtitle, currentUser = {} }) => {
+// 💡 أضفنا activeRole للخصائص المستقبلة من MainLayout
+const Header = ({ title, subtitle, currentUser = {}, activeRole = '' }) => {
   const navigate = useNavigate();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-  // ✅ تحديد روابط الإشعارات بناءً على دور المستخدم الحالي
-  const isAdmin = currentUser.role === "مدير النظام";
+  // ✅ التحقق الصحيح من الصلاحية باستخدام activeRole الممرر من MainLayout
+  const normalizedRole = String(activeRole).toLowerCase();
+  const isAdmin = normalizedRole === 'admin' || normalizedRole === 'مدير النظام';
 
   const [notifications, setNotifications] = useState([
     {
@@ -16,7 +18,6 @@ const Header = ({ title, subtitle, currentUser = {} }) => {
       text: isAdmin ? "هناك مستخدم جديد بانتظار التفعيل" : "طلب جديد بحاجة لمراجعة فورية",
       time: "قبل 5 دقائق",
       unread: true,
-      // ✅ توجيه الآدمن لصفحة المستخدمين والموظف لصفحة الطلبات
       link: isAdmin ? "/admin/users" : "/employee/pending-requests"
     },
     {
