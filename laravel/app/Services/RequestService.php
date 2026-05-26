@@ -5,29 +5,29 @@ namespace App\Services;
 use App\Models\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RequestService
 {
     public function __construct(
         protected NotificationService $notificationService,
         protected AutoAssignService   $autoAssignService,
+        protected SignatureService    $signatureService
     ) {}
 
-    /**
-     * جلب الطلبات حسب دور المستخدم:
-     * - المواطن  → طلباته هو فقط
-     * - الموظف  → الطلبات المعيّنة له
-     * - الأدمن  → كل الطلبات
-     */
-    public function getAll(User $user): \Illuminate\Pagination\LengthAwarePaginator
+    public function getAll(User $user, array $filters = []): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $query = Request::with(['citizen.user', 'serviceType', 'assignedEmployee'])
-            ->latest();
+        $query = Request::with(['citizen.user', 'serviceType', 'assignedEmployee'])->latest();
 
         if ($user->hasRole('citizen')) {
             $query->where('citizen_id', $user->citizen?->id);
         } elseif ($user->hasRole('employee')) {
             $query->where('assigned_employee_id', $user->id);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
         return $query->paginate(15);
@@ -71,13 +71,54 @@ class RequestService
                 'assignedEmployee',
             ])->findOrFail($requestId);
 
+            // 1. تحديث حالة الطلب
             $request->update([
                 'status'      => 'approved',
                 'resolved_at' => now(),
             ]);
 
-            // إرسال إشعار البريد للمواطن بشكل Async
+            // 2. إنشاء الوثيقة (SD-09: 3.1.2 INSERT INTO documents)
+            $document = $request->documents()->create([
+                'issued_by'    => Auth::id(), // الموظف الذي أصدر الوثيقة
+                'generated_at' => now(),
+            ]);
+
+            // 3. تجهيز البيانات المراد توقيعها (Payload)
+            $payloadData = [
+                'document_id'    => $document->id,
+                'request_number' => $request->request_number,
+                'citizen_name'   => $request->citizen->user->first_name . ' ' . $request->citizen->user->last_name,
+                'national_id'    => $request->citizen->user->national_id,
+                'service'        => $request->serviceType->name,
+                'issued_at'      => $document->generated_at->toIso8601String(),
+            ];
+
+            // 4. توليد التوقيع الرقمي (SD-09: 3.1.5 signJSON)
+            $signature = $this->signatureService->sign($payloadData);
+
+            // إضافة التوقيع إلى الـ Payload ليكون جاهزاً للـ QR
+            $finalPayload = [
+                'data'      => $payloadData,
+                'signature' => $signature
+            ];
+
+            $jsonPayload = json_encode($finalPayload);
+
+            // 5. حفظ الـ QR Code في قاعدة البيانات (SD-09: 3.1.6 INSERT INTO qr_codes)
+            $document->qrCode()->create([
+                'payload'      => $jsonPayload,
+                'generated_at' => now(),
+            ]);
+
+            // (اختياري) توليد صورة الـ QR Code وحفظها في التخزين لاستخدامها في واجهة المستخدم
+            // $qrImage = QrCode::format('png')->size(300)->generate($jsonPayload);
+            // Storage::disk('local')->put('qr_codes/' . $document->id . '.png', $qrImage);
+
+            // 6. إرسال إشعار القبول (SD-09: 3.1.7)
             $this->notificationService->sendApproval($request);
+
+            // 7. (SD-09: 3.1.8 INSERT INTO audit_log)
+            // سيتم إضافتها لاحقاً إذا كان لديكم AuditLogService
 
             return $request;
         });

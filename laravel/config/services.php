@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'signature' => [
+        'private_key' => env('PRIVATE_KEY'),
+        'public_key' => env('PUBLIC_KEY'),
+    ],
+
 ];

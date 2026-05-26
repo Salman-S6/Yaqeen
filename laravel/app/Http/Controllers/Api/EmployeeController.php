@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\StoreEmployeeRequest;
+use App\Http\Requests\Employee\UpdateEmployeeRequest;
 use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
@@ -23,7 +24,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function update(StoreEmployeeRequest $request, int $id)
+    public function update(UpdateEmployeeRequest $request, int $id)
     {
         $employee = $this->service->find($id);
 

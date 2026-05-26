@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->string('request_number')->unique();
-            $table->foreignId('citizen_id')->constrained('citizens')->cascadeOnDelete();;
+            $table->foreignId('citizen_id')->constrained('citizens')->cascadeOnDelete();
             $table->foreignId('service_type_id')->constrained('service_types');
             $table->foreignId('assigned_employee_id')->nullable()->constrained('users');
-            $table->enum('status', ['pending', 'under_review', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->float('matching_score')->nullable();
             $table->timestamp('submitted_at')->nullable();
             $table->timestamp('assigned_at')->nullable();
