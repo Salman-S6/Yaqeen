@@ -34,35 +34,36 @@ class RolePermissionSeeder extends Seeder
         $permissions = [
 
             // Users
-            'view users',
-            'create users',
-            'edit users',
-            'delete users',
+            'view_users',
+            'create_users',
+            'edit_users',
+            'delete_users',
+            'manage_employees',
 
             // Requests
-            'view requests',
-            'create requests',
-            'assign requests',
-            'process requests',
-            'approve requests',
-            'reject requests',
+            'view_requests',
+            'create_requests',
+            'assign_requests',
+            'process_requests',
+            'approve_requests',
+            'reject_requests',
 
             // Roles & Permissions
-            'manage roles',
-            'manage permissions',
+            'manage_roles',
+            'manage_permissions',
 
             // Attachments
-            'upload attachments',
-            'view attachments',
+            'upload_attachments',
+            'view_attachments',
 
             // service types
-            'view service types',
-            'create service types',
-            'update service types',
-            'delete service types',
+            'view_service_types',
+            'create_service_types',
+            'update_service_types',
+            'delete_service_types',
 
             // System
-            'view audit logs',
+            'view_audit_logs',
         ];
 
         foreach ($permissions as $permission) {
@@ -96,22 +97,22 @@ class RolePermissionSeeder extends Seeder
 
         // Employee → إدارة الطلبات فقط
         $employee->givePermissionTo([
-            'view requests',
-            'assign requests',
-            'process requests',
-            'approve requests',
-            'reject requests',
-            'view users',
-            'view service types',
+            'view_requests',
+            'assign_requests',
+            'process_requests',
+            'approve_requests',
+            'reject_requests',
+            'view_users',
+            'view_service_types',
         ]);
 
         // Citizen → استخدام النظام فقط
         $citizen->givePermissionTo([
-            'create requests',
-            'view requests',
-            'upload attachments',
-            'view attachments',
-            'view service types',
+            'create_requests',
+            'view_requests',
+            'upload_attachments',
+            'view_attachments',
+            'view_service_types',
         ]);
     }
 }

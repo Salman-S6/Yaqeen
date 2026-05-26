@@ -7,16 +7,21 @@ use App\Http\Requests\RejectRequestRequest;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Resources\RequestResource;
 use App\Services\RequestService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
 {
     public function __construct(protected RequestService $service) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $filters = $request->validate([
+            'status' => 'nullable|string|in:pending,approved,rejected',
+        ]);
+
         return RequestResource::collection(
-            $this->service->getAll(Auth::user())
+            $this->service->getAll(Auth::user(), $filters)
         );
     }
 

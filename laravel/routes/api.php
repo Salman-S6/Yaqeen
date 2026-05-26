@@ -38,22 +38,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('requests')->group(function () {
 
         Route::get('/', [RequestController::class, 'index'])
-            ->middleware('check.permission:view requests');
+            ->middleware('check.permission:view_requests');
 
         Route::post('/', [RequestController::class, 'store'])
-            ->middleware('check.permission:create requests');
+            ->middleware('check.permission:create_requests');
 
         Route::get('/{id}', [RequestController::class, 'show'])
-            ->middleware('check.permission:view requests');
+            ->middleware('check.permission:view_requests');
 
         // Route::post('/{id}/assign', [RequestController::class, 'assign'])
         //     ->middleware('check.permission:assign requests');
 
         Route::post('/{id}/approve', [RequestController::class, 'approve'])
-            ->middleware('check.permission:approve requests');
+            ->middleware('check.permission:approve_requests');
 
         Route::post('/{id}/reject', [RequestController::class, 'reject'])
-            ->middleware('check.permission:reject requests');
+            ->middleware('check.permission:reject_requests');
     });
 
     /*
@@ -64,7 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('attachments')->group(function () {
 
         Route::post('/', [AttachmentController::class, 'store'])
-            ->middleware('check.permission:upload attachments');
+            ->middleware('check.permission:upload_attachments');
     });
 
     /*
@@ -75,19 +75,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('service-types')->group(function () {
 
         Route::get('/', [ServiceTypeController::class, 'index'])
-            ->middleware('check.permission:view service types');
+            ->middleware('check.permission:view_service_types');
 
         Route::get('/{service_type}', [ServiceTypeController::class, 'show'])
-            ->middleware('check.permission:view service types');
+            ->middleware('check.permission:view_service_types');
 
         Route::post('/', [ServiceTypeController::class, 'store'])
-            ->middleware('check.permission:create service types');
+            ->middleware('check.permission:create_service_types');
 
         Route::put('/{service_type}', [ServiceTypeController::class, 'update'])
-            ->middleware('check.permission:update service types');
+            ->middleware('check.permission:update_service_types');
 
         Route::delete('/{service_type}', [ServiceTypeController::class, 'destroy'])
-            ->middleware('check.permission:delete service types');
+            ->middleware('check.permission:delete_service_types');
     });
 
     /*
@@ -95,7 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
     | Admin — Employee Management
     |----------------------------------------------------------------------
     */
-    Route::middleware('check.permission:manage employees')
+    Route::middleware('check.permission:manage_employees')
         ->prefix('admin')
         ->group(function () {
 
@@ -114,6 +114,6 @@ Route::middleware('auth:sanctum')->group(function () {
 */
 
 // رابط عرض المرفق — موقّع (Signed URL) لا يحتاج auth لكنه محمي بالتوقيع
-// Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
-//     ->name('attachments.view')
-//     ->middleware('signed');
+Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
+    ->name('attachments.view')
+    ->middleware('signed');

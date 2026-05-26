@@ -28,6 +28,7 @@ class StoreEmployeeRequest extends FormRequest
             'national_id' => 'required|string|size:11|unique:users,national_id',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
+            'status' => 'required|in:active,inactive,suspended',
         ];
     }
 }
