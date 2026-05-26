@@ -32,9 +32,6 @@ const ExternalVerifyPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            {/* الهيدر نظيف ويعتمد على عناصر النظام الموحدة */}
-            <Header title="التحقق الخارجي QR" subtitle="سجل عمليات مسح QR الخارجية" />
-
             <div className={styles.statsGrid}>
                 {mockStats.map((stat) => (
                     <AdminStatCard 

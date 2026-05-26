@@ -133,8 +133,6 @@ const AdminServicesPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            <Header title="إدارة الخدمات الحكومية" subtitle="تفعيل، مراقبة، وتعديل المعاملات المتاحة عبر المنصة" />
-
             <ToastNotification toast={toast} onClose={() => setToast({ ...toast, show: false })} />
 
             <div className={styles.statsGrid}>

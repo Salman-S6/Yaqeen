@@ -144,7 +144,6 @@ function App() {
           <Route path="verify-qr" element={<ExternalVerifyPage />} />
           <Route path="services" element={<AdminServicesPage />} />
           
-          {/* دمج مسارات صفحات بتول بشكل متداخل وسليم هندسياً */}
           <Route path="reports" element={<Reports />} />
           <Route path="audit-logs" element={<AdminAuditPage />} />
         </Route>

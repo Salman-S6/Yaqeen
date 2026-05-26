@@ -4,32 +4,34 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 999999;
+    /* رقم عالي جداً لضمان ظهوره فوق كل شيء */
+    backdrop-filter: blur(4px);
 }
 
-.modalContent {
+.modalContainer {
     background-color: #ffffff;
-    padding: 32px;
-    border-radius: 8px;
+    padding: 30px;
+    border-radius: 12px;
     width: 100%;
-    max-width: 550px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     direction: rtl;
-    animation: fadeIn 0.25s ease-out;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modalTitle {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
-    color: #1a202c;
+    color: #1f2937;
     margin-top: 0;
     margin-bottom: 24px;
-    border-bottom: 2px solid #edf2f7;
-    padding-bottom: 12px;
+    border-bottom: 2px solid #f3f4f6;
+    padding-bottom: 15px;
 }
 
 .formGroup {
@@ -41,98 +43,84 @@
 
 .formGroup label {
     font-size: 14px;
-    font-weight: 600;
-    color: #4a5568;
+    font-weight: 700;
+    color: #4b5563;
 }
 
 .modalInput,
 .modalTextarea,
 .modalSelect {
     width: 100%;
+    box-sizing: border-box;
     padding: 12px;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
     font-size: 14px;
-    background-color: #f8f9fa;
-    color: #2d3748;
-    transition: all 0.2s ease;
+    background-color: #f9fafb;
+    color: #111827;
+    transition: all 0.2s;
+    font-family: inherit;
 }
 
 .modalInput:focus,
 .modalTextarea:focus,
 .modalSelect:focus {
     outline: none;
-    border-color: #00a65a;
+    border-color: #007c4d;
+    box-shadow: 0 0 0 3px rgba(0, 124, 77, 0.1);
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(0, 166, 90, 0.1);
 }
 
 .modalTextarea {
     resize: vertical;
-}
-
-.formGroupRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
-.switchLabel {
-    font-size: 14px;
-    font-weight: 600;
-    color: #4a5568;
+    min-height: 80px;
 }
 
 .modalActions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    border-top: 1px solid #edf2f7;
-    padding-top: 20px;
-    margin-top: 12px;
+    margin-top: 30px;
 }
 
 .saveBtn {
-    background-color: #00a65a;
+    background-color: #007c4d;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 10px 24px;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: 0.2s;
 }
 
 .saveBtn:hover {
-    background-color: #008d4c;
+    background-color: #00603c;
 }
 
 .cancelBtn {
-    background-color: #edf2f7;
-    color: #4a5568;
+    background-color: #f3f4f6;
+    color: #4b5563;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: 0.2s;
 }
 
 .cancelBtn:hover {
-    background-color: #e2e8f0;
+    background-color: #e5e7eb;
 }
 
-@keyframes fadeIn {
+@keyframes slideDown {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translateY(-20px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
     }
 }
