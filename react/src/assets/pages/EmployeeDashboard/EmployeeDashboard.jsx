@@ -15,10 +15,10 @@ const EmployeeDashboard = () => {
     { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', waitTime: '22 ساعة', date: '2026/04/09', isUrgent: true },
   ];
 
-  // 💡 الحل الجذري: دالة التنقل بالرابط الكامل مع الـ ID
+ // 💡 الحل الجذري والصحيح: مطابقة مسار الـ App.jsx حرفياً
   const handleReview = (id) => {
     if (id) {
-      navigate(`/employee/review/${id}`);
+      navigate(`/employee/review-request/${id}`); // ✅ تم التعديل إلى review-request
     }
   };
 

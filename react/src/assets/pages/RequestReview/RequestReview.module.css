@@ -1,7 +1,9 @@
 /* الحاوية الأساسية للموقع */
 .pageWrapper {
-  background-color: #f8fafc; /* خلفية مريحة لإبراز البطاقات من الـ main */
-  margin-right: 250px; /* الحفاظ على الهامش الأيمن للـ Sidebar الموحد */
+  background-color: #f8fafc;
+  /* خلفية مريحة لإبراز البطاقات من الـ main */
+  /* margin-right: 250px; */
+  /* الحفاظ على الهامش الأيمن للـ Sidebar الموحد */
   padding: 24px;
   direction: rtl;
   min-height: 100vh;
@@ -49,7 +51,8 @@
 /* شبكة توزيع المحتوى المتجاوبة */
 .contentGrid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr; /* جعل قسم البيانات أعرض قليلاً للمراجعة المريحة */
+  grid-template-columns: 1fr 1.2fr;
+  /* جعل قسم البيانات أعرض قليلاً للمراجعة المريحة */
   gap: 40px;
   align-items: start;
 }
@@ -122,7 +125,8 @@
   letter-spacing: 6px;
   margin: 25px 0;
   font-family: 'Courier New', Courier, monospace;
-  white-space: nowrap; /* ميزة بتول: تمنع نزول الأرقام لسطر جديد نهائياً */
+  white-space: nowrap;
+  /* ميزة بتول: تمنع نزول الأرقام لسطر جديد نهائياً */
 }
 
 .userNameDisplay {
@@ -204,15 +208,48 @@
 /* ----------------------------------- */
 @media (max-width: 1100px) {
   .pageWrapper {
-    margin-right: 0; /* إلغاء تهميش السايدبار في الهواتف ليتمدد الكود بالكامل */
+    margin-right: 0;
+    /* إلغاء تهميش السايدبار في الهواتف ليتمدد الكود بالكامل */
   }
 
   .contentGrid {
-    grid-template-columns: 1fr; /* ترتيب العناصر رأسياً تحت بعضها على الموبايل */
+    grid-template-columns: 1fr;
+    /* ترتيب العناصر رأسياً تحت بعضها على الموبايل */
     gap: 20px;
   }
 
   .rightCol {
-    position: static; /* إلغاء خاصية التثبيت لراحة التصفح العمودي */
+    position: static;
+    /* إلغاء خاصية التثبيت لراحة التصفح العمودي */
   }
+}
+
+/* ------------------------------------------- */
+/* 🟢 تنسيقات حالة الطلب المقفل (بديل الأزرار)  */
+/* ------------------------------------------- */
+
+.lockedStatusBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 24px;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-top: 15px;
+  text-align: center;
+  width: 100%;
+}
+
+.statusApproved {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.statusRejected {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }

@@ -5,7 +5,7 @@ import {
     FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt,
     FaCog, FaThLarge, FaChartLine, FaEye, 
     FaQrcode,
-    FaServer // استيراد أيقونة السيرفر لإدارة الخدمات
+    FaServer 
 } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
@@ -14,14 +14,14 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-    // 🟢 دمج منطق الـ main القوي لفحص دور المستخدم وتأمين النظام محلياً ومن السيرفر
+    // 🟢 استخراج الدور الحقيقي ديناميكياً لتفادي ثبات كود الأدمن محلياً
     let userRole = '';
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
         userRole = currentUser.roles[0];
     } else if (currentUser?.role) {
         userRole = currentUser.role;
     } else {
-        userRole = localStorage.getItem('userRole') || '';
+        userRole = localStorage.getItem('userRole') || 'employee'; // افتراضي موظف للتشغيل المحلي
     }
 
     const isAdmin = 
@@ -41,10 +41,10 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
         }
     };
 
-    // 🟢 دمج ميزة فحص الروابط الفعالة الذكية من الـ main لمنع تعارضات مسارات التصفح الفرعية
+    // 🟢 تحديث فحص الروابط ليتوافق مع المسارات الفرعية والمستقلة مثل /review
     const isActive = (path) => {
         if (path === '/admin' || path === '/employee') return location.pathname === path;
-        return location.pathname.startsWith(path);
+        return location.pathname.startsWith(path) || location.pathname.includes('review');
     };
 
     return (
@@ -55,14 +55,13 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
 
             <nav className={styles.navMenu}>
                 {isAdmin ? (
-                    /* قائمة مدير النظام (Admin Portal) - مدمجة وموحدة بالكامل */
+                    /* قائمة مدير النظام (Admin Portal) */
                     <>
                         <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => navigate('/admin/users')}>
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
 
-                        {/* 🟢 زر بتول لسجلات التدقيق بالمسار الهيكلي النظيف المتداخل */}
                         <div className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`} onClick={() => navigate('/admin/audit-logs')}>
                             <FaFileAlt className={styles.navIcon} />
                             <span>سجلات التدقيق</span>
@@ -73,7 +72,6 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                             <span>إحصائيات النظام</span>
                         </div>
 
-                        {/* 🟢 زر بتول للتقارير بالمسار النظيف والمنظم داخل بوابة الأدمن */}
                         <div className={`${styles.navItem} ${isActive('/admin/reports') ? styles.active : ''}`} onClick={() => navigate('/admin/reports')}>
                             <FaFileAlt className={styles.navIcon} />
                             <span>التقارير</span>
@@ -118,7 +116,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
             <div className={styles.userSection}>
                 {isProfileMenuOpen && (
                     <div className={styles.profileMenu}>
-                        <div className={styles.profileHeader}>{currentUser?.email || localStorage.getItem('userEmail')}</div>
+                        <div className={styles.profileHeader}>{currentUser?.email || localStorage.getItem('userEmail') || 'employee@yaqeen.gov.sy'}</div>
                         <ul className={styles.menuList}>
                             <li><FaCog className={styles.menuIcon} /><span>إعدادات الحساب</span></li>
                             <li onClick={handleLogout} className={styles.logoutBtn}>
@@ -129,10 +127,15 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
                 )}
 
                 <div className={styles.userInfo} onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
-                    <div className={styles.avatar}>{currentUser?.initials || 'Admin'}</div>
+                    {/* 🟢 جعل الأيقونة ديناميكية: تعرض Emp للموظف و Admin للمدير محلياً */}
+                    <div className={styles.avatar}>
+                        {currentUser?.initials || (isAdmin ? 'Admin' : 'Emp')}
+                    </div>
                     <div className={styles.userDetails}>
-                        <h4 className={styles.userName}>{currentUser?.name || 'مدير النظام'}</h4>
-                        <p className={styles.userRole}>{userRole}</p>
+                        <h4 className={styles.userName}>
+                            {currentUser?.name || (isAdmin ? 'مدير النظام' : 'خالد الأحمد')}
+                        </h4>
+                        <p className={styles.userRole}>{isAdmin ? 'مدير النظام' : 'موظف النظام'}</p>
                     </div>
                 </div>
             </div>

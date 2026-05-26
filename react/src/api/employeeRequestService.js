@@ -1,9 +1,15 @@
 import api from './axios'; // استدعاء نسخة الأكسيوس المركزية المحمية بالتوكن
 
 export const employeeRequestService = {
-    // 🟢 جلب كافة الطلبات المعلقة (GET /api/requests)
+    // 🟢 جلب كافة الطلبات المعلقة
     getPendingRequests: () => api.get('requests'),
     
-    // 🟢 مراجعة وسحب طلب محدد لبدء التدقيق الرقمي (GET /api/requests/{id})
-    reviewRequest: (id) => api.get(`requests/${id}`)
+    // 🟢 مراجعة وسحب طلب محدد لبدء التدقيق
+    reviewRequest: (id) => api.get(`requests/${id}`),
+
+    // ✅ قبول واعتماد الطلب
+    approveRequest: (id) => api.post(`requests/${id}/approve`),
+
+    // ❌ رفض الطلب مع إرسال السبب
+    rejectRequest: (id, reason) => api.post(`requests/${id}/reject`, { reason })
 };

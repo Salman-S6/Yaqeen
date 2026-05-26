@@ -22,13 +22,18 @@
     margin-top: 20px;
 }
 
+/* 🟢 التنسيق المصلح للعنوان */
 .pageTitleSection {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    /* 🟢 السحر هنا: يجمع العناصر في بداية السطر (اليمين بسبب الـ RTL) */
     align-items: center;
+    gap: 20px;
+    /* 🟢 مسافة ذكية بين العنوان وأي زر بجانبه إن وُجد */
     border-bottom: 1px solid #edf2f7;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .titleInfo h2 {
