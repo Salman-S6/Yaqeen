@@ -18,7 +18,7 @@
     height: 100vh;
     min-width: 0;
     /* منع تمدد عناصر Flex خارج حدود الشاشة */
-    overflow: hidden;
+    overflow:hidden;
 }
 
 /* منطقة عرض الصفحات (مثل صفحة المراجعة أو الطلبات) */
@@ -31,7 +31,26 @@
     /* منع ظهور شريط التمرير العرضي المزعج */
     background-color: #f3f4f6;
     box-sizing: border-box;
+
 }
+/* أضيفي هذا في نهاية ملف MainLayout.module.css */
+/* في ملف MainLayout.module.css */
+/* هذا التعديل خاص بصفحتك فقط ولا يؤثر على صفحات رفيقك */
+.auditContent {
+    padding: 0 !important; /* مسحنا الـ 30px من كل الجهات */
+    padding-top: 0 !important; /* تأكيد إضافي لمسح الفراغ العلوي */
+    margin-top: -30px !important; 
+    
+    background-color: #ced6d8cb !important; /* اللون الرمادي الفاتح جداً اللي طلبتيه */
+    
+    display: block !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+}
+
+
+
 
 /* تحسينات للشاشات الصغيرة والمتوسطة (Tablets & Mobile) */
 @media (max-width: 1024px) {

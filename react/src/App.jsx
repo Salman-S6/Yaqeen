@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { authService } from './api/authService';
+import { employeeRequestService } from './api/employeeRequestService'; // جلب الخدمة المركزية ديناميكياً
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Login from "./assets/pages/login/login";
 
-// استيراد واجهة الطلبات المحدثة بعد الـ Refactoring المجلد الموحد
+// استيراد واجهات الموظفين والطلبات
 import PendingRequests from './assets/pages/PendingRequests/PendingRequests';
 import RequestReview from './assets/pages/RequestReview/RequestReview';
-import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import EmployeeDashboard from './assets/pages/EmployeeDashboard/EmployeeDashboard';
+
+// استيراد واجهات الإدارة والتحليلات
+import AdminUsersPage from './assets/pages/AdminUsersPage/AdminUsersPage';
 import AdminStatsPage from './assets/pages/AdminStatsPage/AdminStatsPage';
 import AdminPerfPage from './assets/pages/AdminPerfPage/AdminPerfPage';
 import AdminOCRPage from './assets/pages/AdminOCRPage/AdminOCRPage';
-
-// استيراد واجهة التحقق الخارجي QR للـ Admin
 import ExternalVerifyPage from "./assets/pages/ExternalVerifyPage/ExternalVerifyPage";
-
-// استيراد واجهة إدارة الخدمات المتاحة للـ Admin 
 import AdminServicesPage from "./assets/pages/AdminServicesPage/AdminServicesPage";
+
+// استيراد واجهات بتول (سجلات التدقيق والتقارير)
+import AdminAuditPage from './assets/pages/AdminAuditPage/AdminAuditPage';
+import Reports from './assets/pages/Reports/Reports';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -32,23 +35,20 @@ function App() {
   });
 
   const [isLoading, setIsLoading] = useState(true);
-
-  const [requests, setRequests] = useState([
-    { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', date: '2026/04/09', status: 'pending' },
-    { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', date: '2026/04/09', status: 'pending' }
-  ]);
+  const [requests, setRequests] = useState([]); // مصفوفة حية تنتظر داتا الباك-إند الحقيقية
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndFetchData = async () => {
       const token = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
 
       if (!token) {
         setIsLoading(false);
-        return;
+        return; // حماية التطبيق من الانهيار إذا لم يسجل دخول بعد
       }
 
       try {
+        // 1. جلب بيانات الملف الشخصي
         const response = await authService.getProfile();
         const responseData = response.data;
         const userData = responseData.user || responseData.data || responseData;
@@ -65,12 +65,17 @@ function App() {
           } else {
               role = localStorage.getItem('userRole') || 'employee';
           }
-          
           localStorage.setItem('userRole', role);
-        } else {
-          throw new Error("بيانات الملف الشخصي غير مكتملة");
-        }
 
+          // 2. جلب داتا المعاملات الحية فوراً من السيرفر لتحديث عداد الـ Sidebar ديناميكياً
+          try {
+            const reqResponse = await employeeRequestService.getPendingRequests();
+            const reqData = reqResponse.data && reqResponse.data.data ? reqResponse.data.data : reqResponse.data;
+            setRequests(Array.isArray(reqData) ? reqData : []);
+          } catch (reqError) {
+            console.error("فشل جلب العداد المركزي للطلبات:", reqError);
+          }
+        }
       } catch (error) {
         console.warn("فشل جلب الملف الشخصي، الاعتماد على البيانات المحلية.");
         if (savedUser && savedUser !== "undefined" && savedUser !== "null") {
@@ -81,7 +86,7 @@ function App() {
       }
     };
 
-    checkAuth();
+    checkAuthAndFetchData();
   }, []);
 
   const handleRemoveRequest = (id) => {
@@ -100,7 +105,6 @@ function App() {
           borderRadius: '50%', width: '40px', height: '40px',
           animation: 'spin 1s linear infinite', marginBottom: '15px'
         }}></div>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         <h2>جاري تشغيل نظام يَقِين...</h2>
       </div>
     );
@@ -112,8 +116,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
 
-        {/* مسارات الموظف (Employee Portal) */}
-        {/* 🟢 تم تصحيح السطر التالي وإضافة علامة الـ (=) المطلوبة لإصلاح بناء الجملة فورا */}
+        {/* 🏢 مسارات الموظف (Employee Portal) */}
         <Route path="/employee" element={
           <ProtectedRoute allowedRoles={['employee', 'موظف']}>
             <MainLayout currentUser={currentUser} pendingCount={requests.length} />
@@ -122,14 +125,12 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<EmployeeDashboard requests={requests} />} />
           <Route path="pending-requests" element={<PendingRequests requests={requests} title="الطلبات المعلّقة" />} />
-          
-          {/* الـ Route الخاص بمراجعة الطلب التفصيلي متناسق مع روابط المعالجة بالمنصة */}
           <Route path="review-request/:requestId" element={
             <RequestReview isAdminMode={false} onActionComplete={handleRemoveRequest} />
           } />
         </Route>
 
-        {/* مسارات الأدمن (مدير النظام) */}
+        {/* 🛡️ مسارات الأدمن (مدير النظام) */}
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin', 'مدير النظام']}>
             <MainLayout currentUser={currentUser} headerTitle="إدارة النظام" />
@@ -142,6 +143,10 @@ function App() {
           <Route path="ocr" element={<AdminOCRPage />} />
           <Route path="verify-qr" element={<ExternalVerifyPage />} />
           <Route path="services" element={<AdminServicesPage />} />
+          
+          {/* دمج مسارات صفحات بتول بشكل متداخل وسليم هندسياً */}
+          <Route path="reports" element={<Reports />} />
+          <Route path="audit-logs" element={<AdminAuditPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

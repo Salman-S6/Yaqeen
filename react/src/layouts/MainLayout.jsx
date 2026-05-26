@@ -7,23 +7,37 @@ import styles from './MainLayout.module.css';
 const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
     const location = useLocation();
 
+    // 🟢 تعديل الـ Lead: فحص دقيق للمسارات المتداخلة (Nested Routes) لضمان تفعيل التنسيق والـ Active Tabs
+    const isAuditPage = location.pathname.includes('/admin/audit-logs');
+    const isReportsPage = location.pathname.includes('/admin/reports'); 
+
     const getDynamicTitle = () => {
-        if (headerTitle) return headerTitle;
+        if (isAuditPage) return 'سجلات التدقيق';
+        if (isReportsPage) return 'التقارير و التصدير';
         if (location.pathname.includes('review')) return 'مراجعة بيانات الطلب';
         if (location.pathname.includes('pending-requests')) return 'قائمة الطلبات المعلّقة';
         if (location.pathname.includes('users')) return 'إدارة مستخدمي النظام';
-        return 'نظام يقين الرقمي';
+        if (location.pathname.includes('services')) return 'إدارة الخدمات الحكومية';
+        if (location.pathname.includes('verify-qr')) return 'واجهة التحقق الخارجي QR';
+        return headerTitle || 'نظام يقين الرقمي';
     };
 
-    // 💡 استخراج الصلاحية بنفس الطريقة الذكية التي استخدمناها في القائمة الجانبية
+    // 🟢 استخراج الصلاحية ودور المستخدم ديناميكياً من السيرفر بالتوافق مع الـ main
     let activeRole = '';
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
-        activeRole = currentUser.roles[0]; // سحب الكلمة من المصفوفة
+        activeRole = currentUser.roles[0]; 
     } else if (currentUser?.role) {
         activeRole = currentUser.role;
     } else {
         activeRole = localStorage.getItem('userRole') || 'جاري التحقق...';
     }
+
+    // 🟢 دمج ذكي للـ Subtitle: مخصص لصفحات بتول، وديناميكي بالدور لباقي أجزاء المنصة
+    const getDynamicSubtitle = () => {
+        if (isAuditPage) return 'سجل غير قابل للحذف - Audit Log';
+        if (isReportsPage) return 'تصدير البيانات بحسب الفترة الزمنية';
+        return activeRole;
+    };
 
     return (
         <div className={styles.layoutContainer}>
@@ -31,11 +45,13 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
             <div className={styles.mainWrapper}>
                 <Header
                     title={getDynamicTitle()}
-                    subtitle={activeRole} // 👈 نمرر الصلاحية بعد استخراجها بشكل صحيح
+                    subtitle={getDynamicSubtitle()} // 👈 تفعيل العنوان الفرعي المدمج الذكي
                     currentUser={currentUser}
-                    activeRole={activeRole} // 👈 نمررها لكي يستخدمها الهيدر في الإشعارات
+                    activeRole={activeRole} // 👈 نمررها لكي يستخدمها الهيدر في الإشعارات والتحقق الصارم
                 />
-                <main className={styles.contentArea}>
+                
+                {/* 🟢 التعديل السحري المتوافق مع كلاسات بتول لضبط بادينغ صفحة التدقيق */}
+                <main className={`${styles.contentArea} ${isAuditPage ? styles.auditContent : ''}`}>
                     <Outlet />
                 </main>
             </div>

@@ -48,15 +48,17 @@ const RequestReview = ({ isAdminMode = false, onActionComplete }) => {
       </header>
 
       <div className={styles.contentGrid}>
+        {/* العمود الأيمن (صورة الهوية والتحقق المتقدم) */}
         <div className={styles.rightCol}>
-          <div className={styles.sectionLabel}>الوثيقة الرقمية المرفقة</div>
+          <div className={styles.sectionLabel}>صورة الهوية الأصلية المرفوعة (الوثيقة الرقمية)</div>
+          
           <div className={styles.blackCard}>
             <div className={styles.cardHeader}>الجمهورية العربية السورية</div>
             <div className={styles.idNumberDisplay}>1 0 9 8 7 6 5 4 3 2 1</div>
             <div className={styles.userNameDisplay}>خالد محمد الأحمد</div>
           </div>
 
-          <div className={styles.statusSuccess}>✔️ نتيجة المطابقة الحيوية: صحيحة</div>
+          <div className={styles.statusSuccess}>✔️ الصورة أصلية - مطابقة حيوية صحيحة ولا تلاعب بالأوراق</div>
 
           <div className={styles.matchRateBox}>
             <FaRobot style={{ marginLeft: '8px' }} />
@@ -65,10 +67,16 @@ const RequestReview = ({ isAdminMode = false, onActionComplete }) => {
           </div>
         </div>
 
+        {/* العمود الأيسر (البيانات المستخرجة والأزرار الشرطية) */}
         <div className={styles.leftCol}>
           <UserInfoCard data={mockData} isAdminMode={isAdminMode} />
+          
+          {/* 🟢 صندوق التنبيه الذكي المضاف من بتول عند ضعف دقة حقول مكان القيد */}
+          <div className={styles.warningBox}>
+            ⚠️ حقل "مكان القيد" نسبة ثقته أقل من 80% - يُنصح بالتحقق اليدوي قبل الاعتماد الفعلي
+          </div>
 
-          {/* 💡 التعديل الجوهري: لا تظهر أزرار القرار للمدير نهائياً */}
+          {/* 🟢 التحكم الذكي الصارم المدمج لظهور أزرار اتخاذ القرار */}
           {!isAdminMode ? (
             <div className={styles.actionsContainer}>
               <DecisionActions
@@ -78,7 +86,7 @@ const RequestReview = ({ isAdminMode = false, onActionComplete }) => {
             </div>
           ) : (
             <div className={styles.adminNotification}>
-              💡 بصفتك مديراً، يمكنك الاطلاع على دقة استخراج البيانات فقط. معالجة الطلب تتم حصراً عبر قسم الموظفين.
+              💡 بصفتك مديراً للنظام، يمكنك الاطلاع على دقة استخراج الـ OCR فقط. معالجة وتمرير الطلبات تتم حصراً عبر قسم الموظفين.
             </div>
           )}
         </div>

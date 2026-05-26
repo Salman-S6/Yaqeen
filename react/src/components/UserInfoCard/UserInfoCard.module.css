@@ -1,6 +1,7 @@
 .cardContainer {
   width: 100%;
   direction: rtl;
+  
 }
 
 .sectionTitle {
@@ -18,7 +19,7 @@
   padding: 10px 20px;
   margin-bottom: 12px;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #374151;
   height: 60px;
 }
 
@@ -30,7 +31,7 @@
 
 .grayLabel {
   font-size: 0.75rem;
-  color: #9ca3af; 
+  color: #4b5561; 
   margin-bottom: 2px;
 }
 

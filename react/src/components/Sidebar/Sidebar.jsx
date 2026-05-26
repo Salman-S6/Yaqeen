@@ -5,7 +5,7 @@ import {
     FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt,
     FaCog, FaThLarge, FaChartLine, FaEye, 
     FaQrcode,
-    FaServer // 🚨 استيراد أيقونة السيرفر لإدارة الخدمات
+    FaServer // استيراد أيقونة السيرفر لإدارة الخدمات
 } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
@@ -14,6 +14,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
+    // 🟢 دمج منطق الـ main القوي لفحص دور المستخدم وتأمين النظام محلياً ومن السيرفر
     let userRole = '';
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
         userRole = currentUser.roles[0];
@@ -40,6 +41,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
         }
     };
 
+    // 🟢 دمج ميزة فحص الروابط الفعالة الذكية من الـ main لمنع تعارضات مسارات التصفح الفرعية
     const isActive = (path) => {
         if (path === '/admin' || path === '/employee') return location.pathname === path;
         return location.pathname.startsWith(path);
@@ -53,36 +55,52 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0 }) => {
 
             <nav className={styles.navMenu}>
                 {isAdmin ? (
-                    /* قائمة مدير النظام (Admin) */
+                    /* قائمة مدير النظام (Admin Portal) - مدمجة وموحدة بالكامل */
                     <>
                         <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => navigate('/admin/users')}>
                             <FaUsers className={styles.navIcon} />
                             <span>إدارة المستخدمين</span>
                         </div>
+
+                        {/* 🟢 زر بتول لسجلات التدقيق بالمسار الهيكلي النظيف المتداخل */}
+                        <div className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`} onClick={() => navigate('/admin/audit-logs')}>
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>سجلات التدقيق</span>
+                        </div>
+
                         <div className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`} onClick={() => navigate('/admin/stats')}>
                             <FaChartBar className={styles.navIcon} />
                             <span>إحصائيات النظام</span>
                         </div>
+
+                        {/* 🟢 زر بتول للتقارير بالمسار النظيف والمنظم داخل بوابة الأدمن */}
+                        <div className={`${styles.navItem} ${isActive('/admin/reports') ? styles.active : ''}`} onClick={() => navigate('/admin/reports')}>
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>التقارير</span>
+                        </div>
+
                         <div className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`} onClick={() => navigate('/admin/performance')}>
                             <FaChartLine className={styles.navIcon} />
                             <span>أداء الموظفين</span>
                         </div>
+
                         <div className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`} onClick={() => navigate('/admin/ocr')}>
                             <FaEye className={styles.navIcon} />
                             <span>مراقبة OCR</span>
                         </div>
+
                         <div className={`${styles.navItem} ${isActive('/admin/verify-qr') ? styles.active : ''}`} onClick={() => navigate('/admin/verify-qr')}>
                             <FaQrcode className={styles.navIcon} />
                             <span>التحقق الخارجي QR</span>
                         </div>
-                        {/* 🚨 زر واجهة إدارة الخدمات الفعالة الجديد داخل قائمة الأدمن فقط 🚨 */}
+
                         <div className={`${styles.navItem} ${isActive('/admin/services') ? styles.active : ''}`} onClick={() => navigate('/admin/services')}>
                             <FaServer className={styles.navIcon} />
                             <span>إدارة الخدمات</span>
                         </div>
                     </>
                 ) : (
-                    /* قائمة الموظف (Employee) */
+                    /* قائمة الموظف (Employee Portal) */
                     <>
                         <div className={`${styles.navItem} ${isActive('/employee/dashboard') ? styles.active : ''}`} onClick={() => navigate('/employee/dashboard')}>
                             <FaThLarge className={styles.navIcon} />

@@ -1,11 +1,13 @@
+/* الحاوية الأساسية للموقع */
 .pageWrapper {
+  background-color: #f8fafc; /* خلفية مريحة لإبراز البطاقات من الـ main */
+  margin-right: 250px; /* الحفاظ على الهامش الأيمن للـ Sidebar الموحد */
   padding: 24px;
   direction: rtl;
-  background-color: #f8fafc;
-  /* خلفية أفتح قليلاً لإبراز البطاقات */
   min-height: 100vh;
 }
 
+/* التصفح السريع - Breadcrumb الأدمن */
 .adminBreadcrumb {
   display: flex;
   align-items: center;
@@ -24,6 +26,7 @@
   opacity: 0.8;
 }
 
+/* العنوان العلوي للطلبات */
 .topHeader {
   margin-bottom: 30px;
   border-bottom: 1px solid #e2e8f0;
@@ -43,21 +46,34 @@
   font-size: 1.1rem;
 }
 
-/* 💡 التعديل الجوهري: جعل قسم البيانات أعرض قليلاً من الصورة للمراجعة المريحة */
+/* شبكة توزيع المحتوى المتجاوبة */
 .contentGrid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1.2fr; /* جعل قسم البيانات أعرض قليلاً للمراجعة المريحة */
   gap: 40px;
   align-items: start;
-  /* يمنع تمدد الصورة طولياً مع البيانات */
 }
 
-/* 💡 جعل قسم الصورة ثابتاً أثناء سحب الصفحة لأسفل */
+/* تثبيت قسم الصورة أثناء سحب الصفحة لأسفل */
 .rightCol {
   position: sticky;
   top: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* عناوين الأقسام */
 .sectionLabel {
   color: #475569;
   font-size: 0.95rem;
@@ -66,29 +82,47 @@
   display: block;
 }
 
-/* تحسين شكل بطاقة الهوية السوداء لتبدو أكثر فخامة */
+/* ----------------------------------- */
+/* تنسيقات البطاقة السوداء الفخمة (الهوية) */
+/* ----------------------------------- */
 .blackCard {
+  position: relative;
+  width: 100%;
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border-radius: 20px;
   padding: 45px 30px;
   color: white;
   text-align: center;
-  position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+/* خدعة رسم خط العلم السوري أعلى بطاقة نظام يقين */
+.blackCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(to right, #007c4d 33.3%, #ffffff 33.3%, #ffffff 66.6%, #ce1126 66.6%);
 }
 
 .cardHeader {
-  font-size: 0.85rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-bottom: 25px;
   opacity: 0.7;
-  margin-bottom: 20px;
 }
 
+/* محاكاة تباعد الأرقام بالهوية الحقيقية ومنع التفاف الأسطر */
 .idNumberDisplay {
   font-size: 1.6rem;
   letter-spacing: 6px;
   margin: 25px 0;
   font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap; /* ميزة بتول: تمنع نزول الأرقام لسطر جديد نهائياً */
 }
 
 .userNameDisplay {
@@ -96,6 +130,9 @@
   font-weight: 700;
 }
 
+/* ----------------------------------- */
+/* تنبيهات النجاح، ومطابقة الـ OCR */
+/* ----------------------------------- */
 .statusSuccess {
   margin-top: 20px;
   background: #f0fdf4;
@@ -117,6 +154,7 @@
   color: #475569;
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  text-align: center;
 }
 
 .boldGreen {
@@ -131,12 +169,17 @@
   margin-top: 5px;
 }
 
-/* تحسين حاوية البيانات على اليسار */
-.leftCol {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* صندوق التحذير الأصفر لحقول الثقة الضعيفة */
+.warningBox {
+  background-color: #fefce8;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+  border-radius: 8px;
+  padding: 15px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 15px;
+  text-align: right;
 }
 
 .actionsContainer {
@@ -145,16 +188,31 @@
   border-top: 1px solid #f1f5f9;
 }
 
-/* تحسين التجاوب */
+/* تنبيه الأدمن لوضع القراءة فقط */
+.adminNotification {
+  font-size: 0.9rem;
+  color: #475569;
+  background-color: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border-right: 4px solid #3b82f6;
+  margin-top: 15px;
+}
+
+/* ----------------------------------- */
+/* تحسين التجاوب البرمجي (الموبايل والشاشات الصغيرة) */
+/* ----------------------------------- */
 @media (max-width: 1100px) {
+  .pageWrapper {
+    margin-right: 0; /* إلغاء تهميش السايدبار في الهواتف ليتمدد الكود بالكامل */
+  }
+
   .contentGrid {
-    grid-template-columns: 1fr;
-    /* العودة للوضع الرأسي في الشاشات الصغيرة */
+    grid-template-columns: 1fr; /* ترتيب العناصر رأسياً تحت بعضها على الموبايل */
     gap: 20px;
   }
 
   .rightCol {
-    position: static;
-    /* إلغاء التثبيت في الشاشات الصغيرة */
+    position: static; /* إلغاء خاصية التثبيت لراحة التصفح العمودي */
   }
 }

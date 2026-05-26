@@ -1,0 +1,266 @@
+/* الحاوية الأساسية مع الخلفية الرمادية المطابقة للتصميم */
+.container {
+  direction: rtl;
+  padding: 24px;
+  background-color: #efefef; /* الرمادي الفاتح المعتمد بكامل الخلفية */
+  min-height: 100vh;
+  font-family: sans-serif;
+  margin-top: -24px; /* إزالة المسافة العلوية لتتماشى مع التصميم */
+}
+
+/* قسم العناوين العلوي */
+.titleSection {
+  margin-bottom: 24px;
+  text-align: right;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666666;
+  margin: 0;
+}
+
+/* 🛠 تعديل: قسم الفلاتر ممتد الآن على كامل عرض الصفحة وبشكل ريسبونسيف */
+.filterCard {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  width: 100%; /* أخذ كامل العرض المتاح */
+  box-sizing: border-box;
+}
+
+/* توزيع حقول التواريخ - ريسبونسيف تقبل التمدد */
+.inputsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: right;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+/* تصميم مستطيلات الإدخال لتكون بيضاء بالكامل وتتمدد بعرض الحاوية */
+.inputField {
+  width: 100%; /* جعل الحقل يأخذ كامل العرض المتاح له */
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #b3b3b3;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.2s;
+  text-align: right;
+  cursor: pointer;
+}
+
+/* ضبط حقل التاريخ ليكون الرمز على اليمين والنص على اليسار */
+.inputField[type="date"] {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inputField:focus {
+  border-color: #00a676;
+}
+
+/* تنسيقات القائمة المنسدلة المخصصة (Custom Dropdown) الخضراء ممتدة بالكامل */
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 10px;
+  color: #666666;
+  transition: transform 0.2s ease;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+/* حاوية الخيارات المنبثقة ممتدة بعرض حقل نوع التقرير كاملاً */
+.dropdownContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  margin-top: 4px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  overflow: hidden;
+}
+
+/* خيارات القائمة المنفردة */
+.dropdownOption {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* تلوين شريط الاختيار باللون الأخضر المعتمد فوراً عند تمرير الماوس */
+.dropdownOption:hover {
+  background-color: #00a676;
+  color: #ffffff;
+}
+
+/* ستايل الخيار المختار والنشط حالياً */
+.optionActive {
+  background-color: rgba(0, 166, 118, 0.1);
+  color: #00a676;
+  font-weight: bold;
+}
+
+/* أزرار الفلتر الرئيسي السفلي مصفوفة لليمين وتتجاوب بسلاسة */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.btnExcel {
+  background-color: #00a677c9;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btnPdf {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid #b3b3b3;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* عناوين قائمة كروت التقارير المتاحة */
+.listTitle {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin: 32px 0 16px 0;
+  text-align: right;
+}
+
+.reportsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* تصميم كروت التقارير بالخلفية البيضاء لتأخذ كامل العرض */
+.reportCard {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reportInfo {
+  text-align: right;
+}
+
+.reportTitle {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.reportSubtitle {
+  font-size: 12px;
+  color: #888888;
+  margin: 0;
+}
+
+/* أزرار التصدير الجانبية داخل الكروت وتظهر يساراً */
+.cardActions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnCardAction {
+  background-color: #ffffff;
+  border: 1px solid #b3b3b3;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.btnCardAction:hover {
+  background-color: #f5f5f5;
+  border-color: #00a677d4;
+}
+
+/* 📱 التجاوب الكامل للشاشات الصغيرة والموبايل (Responsive) */
+@media (max-width: 768px) {
+  .inputsGrid {
+    grid-template-columns: 1fr; /* تحويل التواريخ لتصبح فوق بعضها في الشاشات الصغيرة */
+    gap: 12px;
+  }
+  
+  .actionButtons {
+    width: 100%;
+  }
+
+  .btnExcel, .btnPdf {
+    flex: 1; /* جعل الأزرار تأخذ أحجام متساوية ومريحة على الموبايل */
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .reportCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .cardActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
