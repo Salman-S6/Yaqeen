@@ -1,64 +1,47 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaBell } from 'react-icons/fa';
+import { FaBell, FaBars } from 'react-icons/fa'; // 🟢 استدعاء أيقونة القائمة
 import styles from './Header.module.css';
 
-// 💡 أضفنا activeRole للخصائص المستقبلة من MainLayout
-const Header = ({ title, subtitle, currentUser = {}, activeRole = '' }) => {
+const Header = ({ title, subtitle, currentUser = {}, activeRole = '', toggleSidebar }) => { // 🟢 استقبال الدالة
   const navigate = useNavigate();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
-  // ✅ التحقق الصحيح من الصلاحية باستخدام activeRole الممرر من MainLayout
   const normalizedRole = String(activeRole).toLowerCase();
   const isAdmin = normalizedRole === 'admin' || normalizedRole === 'مدير النظام';
 
   const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      text: isAdmin ? "هناك مستخدم جديد بانتظار التفعيل" : "طلب جديد بحاجة لمراجعة فورية",
-      time: "قبل 5 دقائق",
-      unread: true,
-      link: isAdmin ? "/admin/users" : "/employee/pending-requests"
-    },
-    {
-      id: 2,
-      text: isAdmin ? "تقرير النظام الأسبوعي جاهز" : "تنبيه: طلبات تجاوزت وقت SLA",
-      time: "قبل 15 دقيقة",
-      unread: true,
-      link: isAdmin ? "/admin/users" : "/employee/pending-requests"
-    },
+    { id: 1, text: isAdmin ? "هناك مستخدم جديد بانتظار التفعيل" : "طلب جديد بحاجة لمراجعة فورية", time: "قبل 5 دقائق", unread: true, link: isAdmin ? "/admin/users" : "/employee/pending-requests" },
+    { id: 2, text: isAdmin ? "تقرير النظام الأسبوعي جاهز" : "تنبيه: طلبات تجاوزت وقت SLA", time: "قبل 15 دقيقة", unread: true, link: isAdmin ? "/admin/users" : "/employee/pending-requests" },
     { id: 3, text: "تم تحديث صلاحيات حسابك بنجاح", time: "قبل ساعتين", unread: false, link: "#" }
   ]);
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
   const handleNotificationClick = (id, link) => {
-    setNotifications(prevNotifs =>
-      prevNotifs.map(n => n.id === id ? { ...n, unread: false } : n)
-    );
+    setNotifications(prevNotifs => prevNotifs.map(n => n.id === id ? { ...n, unread: false } : n));
     setIsNotifOpen(false);
-    if (link !== "#") {
-      navigate(link);
-    }
+    if (link !== "#") navigate(link);
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prevNotifs => prevNotifs.map(n => ({ ...n, unread: false })));
-  };
+  const markAllAsRead = () => setNotifications(prevNotifs => prevNotifs.map(n => ({ ...n, unread: false })));
 
   return (
     <header className={styles.header}>
-      <div className={styles.titleSection}>
-        <h1 className={styles.title}>{title}</h1>
-        <p className={styles.subtitle}>{subtitle}</p>
+      {/* 🟢 تجميعة زر القائمة + العنوان */}
+      <div className={styles.headerRight}>
+        <button className={styles.menuToggleBtn} onClick={toggleSidebar}>
+          <FaBars />
+        </button>
+        <div className={styles.titleSection}>
+          <h1 className={styles.title}>{title}</h1>
+          <p className={styles.subtitle}>{subtitle}</p>
+        </div>
       </div>
 
       <div className={styles.actions}>
         <div className={styles.bellWrapper}>
-          <div onClick={(e) => {
-            e.stopPropagation();
-            setIsNotifOpen(!isNotifOpen);
-          }} style={{ position: 'relative', cursor: 'pointer' }}>
+          <div onClick={(e) => { e.stopPropagation(); setIsNotifOpen(!isNotifOpen); }} style={{ position: 'relative', cursor: 'pointer' }}>
             <FaBell className={styles.bellIcon} />
             {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
           </div>
@@ -71,13 +54,8 @@ const Header = ({ title, subtitle, currentUser = {}, activeRole = '' }) => {
               </div>
               <ul className={styles.notifList}>
                 {notifications.map(n => (
-                  <li
-                    key={n.id}
-                    className={n.unread ? styles.unreadItem : styles.readItem}
-                    onClick={() => handleNotificationClick(n.id, n.link)}
-                  >
-                    <p>{n.text}</p>
-                    <small>{n.time}</small>
+                  <li key={n.id} className={n.unread ? styles.unreadItem : styles.readItem} onClick={() => handleNotificationClick(n.id, n.link)}>
+                    <p>{n.text}</p><small>{n.time}</small>
                   </li>
                 ))}
               </ul>

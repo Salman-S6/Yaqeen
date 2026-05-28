@@ -1,3 +1,7 @@
+/* =========================================
+   1. التنسيقات الأساسية للسايدبار وحركة الطي
+   ========================================= */
+
 .sidebar {
     width: 280px;
     min-width: 280px;
@@ -9,8 +13,69 @@
     padding: 0;
     direction: rtl;
     flex-shrink: 0;
-    z-index: 1000;
+    z-index: 9999;
+    /* 🚀 أنيميشن النعومة عند الفتح والإغلاق */
+    transition: margin-right 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+
+/* 🟢 سلوك الشاشات الكبيرة (Desktop): سحب القائمة لليمين لإخفائها وتوسعة الشاشة */
+@media (min-width: 1025px) {
+    .sidebar.closed {
+        margin-right: -280px;
+        opacity: 0;
+        pointer-events: none;
+        /* لمنع التفاعل معها وهي مخفية */
+    }
+}
+
+/* 🟢 زر الإغلاق المخفي في الكمبيوتر ويظهر في الموبايل */
+.mobileCloseBtn {
+    display: none;
+}
+
+/* 🟢 سلوك الشاشات الصغيرة (Mobile & Tablet): القائمة تصبح عائمة (Off-Canvas) */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        transform: translateX(100%);
+        /* مخفية افتراضياً بإزاحتها لليمين */
+        margin-right: 0 !important;
+        /* منع تأثير الديسكتوب */
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        /* تظهر عند الفتح */
+    }
+
+    .sidebar.closed {
+        transform: translateX(100%);
+    }
+
+    .mobileCloseBtn {
+        display: flex;
+        justify-content: flex-start;
+        /* لأنه RTL نضعه في اليمين */
+        padding: 15px 20px 0;
+        font-size: 22px;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .mobileCloseBtn:hover {
+        color: #fff;
+    }
+}
+
+/* =========================================
+   2. تنسيقات المحتوى الداخلي الأصلية
+   ========================================= */
 
 .logoSection {
     padding: 40px 20px;
@@ -39,6 +104,8 @@
     cursor: pointer;
     margin-bottom: 8px;
     transition: 0.3s;
+    text-decoration: none;
+    /* من إضافات بتول تم دمجها هنا */
 }
 
 .navItem:hover,
@@ -50,6 +117,14 @@
 .navIcon {
     font-size: 20px;
     margin-left: 15px;
+    flex-shrink: 0;
+    /* من إضافات بتول تم دمجها هنا */
+}
+
+/* تنسيق إضافي لـ نص الرابط لضمان وضوحه (من إضافات بتول) */
+.navItem span {
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .navBadge {
@@ -150,28 +225,11 @@
     color: #fca5a5 !important;
 }
 
-
 /* --- إضافات لوحة التحكم (Batool) --- */
 
-/* تأكيد تنسيق الروابط عند استخدام NavLink لضمان عدم ظهور خط تحت النص */
-.navItem {
-    text-decoration: none;
-}
-
-/* لضمان بقاء الأيقونة في مكانها الصحيح داخل لوحة التحكم */
-.navIcon {
-    flex-shrink: 0;
-}
-
 /* تحسين شكل الـ Active ليعمل مع NavLink بشكل تلقائي */
-:global(.active) .navItem, 
+:global(.active) .navItem,
 .active {
     background-color: #007c4d !important;
     color: white !important;
-}
-
-/* تنسيق إضافي لـ نص الرابط لضمان وضوحه */
-.navItem span {
-    font-size: 15px;
-    font-weight: 500;
 }

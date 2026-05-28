@@ -126,3 +126,29 @@
 .readItem {
     background-color: white;
 }
+
+/* 🟢 التنسيقات الجديدة للزر والعنوان */
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menuToggleBtn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #4b5563;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: 8px;
+}
+
+.menuToggleBtn:hover {
+    color: #007c4d;
+    background-color: #f3f4f6;
+}
