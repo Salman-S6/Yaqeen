@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Dashboards\AdminDashboardController;
 use App\Http\Controllers\Api\Dashboards\EmployeeDashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RequestController;
@@ -96,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('check.permission:manage_employees')
         ->prefix('admin')
         ->group(function () {
+            Route::get('/dashboard', [AdminDashboardController::class, 'index']);
 
             Route::get('/employees', [EmployeeController::class, 'index']);
             Route::post('/employees', [EmployeeController::class, 'store']);
