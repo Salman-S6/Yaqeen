@@ -4,11 +4,10 @@ import { authService } from '../../api/authService';
 import {
     FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt,
     FaCog, FaThLarge, FaChartLine, FaEye,
-    FaQrcode, FaServer, FaTimes
+    FaQrcode, FaServer, FaTimes, FaFolderOpen // 🟢 استيراد أيقونة المجلد
 } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
-// 🟢 استقبال isOpen و closeSidebar
 const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,10 +38,7 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
     };
 
     return (
-        /* 🟢 تطبيق كلاس الإغلاق والفتح ديناميكياً */
         <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
-
-            {/* 🟢 زر إغلاق يظهر للموبايل فقط داخل السايدبار */}
             <div className={styles.mobileCloseBtn} onClick={closeSidebar}>
                 <FaTimes />
             </div>
@@ -54,10 +50,15 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
             <nav className={styles.navMenu}>
                 {isAdmin ? (
                     <>
-                        {/* 🟢 أضفنا closeSidebar لكل مسار ليقوم بإغلاق القائمة في الموبايل عند التنقل */}
                         <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => { navigate('/admin/users'); closeSidebar(); }}>
                             <FaUsers className={styles.navIcon} /><span>إدارة المستخدمين</span>
                         </div>
+
+                        {/* 🟢 إضافة زر السجل الشامل للطلبات */}
+                        <div className={`${styles.navItem} ${isActive('/admin/all-requests') ? styles.active : ''}`} onClick={() => { navigate('/admin/all-requests'); closeSidebar(); }}>
+                            <FaFolderOpen className={styles.navIcon} /><span>سجل الطلبات</span>
+                        </div>
+
                         <div className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`} onClick={() => { navigate('/admin/audit-logs'); closeSidebar(); }}>
                             <FaFileAlt className={styles.navIcon} /><span>سجلات التدقيق</span>
                         </div>
