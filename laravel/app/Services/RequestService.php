@@ -88,9 +88,11 @@ class RequestService
                 'issued_at' => $document->generated_at->toIso8601String(),
             ];
 
-            $signature = $this->signatureService->sign($payloadData);
+            $base64Payload = base64_encode(json_encode($payloadData, JSON_UNESCAPED_UNICODE));
 
-            $verifyUrl = $this->signatureService->generateVerifyUrl($document->id, $signature);
+            $signature = $this->signatureService->sign($base64Payload);
+
+            $verifyUrl = $this->signatureService->generateVerifyUrl($document->id, $base64Payload, $signature);
 
             $finalPayload = [
                 'data' => $payloadData,
