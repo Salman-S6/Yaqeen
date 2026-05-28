@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Dashboards\AdminDashboardController;
 use App\Http\Controllers\Api\Dashboards\EmployeeDashboardController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\ServiceTypeController;
 use Illuminate\Support\Facades\Route;
@@ -115,7 +116,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
             ->middleware('check.permission:view_requests');
+    });
 
+    /*
+    |----------------------------------------------------------------------
+    | Notifications (In-App Bell)
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::patch('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 });
 
