@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Request extends Model
 {
+    use Auditable;
+
     protected $fillable = [
         'citizen_id',
         'request_number',
@@ -74,7 +77,6 @@ class Request extends Model
     protected static function booted(): void
     {
         static::deleting(function ($request) {
-            // عندما يتم حذف الطلب، قم بالمرور على كل مرفقاته وحذفها
             $request->attachments->each->delete();
         });
     }

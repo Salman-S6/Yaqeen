@@ -14,7 +14,7 @@
                 <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h1 class="text-2xl font-bold text-green-800">وثيقة أصلية ومعتمدة</h1>
-            <p class="text-green-600 mt-2 text-sm">تم التحقق من صحة التوقيع الرقمي (RSA)</p>
+            <p class="text-green-600 mt-2 text-sm">تم التحقق من صحة التوقيع الرقمي</p>
         </div>
         <div class="p-6 space-y-4">
             <div class="border-b pb-3"><p class="text-xs text-gray-500">رقم الطلب</p><p class="font-bold text-gray-800">{{ $data['request_number'] }}</p></div>

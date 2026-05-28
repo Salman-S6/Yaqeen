@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminCitizenController;
 use App\Http\Controllers\Api\AdminOcrController;
 use App\Http\Controllers\Api\AdminStatsController;
@@ -115,7 +116,6 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/citizens', [AdminCitizenController::class, 'index']);
                 Route::get('/citizens/{id}', [AdminCitizenController::class, 'show']);
                 Route::patch('/citizens/{id}/toggle-status', [AdminCitizenController::class, 'toggleStatus']);
-
             });
 
             Route::get('/verification-logs', [AdminVerificationLogController::class, 'index']);
@@ -123,6 +123,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/stats', [AdminStatsController::class, 'index']);
 
             Route::get('/ocr-logs', [AdminOcrController::class, 'index']);
+
+            Route::get('/audit-logs', [AdminAuditLogController::class, 'index']);
         });
 
     /*
