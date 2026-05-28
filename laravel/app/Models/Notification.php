@@ -19,6 +19,7 @@ class Notification extends Model
         'is_sent',
         'retry_count',
         'sent_at',
+        'read_at',
         'created_at',
     ];
 
@@ -27,6 +28,8 @@ class Notification extends Model
         return [
             'is_sent' => 'boolean',
             'sent_at' => 'datetime',
+            'read_at' => 'datetime',
+            'created_at' => 'datetime',
         ];
     }
 
