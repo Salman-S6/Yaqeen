@@ -1,32 +1,93 @@
-import React from 'react';
-import { useAdminStats } from '../../../hooks/useAdminStats';
+import React, { useState, useEffect } from 'react';
+import { employeeService } from '../../../api/employeeService'; 
 import AdminStatCard from '../../../components/AdminStatCard/AdminStatCard';
 import { DailyBarChart, StatusDonutChart } from '../../../components/Charts/AdminCharts';
-import { FiUsers, FiClock, FiCheckCircle, FiFileText } from 'react-icons/fi';
+import { FiUsers, FiClock, FiCheckCircle, FiFileText, FiUserPlus } from 'react-icons/fi'; // 🟢 إضافة أيقونة FiUserPlus للبطاقة الخامسة
 import styles from './AdminStatsPage.module.css';
 
 const AdminStatsPage = () => {
-    const { stats, loading, error } = useAdminStats();
-    const icons = [<FiFileText />, <FiCheckCircle />, <FiClock />, <FiUsers />];
+    const [statsData, setStatsData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    if (loading) return <div className={styles.loader}>جاري تحميل الإحصائيات...</div>;
-    if (error) return <div className={styles.error}>حدث خطأ: {error}</div>;
-    if (!stats) return null;
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await employeeService.getAdminStats();
+                const data = response.data?.data || response.data;
+                setStatsData(data);
+            } catch (error) {
+                console.error("فشل جلب إحصائيات النظام:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
 
-    // 💡 التعديل هنا: جلب الشهر والسنة الحاليين باللغة العربية ديناميكياً
+    if (loading) return <div className={styles.loader}>جاري تحميل الإحصائيات المركزية...</div>;
+    if (!statsData) return <div className={styles.error}>لم يتم العثور على بيانات للإحصائيات.</div>;
+
     const currentMonthYear = new Intl.DateTimeFormat('ar-EG', {
         month: 'long',
         year: 'numeric'
     }).format(new Date());
 
+    // 🟢 5 بطاقات تتطابق تماماً مع مفاتيح الـ JSON
+    const kpis = statsData.kpis || {};
+    const summaryCards = [
+        { 
+            title: "إجمالي الطلبات", 
+            value: kpis.total_requests || 0, 
+            subText: "كافة الطلبات المسجلة", 
+            trendType: "up", 
+            icon: <FiFileText size={24} color="#3b82f6" /> // أزرق
+        },
+        { 
+            title: "نسبة القبول", 
+            value: `${kpis.acceptance_rate || 0}%`, 
+            subText: "معدل الاعتماد", 
+            trendType: "up", 
+            icon: <FiCheckCircle size={24} color="#10b981" /> // أخضر
+        },
+        { 
+            title: "وقت المعالجة", 
+            value: kpis.avg_processing_time || 0, 
+            subText: "ساعات (متوسط عام)", 
+            trendType: "neutral", 
+            icon: <FiClock size={24} color="#f59e0b" /> // برتقالي
+        },
+        { 
+            title: "إجمالي المواطنين", 
+            value: kpis.total_citizens || 0, 
+            subText: "مسجلين بالنظام", 
+            trendType: "up", 
+            icon: <FiUsers size={24} color="#8b5cf6" /> // بنفسجي
+        },
+        { 
+            title: "تسجيلات اليوم", // 🟢 البطاقة الخامسة الجديدة
+            value: kpis.today_citizens || 0, 
+            subText: "مواطنون جدد", 
+            trendType: "up", 
+            icon: <FiUserPlus size={24} color="#ec4899" /> // وردي
+        }
+    ];
+
+    const distribution = statsData.charts?.status_distribution || { approved: 0, rejected: 0 };
+    const donutData = [
+        { name: "مقبولة", value: distribution.approved, color: "#10b981" },
+        { name: "مرفوضة", value: distribution.rejected, color: "#ef4444" } 
+    ];
+
     return (
         <div className={styles.container}>
             <div className={styles.statsGrid}>
-                {stats.summary.map((item, idx) => (
+                {summaryCards.map((item, idx) => (
                     <AdminStatCard
                         key={idx}
-                        {...item}
-                        icon={icons[idx]}
+                        title={item.title}
+                        value={item.value}
+                        subText={item.subText}
+                        icon={item.icon}
                         trendType={item.trendType}
                     />
                 ))}
@@ -34,13 +95,12 @@ const AdminStatsPage = () => {
 
             <div className={styles.chartsGrid}>
                 <div className={styles.chartCard}>
-                    {/* 💡 استخدام المتغير الديناميكي هنا */}
                     <h3 className={styles.chartTitle}>الطلبات اليومية - {currentMonthYear}</h3>
-                    <DailyBarChart data={stats.dailyRequests} />
+                    <DailyBarChart data={statsData.charts?.daily_requests || []} />
                 </div>
                 <div className={styles.chartCard}>
                     <h3 className={styles.chartTitle}>توزيع الحالات</h3>
-                    <StatusDonutChart data={stats.statusDistribution} />
+                    <StatusDonutChart data={donutData} />
                 </div>
             </div>
         </div>

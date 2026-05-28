@@ -10,9 +10,10 @@
 /* شبكة البطاقات العلوية */
 .statsGrid {
     display: grid;
-    /* مرونة تلقائية: أقل عرض للبطاقة 220 بكسل، وتتمدد لتملأ الفراغ */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* 🟢 جعل الشبكة مرنة: تتسع لـ 5 بطاقات في الشاشات الكبيرة، وتتقلص أوتوماتيكياً في الشاشات الصغيرة */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    margin-bottom: 30px;
 }
 
 /* شبكة المخططات الرئيسية */

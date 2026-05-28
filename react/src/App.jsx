@@ -19,6 +19,9 @@ import AdminOCRPage from './assets/pages/AdminOCRPage/AdminOCRPage';
 import ExternalVerifyPage from "./assets/pages/ExternalVerifyPage/ExternalVerifyPage";
 import AdminServicesPage from "./assets/pages/AdminServicesPage/AdminServicesPage";
 
+// 🟢 استيراد صفحة السجل الشامل للأدمن
+import AdminRequestsPage from './assets/pages/AdminRequestsPage/AdminRequestsPage';
+
 // استيراد واجهات بتول (سجلات التدقيق والتقارير)
 import AdminAuditPage from './assets/pages/AdminAuditPage/AdminAuditPage';
 import Reports from './assets/pages/Reports/Reports';
@@ -48,7 +51,6 @@ function App() {
       }
 
       try {
-        // 1. جلب بيانات الملف الشخصي
         const response = await authService.getProfile();
         const responseData = response.data;
         const userData = responseData.user || responseData.data || responseData;
@@ -66,12 +68,9 @@ function App() {
               role = localStorage.getItem('userRole') || 'employee';
           }
           
-          // توحيد حالة الحروف لضمان دقة الشرط
           const normalizedRole = String(role).toLowerCase();
           localStorage.setItem('userRole', role);
 
-          // 🛡️ الحارس البرمجي (Guard Clause):
-          // 2. جلب داتا المعاملات الحية فقط إذا كان المستخدم موظفاً
           if (normalizedRole === 'employee' || normalizedRole === 'موظف') {
             try {
               const reqResponse = await employeeRequestService.getPendingRequests();
@@ -144,6 +143,11 @@ function App() {
         }>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
+          
+          {/* 🟢 مسارات الطلبات الجديدة الخاصة بالأدمن */}
+          <Route path="all-requests" element={<AdminRequestsPage />} />
+          <Route path="review-request/:requestId" element={<RequestReview isAdminMode={true} />} />
+
           <Route path="stats" element={<AdminStatsPage />} />
           <Route path="performance" element={<AdminPerfPage />} />
           <Route path="ocr" element={<AdminOCRPage />} />
