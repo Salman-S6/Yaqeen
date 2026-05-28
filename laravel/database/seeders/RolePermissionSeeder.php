@@ -39,6 +39,7 @@ class RolePermissionSeeder extends Seeder
             'edit_users',
             'delete_users',
             'manage_employees',
+            'manage_citizens',
 
             // Requests
             'view_requests',

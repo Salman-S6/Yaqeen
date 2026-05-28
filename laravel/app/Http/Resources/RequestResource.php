@@ -3,11 +3,22 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 
 class RequestResource extends JsonResource
 {
     public function toArray($request): array
     {
+        $identityAttachment = $this->whenLoaded('citizen', function () {
+            return $this->citizen?->attachments
+                ->where('type', 'identity_card')
+                ->first();
+        });
+
+        $identityImageUrl = $identityAttachment
+            ? URL::signedRoute('attachments.view', ['id' => $identityAttachment->id])
+            : null;
+
         return [
             'id' => $this->id,
             'request_number' => $this->request_number,
@@ -24,6 +35,8 @@ class RequestResource extends JsonResource
                 'date_of_birth' => $this->citizen?->date_of_birth?->format('Y-m-d'),
                 'place_of_registration' => $this->citizen?->place_of_registration,
             ]),
+
+            'identity_image_url' => $identityImageUrl,
 
             'service_type' => $this->when($this->relationLoaded('serviceType'), fn () => [
                 'id' => $this->serviceType?->id,
