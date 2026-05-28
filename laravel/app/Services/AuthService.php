@@ -35,20 +35,17 @@ class AuthService
 
             $user->assignRole('citizen');
 
-            $ocrResult = app(OCRService::class)->process($data['id_image']);
+            $ocrResponse = app(OCRService::class)->process($data['id_image']);
 
-            // 🌟 2. حائط الصد الأمني: حساب النسبة قبل حفظ الصورة
             $verificationService = app(IdentityVerificationService::class);
-            $score = $verificationService->calculateScore($citizen, $ocrResult);
+            $score = $verificationService->calculateScore($citizen, $ocrResponse['data']);
 
-            // إذا كانت النسبة ضعيفة جداً (الصورة ليست هوية، أو هوية شخص آخر)
             if ($score < 50) {
                 throw ValidationException::withMessages([
                     'id_image' => ['الصورة المرفقة لا تتطابق مع بياناتك المدخلة، أو أنها ليست صورة هوية واضحة.'],
                 ]);
             }
 
-            // 🌟 3. إذا نجح الفحص (الصورة حقيقية وتطابق البيانات)، نقوم بحفظ الصورة بشكل دائم
             $attachment = $this->attachmentService->store(
                 file: $data['id_image'],
                 attachableModel: $citizen,
@@ -56,9 +53,8 @@ class AuthService
                 attachmentType: 'identity_card'
             );
 
-            app(OCRService::class)->saveResult($attachment->id, $ocrResult, $score);
+            app(OCRService::class)->saveResult($attachment->id, $ocrResponse);
 
-            // 4. تحديث بيانات المواطن واعتماده
             $citizen->update([
                 'is_verified' => $score >= 90,
                 // 'verification_score' => $score,

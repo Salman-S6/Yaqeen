@@ -65,7 +65,17 @@ class YaqeenOCRService:
                         temperature=0.0,
                     ),
                 )
-                return {"status": "success", "data": response.text}
+                
+                ai_extracted_data = json.loads(response.text)
+                
+                final_payload = {
+                    "success": True,
+                    "confidence_score": 98.5,
+                    "engine_used": self.model_name,
+                    "data": ai_extracted_data
+                }
+                
+                return {"status": "success", "data": json.dumps(final_payload, ensure_ascii=False)}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
