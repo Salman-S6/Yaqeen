@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\VerificationLog;
 use Illuminate\Http\Request;
 
 class VerificationController extends Controller
@@ -23,9 +24,20 @@ class VerificationController extends Controller
         }
 
         $cleanSignature = trim(str_replace([' ', '\\/'], ['+', '/'], urldecode($signatureFromUrl)));
-
         $publicKey = config('services.signature.public_key');
         $isValid = openssl_verify($payloadFromUrl, base64_decode($cleanSignature), $publicKey, OPENSSL_ALGO_SHA256);
+
+        $resultStatus = ($isValid === 1) ? 'valid' : 'forged';
+        $ipAddress = $request->ip();
+
+        VerificationLog::create([
+            'document_id' => $document->id,
+            'result' => $resultStatus,
+            'ip_address' => $ipAddress,
+            //يمكن لاحقاً استخدام مكتبة مثل stevebauman/location لتحويل الـ IP إلى اسم منظمة هنا
+            'verifier_organization' => null,
+            'verified_at' => now(),
+        ]);
 
         if ($isValid === 1) {
             $data = json_decode(base64_decode($payloadFromUrl), true);

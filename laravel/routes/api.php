@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminVerificationLogController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Dashboards\AdminDashboardController;
@@ -105,6 +106,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/employees/{id}', [EmployeeController::class, 'show']);
             Route::put('/employees/{id}', [EmployeeController::class, 'update']);
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+
+            Route::get('/verification-logs', [AdminVerificationLogController::class, 'index']);
         });
 
     /*

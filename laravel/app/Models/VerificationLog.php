@@ -10,6 +10,7 @@ class VerificationLog extends Model
     protected $fillable = [
         'document_id',
         'result',
+        'ip_address',
         'verifier_organization',
         'verified_at',
     ];
