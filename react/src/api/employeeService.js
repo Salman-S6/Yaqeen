@@ -5,10 +5,14 @@ export const employeeService = {
     getAdminStats: () => api.get('admin/stats'),
     getVerificationLogs: () => api.get('admin/verification-logs'),
     getPerformanceDashboard: () => api.get('admin/dashboard'),
-    
-    // 🟢 المسار الجديد المربوط بـ API الخاص بك
     getOcrLogs: () => api.get('admin/ocr-logs'),
     
+    // 🟢 مسارات إدارة المواطنين الجديدة
+    getCitizens: () => api.get('admin/citizens'),
+    getCitizenDetails: (id) => api.get(`admin/citizens/${id}`),
+    toggleCitizenStatus: (id) => api.patch(`admin/citizens/${id}/toggle-status`),
+    
+    // مسارات إدارة الموظفين
     getAllRequests: () => api.get('requests'),
     getAll: () => api.get('admin/employees'),
     create: (payload) => api.post('admin/employees', payload),

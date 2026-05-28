@@ -3,16 +3,17 @@ import { employeeService } from '../../../api/employeeService';
 import Header from '../../../components/Header/Header';
 import DeleteConfirmModal from '../../../components/Modals/DeleteConfirmModal';
 import EmployeeFormModal from '../../../components/Modals/EmployeeFormModal';
-import { FaUserPlus, FaSearch, FaTrash, FaCheckCircle, FaExclamationCircle, FaTimes } from 'react-icons/fa';
+import CitizensTable from '../../../components/CitizensTable/CitizensTable';
+import { FaUserPlus, FaSearch, FaTrash, FaCheckCircle, FaExclamationCircle, FaTimes, FaIdCard } from 'react-icons/fa';
 import styles from './AdminUsersPage.module.css';
 
 const AdminUsersPage = () => {
+    // ==========================================
+    // 1. States (حالات المكون)
+    // ==========================================
+    
+    // حالات الفريق الوظيفي (Employees)
     const [employees, setEmployees] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('team');
-
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, employeeId: null });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddMode, setIsAddMode] = useState(false);
@@ -25,24 +26,87 @@ const AdminUsersPage = () => {
     const [password, setPassword] = useState('');
     const [userStatus, setUserStatus] = useState('active');
 
+    // حالات المواطنين (Citizens) 🟢
+    const [citizens, setCitizens] = useState([]);
+    const [selectedCitizenDetails, setSelectedCitizenDetails] = useState(null);
+    const [isCitizenModalOpen, setIsCitizenModalOpen] = useState(false);
+
+    // حالات عامة (UI/UX)
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('citizens'); // جعلنا المواطنين الافتراضي
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+    // ==========================================
+    // 2. Functions (الدوال المساعدة)
+    // ==========================================
+
     const showNotification = (message, type = 'success') => {
         setToast({ show: true, message, type });
         setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
     };
 
-    const fetchEmployees = async () => {
+    // 🟢 دالة جلب البيانات الديناميكية (مواطنين أو موظفين حسب التبويب النشط)
+    const fetchData = async () => {
+        setIsLoading(true);
         try {
-            setIsLoading(true);
-            const response = await employeeService.getAll();
-            const data = response.data && response.data.data ? response.data.data : response.data;
-            setEmployees(Array.isArray(data) ? data : []);
+            if (activeTab === 'team') {
+                const response = await employeeService.getAll();
+                const data = response.data?.data || response.data || [];
+                setEmployees(Array.isArray(data) ? data : []);
+            } else if (activeTab === 'citizens') {
+                const response = await employeeService.getCitizens();
+                // حسب الـ JSON المرسل، مسار المصفوفة هو data.data.data
+                const data = response.data?.data?.data || [];
+                setCitizens(Array.isArray(data) ? data : []);
+            }
         } catch (error) {
             showNotification(error.response?.data?.message || "فشل الاتصال بالخادم الرئيسي.", 'error');
-            setEmployees([]);
-        } finally { setIsLoading(false); }
+            if(activeTab === 'team') setEmployees([]);
+            if(activeTab === 'citizens') setCitizens([]);
+        } finally { 
+            setIsLoading(false); 
+        }
     };
 
-    useEffect(() => { if (activeTab === 'team') fetchEmployees(); }, [activeTab]);
+    useEffect(() => {
+        fetchData();
+        setSearchTerm(''); // تصفير البحث عند تغيير التبويب
+    }, [activeTab]);
+
+    // ==========================================
+    // 3. Handlers for Citizens (دوال المواطنين) 🟢
+    // ==========================================
+
+    const handleToggleCitizenStatus = async (id) => {
+        try {
+            await employeeService.toggleCitizenStatus(id);
+            // تحديث الحالة محلياً في الجدول مباشرة (Optimistic UI)
+            setCitizens(prev => prev.map(c => 
+                c.id === id ? { ...c, account_status: c.account_status === 'active' ? 'suspended' : 'active' } : c
+            ));
+            showNotification("تم تغيير حالة حساب المواطن بنجاح", "success");
+        } catch (error) {
+            showNotification("حدث خطأ أثناء تغيير حالة المواطن", "error");
+        }
+    };
+
+    const handleViewCitizenDetails = async (id) => {
+        try {
+            setIsLoading(true);
+            const response = await employeeService.getCitizenDetails(id);
+            setSelectedCitizenDetails(response.data?.data);
+            setIsCitizenModalOpen(true);
+        } catch (error) {
+            showNotification("فشل جلب تفاصيل المواطن.", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ==========================================
+    // 4. Handlers for Employees (دوال الموظفين الأصلية)
+    // ==========================================
 
     const handleOpenAddModal = () => {
         setIsAddMode(true); setSelectedEmployee(null); resetForm(); setIsModalOpen(true);
@@ -98,15 +162,26 @@ const AdminUsersPage = () => {
         setFirstName(''); setLastName(''); setNationalId(''); setUserEmail(''); setPassword(''); setUserStatus('active');
     };
 
+    // ==========================================
+    // 5. Filters (الفلاتر)
+    // ==========================================
+
     const filteredEmployees = employees.filter(emp => {
         const fullName = `${emp.first_name || ''} ${emp.last_name || ''}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase()) || (emp.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    const filteredCitizens = citizens.filter(c => {
+        const fullName = (c.full_name || '').toLowerCase();
+        const nId = (c.national_id || '').toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase()) || nId.includes(searchTerm.toLowerCase());
     });
 
     return (
         <div className={styles.pageContainer}>
             <Header title="إدارة النظام" subtitle="admin" />
 
+            {/* نظام الإشعارات */}
             {toast.show && (
                 <div className={`${styles.toastNotification} ${toast.type === 'success' ? styles.toastSuccess : styles.toastError}`}>
                     <div className={styles.toastBody}>
@@ -128,13 +203,34 @@ const AdminUsersPage = () => {
                     <button className={`${styles.tabBtn} ${activeTab === 'team' ? styles.activeTab : ''}`} onClick={() => setActiveTab('team')}>الفريق الوظيفي</button>
                 </div>
 
-                {activeTab === 'team' ? (
-                    <>
-                        <div className={styles.searchSection}>
-                            <div className={styles.searchBarContainer}><FaSearch className={styles.searchIcon} /><input type="text" placeholder="بحث بالاسم أو البريد الإلكتروني..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={styles.searchInput} /></div>
-                        </div>
+                <div className={styles.searchSection}>
+                    <div className={styles.searchBarContainer}>
+                        <FaSearch className={styles.searchIcon} />
+                        <input 
+                            type="text" 
+                            placeholder={activeTab === 'team' ? "بحث بالاسم أو البريد الإلكتروني..." : "بحث بالاسم أو الرقم الوطني..."} 
+                            value={searchTerm} 
+                            onChange={(e) => setSearchTerm(e.target.value)} 
+                            className={styles.searchInput} 
+                        />
+                    </div>
+                </div>
 
-                        {isLoading ? <div style={{ textAlign: 'center', padding: '40px', color: '#00a65a', fontWeight: 'bold' }}>جاري المزامنة...</div> : (
+                {isLoading && !isCitizenModalOpen ? (
+                    <div style={{ textAlign: 'center', padding: '40px', color: '#00a65a', fontWeight: 'bold' }}>جاري المزامنة...</div>
+                ) : (
+                    <>
+                        {/* 🟢 عرض جدول المواطنين */}
+                        {activeTab === 'citizens' && (
+                            <CitizensTable 
+                                citizens={filteredCitizens} 
+                                onToggleStatus={handleToggleCitizenStatus} 
+                                onViewDetails={handleViewCitizenDetails} 
+                            />
+                        )}
+
+                        {/* عرض جدول الموظفين الأصلي */}
+                        {activeTab === 'team' && (
                             <div className={styles.tableWrapper}>
                                 <table className={styles.usersTable}>
                                     <thead><tr><th>الاسم الكامل</th><th>الرقم الوطني</th><th>البريد الإلكتروني</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
@@ -158,18 +254,57 @@ const AdminUsersPage = () => {
                             </div>
                         )}
                     </>
-                ) : <div className={styles.emptyState}>سجل المواطنين مرتبط بقاعدة البيانات المركزية للهوية الشخصية.</div>}
+                )}
             </div>
 
-            {/* النوافذ المنبثقة المستدعاة برشق ونظافة تامة */}
-            <DeleteConfirmModal isOpen={confirmDelete.isOpen} onClose={() => setConfirmDelete({ isOpen: false, employeeId: null })} onConfirm={executeDeleteEmployee} />
+            {/* ========================================== */}
+            {/* النوافذ المنبثقة (Modals) */}
+            {/* ========================================== */}
 
+            {/* 1. نوافذ الموظفين */}
+            <DeleteConfirmModal isOpen={confirmDelete.isOpen} onClose={() => setConfirmDelete({ isOpen: false, employeeId: null })} onConfirm={executeDeleteEmployee} />
             <EmployeeFormModal
                 isOpen={isModalOpen} isAddMode={isAddMode} onClose={() => setIsModalOpen(false)} onSave={handleSaveChanges}
                 firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName}
                 nationalId={nationalId} setNationalId={setNationalId} userEmail={userEmail} setUserEmail={setUserEmail}
                 password={password} setPassword={setPassword} userStatus={userStatus} setUserStatus={setUserStatus}
             />
+
+            {/* 2. 🟢 نافذة تفاصيل المواطن */}
+            {isCitizenModalOpen && selectedCitizenDetails && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
+                    <div style={{ backgroundColor: '#fff', width: '600px', borderRadius: '12px', overflow: 'hidden', direction: 'rtl', maxHeight: '90vh', overflowY: 'auto' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 20px', borderBottom: '1px solid #e5e7eb', backgroundColor: '#f9fafb' }}>
+                            <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><FaIdCard color="#007c4d"/> ملف المواطن: {selectedCitizenDetails.full_name}</h3>
+                            <button onClick={() => setIsCitizenModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer' }}><FaTimes /></button>
+                        </div>
+                        
+                        <div style={{ padding: '20px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                                <div><strong style={{color: '#6b7280'}}>الرقم الوطني:</strong> <div>{selectedCitizenDetails.national_id}</div></div>
+                                <div><strong style={{color: '#6b7280'}}>تاريخ الميلاد:</strong> <div>{selectedCitizenDetails.date_of_birth}</div></div>
+                                <div><strong style={{color: '#6b7280'}}>اسم الأب:</strong> <div>{selectedCitizenDetails.father_name}</div></div>
+                                <div><strong style={{color: '#6b7280'}}>اسم الأم:</strong> <div>{selectedCitizenDetails.mother_full_name}</div></div>
+                                <div><strong style={{color: '#6b7280'}}>محل القيد:</strong> <div>{selectedCitizenDetails.place_of_registration}</div></div>
+                                <div><strong style={{color: '#6b7280'}}>تاريخ التسجيل:</strong> <div>{selectedCitizenDetails.registration_date}</div></div>
+                            </div>
+
+                            <h4 style={{ borderBottom: '1px solid #eee', paddingBottom: '10px' }}>المرفقات (صورة الهوية)</h4>
+                            {selectedCitizenDetails.attachments && selectedCitizenDetails.attachments.length > 0 ? (
+                                <img 
+                                    src={selectedCitizenDetails.attachments[0].view_url} 
+                                    alt="الهوية" 
+                                    style={{ width: '100%', borderRadius: '8px', border: '1px solid #ddd', marginTop: '10px' }} 
+                                />
+                            ) : (
+                                <div style={{ background: '#f3f4f6', padding: '20px', textAlign: 'center', borderRadius: '8px', color: '#6b7280', marginTop: '10px' }}>
+                                    لا توجد مرفقات مسجلة لهذا المواطن.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
