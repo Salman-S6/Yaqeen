@@ -30,7 +30,6 @@ class RequestResource extends JsonResource
                 'name' => $this->serviceType?->name,
             ]),
 
-            // assignedEmployee هو User مباشرة — لا يوجد ->user فوقه
             'employee' => $this->when(
                 $this->relationLoaded('assignedEmployee') && $this->assignedEmployee,
                 fn () => [
@@ -50,9 +49,8 @@ class RequestResource extends JsonResource
             'assigned_at' => $this->assigned_at?->format('Y-m-d H:i:s'),
             'resolved_at' => $this->resolved_at?->format('Y-m-d H:i:s'),
 
-            // إذا كانت الوثيقة موجودة، قم بتوليد رابط الـ QR، وإلا أرسل null
             'qr_url' => $this->document && $this->document->qrCode
-                ? url('/verify-document/'.$this->document->id.'?sig='.urlencode(json_decode($this->document->qrCode->payload, true)['signature']))
+                ? (json_decode($this->document->qrCode->payload, true)['verify_url'] ?? null)
                 : null,
         ];
     }
