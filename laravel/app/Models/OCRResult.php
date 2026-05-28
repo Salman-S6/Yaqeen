@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OCRResult extends Model
 {
+    protected $table = 'ocr_results';
+
     protected $fillable = [
         'attachment_id',
         'extracted_first_name',

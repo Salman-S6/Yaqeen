@@ -35,19 +35,35 @@ class AuthService
 
             $user->assignRole('citizen');
 
-            // --- رفع صورة الهوية وربطها بالمواطن ---
-            // بما أننا داخل Transaction، إذا فشل الرفع لأسباب أمنية (Exception)
-            // سيقوم لارافل بالتراجع عن إنشاء الـ User والـ Citizen تلقائياً!
-            $this->attachmentService->store(
+            $ocrResult = app(OCRService::class)->process($data['id_image']);
+
+            // 🌟 2. حائط الصد الأمني: حساب النسبة قبل حفظ الصورة
+            $verificationService = app(IdentityVerificationService::class);
+            $score = $verificationService->calculateScore($citizen, $ocrResult);
+
+            // إذا كانت النسبة ضعيفة جداً (الصورة ليست هوية، أو هوية شخص آخر)
+            if ($score < 50) {
+                throw ValidationException::withMessages([
+                    'id_image' => ['الصورة المرفقة لا تتطابق مع بياناتك المدخلة، أو أنها ليست صورة هوية واضحة.'],
+                ]);
+            }
+
+            // 🌟 3. إذا نجح الفحص (الصورة حقيقية وتطابق البيانات)، نقوم بحفظ الصورة بشكل دائم
+            $attachment = $this->attachmentService->store(
                 file: $data['id_image'],
-                attachableModel: $citizen,     // نربط الصورة بملف المواطن
-                uploaderId: $user->id,         // المستخدم الذي رفع الصورة هو نفسه من يسجل الآن
+                attachableModel: $citizen,
+                uploaderId: $user->id,
                 attachmentType: 'identity_card'
             );
 
-            // //////////////////////////////////////////////////////////////////
-            // app(IdentityVerificationService::class)->
-            // verify($citizen, $data['id_image']);
+            app(OCRService::class)->saveResult($attachment->id, $ocrResult, $score);
+
+            // 4. تحديث بيانات المواطن واعتماده
+            $citizen->update([
+                'is_verified' => $score >= 90,
+                // 'verification_score' => $score,
+                'verified_at' => now(),
+            ]);
 
             return $user->load(['citizen.attachments']);
         });

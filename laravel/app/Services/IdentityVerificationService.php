@@ -1,52 +1,37 @@
 <?php
-namespace App\Services;
 
-use App\Models\Attachment;
-use App\Services\FraudService;
-use App\Services\OCRService;
+namespace App\Services;
 
 class IdentityVerificationService
 {
-    public function verify($citizen, $file)
-    {
-        $path = $file->store('ids');
-
-        $attachment = Attachment::create([
-            'request_id' => null,
-            'file_path' => $path,
-            'file_type' => $file->getClientMimeType(),
-            'file_size_kb' => $file->getSize() / 1024,
-            'uploaded_at' => now(),
-        ]);
-
-        $ocr = app(OCRService::class)->process($attachment);
-        $fraud = app(FraudService::class)->check($attachment);
-
-        $score = $this->match($citizen, $ocr);
-
-        $citizen->update([
-            'is_verified' => $score > 90 && $fraud->result === 'original',
-            'verification_score' => $score,
-            'verified_at' => now(),
-        ]);
-
-        return $citizen;
-    }
-
-    private function match($citizen, $ocr)
+    /**
+     * حساب نسبة المطابقة بين مدخلات المواطن ومخرجات الذكاء الاصطناعي (OCR)
+     *
+     * * @param mixed $citizen كائن المواطن (يحتوي على علاقة user)
+     * @param  mixed  $ocr  كائن النتيجة المستخرجة من محرك بايثون
+     * @return int نسبة المطابقة (من 0 إلى 100)
+     */
+    public function calculateScore($citizen, $ocr): int
     {
         $score = 0;
 
-        if ($citizen->user->first_name === $ocr->extracted_first_name) {
+        // 1. مطابقة الاسم الأول
+        if (isset($ocr->first_name) && $citizen->user->first_name === $ocr->first_name) {
             $score += 25;
         }
-        if ($citizen->user->last_name === $ocr->extracted_last_name) {
+
+        // 2. مطابقة الكنية (النسبة)
+        if (isset($ocr->last_name) && $citizen->user->last_name === $ocr->last_name) {
             $score += 25;
         }
-        if ($citizen->father_name === $ocr->extracted_father_name) {
+
+        // 3. مطابقة اسم الأب
+        if (isset($ocr->father_name) && $citizen->father_name === $ocr->father_name) {
             $score += 25;
         }
-        if ($citizen->date_of_birth == $ocr->extracted_dob) {
+
+        // 4. مطابقة الرقم الوطني (الأهم أمنياً)
+        if (isset($ocr->national_number) && $citizen->user->national_id === $ocr->national_number) {
             $score += 25;
         }
 
