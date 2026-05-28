@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Dashboards;
 
 use App\Http\Controllers\Controller;
 use App\Services\Dashboards\AdminStatsService;
