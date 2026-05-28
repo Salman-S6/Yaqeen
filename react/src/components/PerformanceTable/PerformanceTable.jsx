@@ -1,45 +1,38 @@
 import React, { useState } from 'react';
-import { FaSearch, FaChevronRight, FaChevronLeft } from 'react-icons/fa'; // استيراد الأيقونات
+import { FaSearch, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import styles from './PerformanceTable.module.css';
 
-const PerformanceTable = ({ data }) => {
+const PerformanceTable = ({ data = [] }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 5; // عدد الصفوف في كل صفحة
+    const rowsPerPage = 5;
 
-    // 💡 دالة الفلترة الفعالة بناءً على مصطلح البحث
+    // 💡 فلترة البيانات مع حماية (Optional Chaining) لضمان عدم توقف النظام
     const filteredData = data.filter((emp) =>
-        emp.name.toLowerCase().includes(searchTerm.toLowerCase())
+        emp.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // 💡 منطق الترقيم الفعال (Pagination)
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow); // الصفوف الحالية فقط
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage); // إجمالي الصفحات
+    const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow); 
+    // تأمين القيمة في حال كانت المصفوفة فارغة
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1; 
 
-    // دالة تحديث البحث والعودة للصفحة الأولى
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1);
     };
 
-    // دوال التنقل بين الصفحات
     const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
     };
 
     return (
         <div className={styles.tableCard}>
-            {/* شريط البحث والـ UI العلوي */}
             <div className={styles.cardHeader}>
                 <h3>تقرير أداء الموظفين - الأسبوع الأخير</h3>
                 <div className={styles.searchBox}>
@@ -48,13 +41,12 @@ const PerformanceTable = ({ data }) => {
                         type="text"
                         placeholder="ابحث عن موظف..."
                         value={searchTerm}
-                        onChange={handleSearchChange} // ربط مصطلح البحث بالـ State
+                        onChange={handleSearchChange}
                         className={styles.searchInput}
                     />
                 </div>
             </div>
 
-            {/* الجدول */}
             <div className={styles.tableContainer}>
                 <table className={styles.table}>
                     <thead>
@@ -72,19 +64,21 @@ const PerformanceTable = ({ data }) => {
                             currentRows.map((emp) => (
                                 <tr key={emp.id}>
                                     <td className={styles.empName}>{emp.name}</td>
-                                    <td>{emp.requests}</td>
-                                    <td>{emp.avgTime}</td>
-                                    <td className={emp.slaViolations > 2 ? styles.dangerText : ''}>
-                                        {emp.slaViolations}
+                                    {/* 🟢 ربط مفاتيح الباك-إند الحقيقية */}
+                                    <td>{emp.processed_requests}</td>
+                                    <td>{emp.avg_processing_time}</td>
+                                    <td className={emp.sla_breaches > 2 ? styles.dangerText : ''}>
+                                        {emp.sla_breaches}
                                     </td>
-                                    <td>{emp.approvalRate}</td>
+                                    <td>{emp.acceptance_rate}</td>
                                     <td className={styles.progressCell}>
                                         <div className={styles.progressBarBg}>
+                                            {/* 🟢 برمجة شريط الأداء بناءً على performance_score */}
                                             <div
                                                 className={styles.progressBarFill}
                                                 style={{
-                                                    width: `${emp.performance}%`,
-                                                    backgroundColor: emp.performance > 80 ? '#10b981' : emp.performance > 60 ? '#f59e0b' : '#ef4444'
+                                                    width: `${emp.performance_score}%`,
+                                                    backgroundColor: emp.performance_score > 80 ? '#10b981' : emp.performance_score > 60 ? '#f59e0b' : '#ef4444'
                                                 }}
                                             ></div>
                                         </div>
@@ -102,7 +96,6 @@ const PerformanceTable = ({ data }) => {
                 </table>
             </div>
 
-            {/* 💡 الترقيم (Pagination) */}
             <div className={styles.pagination}>
                 <button onClick={handlePrevPage} disabled={currentPage === 1} className={styles.pageBtn}>
                     <FaChevronRight /> السابق

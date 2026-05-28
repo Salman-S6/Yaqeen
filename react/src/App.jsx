@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { authService } from './api/authService';
-import { employeeRequestService } from './api/employeeRequestService'; // جلب الخدمة المركزية ديناميكياً
+import { employeeRequestService } from './api/employeeRequestService';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Login from "./assets/pages/login/login";
@@ -35,7 +35,7 @@ function App() {
   });
 
   const [isLoading, setIsLoading] = useState(true);
-  const [requests, setRequests] = useState([]); // مصفوفة حية تنتظر داتا الباك-إند الحقيقية
+  const [requests, setRequests] = useState([]);
 
   useEffect(() => {
     const checkAuthAndFetchData = async () => {
@@ -44,7 +44,7 @@ function App() {
 
       if (!token) {
         setIsLoading(false);
-        return; // حماية التطبيق من الانهيار إذا لم يسجل دخول بعد
+        return;
       }
 
       try {
@@ -65,15 +65,21 @@ function App() {
           } else {
               role = localStorage.getItem('userRole') || 'employee';
           }
+          
+          // توحيد حالة الحروف لضمان دقة الشرط
+          const normalizedRole = String(role).toLowerCase();
           localStorage.setItem('userRole', role);
 
-          // 2. جلب داتا المعاملات الحية فوراً من السيرفر لتحديث عداد الـ Sidebar ديناميكياً
-          try {
-            const reqResponse = await employeeRequestService.getPendingRequests();
-            const reqData = reqResponse.data && reqResponse.data.data ? reqResponse.data.data : reqResponse.data;
-            setRequests(Array.isArray(reqData) ? reqData : []);
-          } catch (reqError) {
-            console.error("فشل جلب العداد المركزي للطلبات:", reqError);
+          // 🛡️ الحارس البرمجي (Guard Clause):
+          // 2. جلب داتا المعاملات الحية فقط إذا كان المستخدم موظفاً
+          if (normalizedRole === 'employee' || normalizedRole === 'موظف') {
+            try {
+              const reqResponse = await employeeRequestService.getPendingRequests();
+              const reqData = reqResponse.data && reqResponse.data.data ? reqResponse.data.data : reqResponse.data;
+              setRequests(Array.isArray(reqData) ? reqData : []);
+            } catch (reqError) {
+              console.error("فشل جلب العداد المركزي للطلبات:", reqError);
+            }
           }
         }
       } catch (error) {
