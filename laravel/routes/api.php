@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Dashboards\EmployeeDashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RequestController;
 use App\Http\Controllers\Api\ServiceTypeController;
@@ -102,6 +103,18 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/employees/{id}', [EmployeeController::class, 'update']);
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
         });
+
+    /*
+    |----------------------------------------------------------------------
+    | Employee Dashboard
+    |----------------------------------------------------------------------
+    */
+    Route::prefix('employee')->group(function () {
+
+        Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
+            ->middleware('check.permission:view_requests');
+
+    });
 });
 
 /*
