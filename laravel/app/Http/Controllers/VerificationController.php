@@ -10,34 +10,27 @@ class VerificationController extends Controller
     public function verifyPublic(Request $request)
     {
         $reqId = $request->query('req');
+        $payloadFromUrl = $request->query('p');
         $signatureFromUrl = $request->query('sig');
 
-        if (!$reqId || !$signatureFromUrl) {
-            return view('verification.fraud', ['message' => 'رابط التحقق غير مكتمل، المعرف أو التوقيع مفقود.']);
+        if (! $reqId || ! $payloadFromUrl || ! $signatureFromUrl) {
+            return view('verification.fraud', ['message' => 'رابط التحقق غير مكتمل.']);
         }
 
-        $document = Document::with('qrCode')->find($reqId);
-
-        if (!$document || !$document->qrCode) {
-            return view('verification.fraud', ['message' => 'هذه الوثيقة أو رمز التحقق الخاص بها غير موجود في النظام.']);
+        $document = Document::find($reqId);
+        if (! $document) {
+            return view('verification.fraud', ['message' => 'هذه الوثيقة ملغاة أو غير موجودة في النظام.']);
         }
 
-        $payload = json_decode($document->qrCode->payload, true);
-        $originalData = json_encode($payload['data']);
-        $savedSignature = $payload['signature'];
-
-        $cleanSignatureFromUrl = trim(str_replace([' ', '\\/'], ['+', '/'], urldecode($signatureFromUrl)));
-        $cleanSavedSignature   = trim(str_replace('\\/', '/', $savedSignature));
-
-        if ($cleanSignatureFromUrl !== $cleanSavedSignature) {
-            return view('verification.fraud', ['message' => 'التوقيع غير متطابق. هذا الرابط مزيف أو تالف!']);
-        }
+        $cleanSignature = trim(str_replace([' ', '\\/'], ['+', '/'], urldecode($signatureFromUrl)));
 
         $publicKey = config('services.signature.public_key');
-        $isValid = openssl_verify($originalData, base64_decode($savedSignature), $publicKey, OPENSSL_ALGO_SHA256);
+        $isValid = openssl_verify($payloadFromUrl, base64_decode($cleanSignature), $publicKey, OPENSSL_ALGO_SHA256);
 
         if ($isValid === 1) {
-            return view('verification.success', ['data' => $payload['data']]);
+            $data = json_decode(base64_decode($payloadFromUrl), true);
+
+            return view('verification.success', ['data' => $data]);
         } else {
             return view('verification.fraud', ['message' => 'تحذير أمني: الوثيقة مزورة أو تم التلاعب ببياناتها!']);
         }
