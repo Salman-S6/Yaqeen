@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\AdminCitizenController;
+use App\Http\Controllers\Api\AdminOcrController;
+use App\Http\Controllers\Api\AdminStatsController;
 use App\Http\Controllers\Api\AdminVerificationLogController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Dashboards\AdminDashboardController;
-use App\Http\Controllers\Api\Dashboards\AdminOcrController;
-use App\Http\Controllers\Api\Dashboards\AdminStatsController;
 use App\Http\Controllers\Api\Dashboards\EmployeeDashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -108,6 +109,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/employees/{id}', [EmployeeController::class, 'show']);
             Route::put('/employees/{id}', [EmployeeController::class, 'update']);
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+
+            Route::middleware('check.permission:manage_citizens')->group(function () {
+
+                Route::get('/citizens', [AdminCitizenController::class, 'index']);
+                Route::get('/citizens/{id}', [AdminCitizenController::class, 'show']);
+                Route::patch('/citizens/{id}/toggle-status', [AdminCitizenController::class, 'toggleStatus']);
+
+            });
 
             Route::get('/verification-logs', [AdminVerificationLogController::class, 'index']);
 

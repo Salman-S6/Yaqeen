@@ -16,16 +16,16 @@ class Citizen extends Model
         'mother_last_name',
         'date_of_birth',
         'place_of_registration',
-        // 'is_verified',
-        // 'verified_at',
+        'is_verified',
+        'verified_at',
     ];
 
     protected function casts(): array
     {
         return [
             'date_of_birth' => 'date',
-            // 'is_verified' => 'boolean',
-            // 'verified_at' => 'datetime',
+            'is_verified' => 'boolean',
+            'verified_at' => 'datetime',
         ];
     }
 
