@@ -23,21 +23,28 @@ const RequestsTable = ({ data = [], onReview }) => {
                 </thead>
                 <tbody>
                     {data.map((req) => (
-                        <tr key={req.id} className={req.isUrgent ? styles.urgentRow : ''}>
-                            <td className={req.isUrgent ? styles.textRed : styles.textGreen}>
-                                <strong>{req.id}</strong>
+                        /* 🟢 نستخدم is_sla_breached لتحديد إذا كان الطلب متأخراً (Urgent) */
+                        <tr key={req.id} className={req.is_sla_breached ? styles.urgentRow : ''}>
+                            
+                            <td className={req.is_sla_breached ? styles.textRed : styles.textGreen}>
+                                {/* 🟢 عرض رقم الطلب النصي الطويل للموظف */}
+                                <strong>{req.request_number}</strong>
                             </td>
-                            <td>{req.name}</td>
-                            <td>{req.type}</td>
-                            <td>{req.date}</td>
-                            <td className={req.isUrgent ? styles.textRedBold : ''}>
-                                {req.isUrgent && <FaExclamationTriangle style={{ marginLeft: '5px' }} />}
-                                {req.waitTime}
+                            
+                            {/* 🟢 ربط المفاتيح الجديدة القادمة من الباك-إند */}
+                            <td>{req.citizen_name}</td>
+                            <td>{req.service_type}</td>
+                            <td>{req.submitted_date}</td>
+                            
+                            <td className={req.is_sla_breached ? styles.textRedBold : ''}>
+                                {req.is_sla_breached && <FaExclamationTriangle style={{ marginLeft: '5px' }} />}
+                                {req.wait_time_text}
                             </td>
+                            
                             <td>
                                 <button
-                                    className={req.isUrgent ? styles.btnUrgent : styles.btnNormal}
-                                    /* ✅ استدعاء الدالة الممررة مع الـ ID */
+                                    className={req.is_sla_breached ? styles.btnUrgent : styles.btnNormal}
+                                    /* 🟢 إرسال الـ id الرقمي (مثل 4) لدالة المراجعة لكي يعمل التوجيه والـ API بشكل صحيح */
                                     onClick={() => onReview(req.id)}
                                 >
                                     مراجعة

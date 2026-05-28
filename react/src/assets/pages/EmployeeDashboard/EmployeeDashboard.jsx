@@ -1,38 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../../components/StatCard/StatCard';
-import RequestsTable from '../../../components/RequestsTable/RequestsTable'; // 👈 تأكد من تطابق الاسم
+import RequestsTable from '../../../components/RequestsTable/RequestsTable';
 import SLAAlert from '../../../components/SLAAlert/SLAAlert';
+import { employeeRequestService } from '../../../api/employeeRequestService'; // 🟢 استدعاء الخدمة
 import styles from './EmployeeDashboard.module.css';
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
+  
+  // 🟢 حالات (States) لتخزين بيانات السيرفر
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // مصفوفة بيانات الطلبات (تمت إضافة isUrgent و date لتتوافق مع الجدول)
-  const requestsData = [
-    { id: 'REQ-000044', name: 'خالد الأحمد', type: 'إخراج قيد فردي', waitTime: '26 ساعة', date: '2026/04/09', isUrgent: true },
-    { id: 'REQ-000043', name: 'سارة محمود', type: 'بيان عائلي', waitTime: '4 ساعات', date: '2026/04/09', isUrgent: false },
-    { id: 'REQ-000041', name: 'ليلى حسن', type: 'بيان عائلي', waitTime: '22 ساعة', date: '2026/04/09', isUrgent: true },
-  ];
+  // 🟢 جلب البيانات بمجرد فتح لوحة التحكم
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await employeeRequestService.getDashboardData();
+        // التأكد من الوصول الصحيح لـ data الموجودة داخل الـ JSON
+        setDashboardData(response.data.data || response.data);
+      } catch (error) {
+        console.error("خطأ في جلب بيانات لوحة التحكم:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
- // 💡 الحل الجذري والصحيح: مطابقة مسار الـ App.jsx حرفياً
   const handleReview = (id) => {
     if (id) {
-      navigate(`/employee/review-request/${id}`); // ✅ تم التعديل إلى review-request
+      navigate(`/employee/review-request/${id}`); 
     }
   };
 
+  // 🟢 شاشة تحميل بسيطة ريثما تصل البيانات
+  if (isLoading) {
+    return (
+      <div className={styles.dashboardWrapper} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+        <h3 style={{ color: '#00a65a' }}>جاري تحميل البيانات...</h3>
+      </div>
+    );
+  }
+
+  // 🟢 تجهيز البيانات بشكل آمن بعد وصولها
+  const kpis = dashboardData?.kpis || {};
+  const requestsData = dashboardData?.latest_assigned_requests || [];
+
+  // ربط أرقام الـ KPIs بالبطاقات الأربعة (مع توفير 0 كقيمة افتراضية للحماية)
   const statsData = [
-    { title: "طلبات معلقة", value: "12", icon: "📁", color: "#f59e0b" },
-    { title: "طلبات معتمدة", value: "47", icon: "✅", color: "#10b981" },
-    { title: "تجاوزات SLA اليوم", value: "3", icon: "⚡", color: "#ef4444" },
-    { title: "متوسط وقت المراجعة", value: "2.4", icon: "🕒", color: "#3b82f6" },
+    { title: "طلبات معلقة", value: kpis.pending_requests ?? 0, icon: "📁", color: "#f59e0b" },
+    { title: "طلبات معتمدة", value: kpis.approved_requests ?? 0, icon: "✅", color: "#10b981" },
+    { title: "تجاوزات SLA اليوم", value: kpis.sla_breaches_today ?? 0, icon: "⚡", color: "#ef4444" },
+    { title: "متوسط وقت المراجعة", value: kpis.average_review_time ?? 0, icon: "🕒", color: "#3b82f6" },
   ];
 
   return (
     <div className={styles.dashboardWrapper}>
       <div className={styles.contentContainer}>
-        <SLAAlert />
+        
+        {/* 🟢 ذكاء الواجهة: التنبيه يظهر فقط إذا كان هناك تجاوزات مسجلة اليوم */}
+        {kpis.sla_breaches_today > 0 && <SLAAlert />}
         
         <div className={styles.statsGrid}>
           {statsData.map((stat, index) => (
@@ -51,7 +80,6 @@ const EmployeeDashboard = () => {
             </button>
           </div>
           
-          {/* ✅ تمرير الدالة هنا للجدول */}
           <RequestsTable 
             data={requestsData} 
             onReview={handleReview} 
