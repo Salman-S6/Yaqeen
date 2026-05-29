@@ -23,6 +23,10 @@ import 'features/qr_verification/data/repositories/local_qr_repository.dart';
 import 'features/qr_verification/presentation/bloc/qr_bloc.dart';
 import 'features/qr_verification/presentation/screens/qr_scan_screen.dart';
 
+import 'features/notifications/data/repositories/notification_repository.dart';
+import 'features/notifications/presentation/bloc/notification_bloc.dart';
+import 'core/network/dio_client.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -63,6 +67,11 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                 create: (context) => QrBloc(
                   repository: context.read<LocalQrRepository>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => NotificationBloc(
+                  repository: NotificationRepository(dioClient: DioClient()),
                 ),
               ),
             ],

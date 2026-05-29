@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:flutter_app/features/notifications/presentation/bloc/notification_event.dart';
+import 'package:flutter_app/features/notifications/presentation/bloc/notification_state.dart';
+import 'package:flutter_app/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -15,6 +19,7 @@ import '../../../auth/presentation/bloc/auth_state.dart';
 import 'new_request_screen.dart';
 import 'request_detail_screen.dart';
 
+
 class CitizenHomeScreen extends StatefulWidget {
   const CitizenHomeScreen({super.key});
 
@@ -28,6 +33,8 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
   void initState() {
     super.initState();
     _loadRequests();
+    // 🌟 جلب الإشعارات عند فتح الشاشة الرئيسية ليظهر العداد فوراً
+    context.read<NotificationBloc>().add(LoadNotificationsEvent());
   }
 
   void _loadRequests() {
@@ -56,9 +63,56 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
                 backgroundColor: AppColors.green,
                 showFlag: false,
                 actions: [
-                  IconButton(
-                    icon: Icon(Icons.notifications_none, color: AppColors.white, size: 24.sp),
-                    onPressed: () {},
+                  // 🌟 تغليف الجرس بالـ BlocBuilder الخاص بالإشعارات
+                  BlocBuilder<NotificationBloc, NotificationState>(
+                    builder: (context, notifState) {
+                      int unread = 0;
+                      if (notifState is NotificationLoaded) {
+                        unread = notifState.unreadCount;
+                      }
+
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.notifications_none, color: AppColors.white, size: 24.sp),
+                            onPressed: () {
+                              // الانتقال لشاشة الإشعارات
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                              ).then((_) {
+                                // إعادة التحميل عند العودة في حال تم قراءة إشعارات جديدة
+                                if (mounted) {
+                                  context.read<NotificationBloc>().add(LoadNotificationsEvent());
+                                }
+                              });
+                            },
+                          ),
+                          // 🌟 رسم النقطة الحمراء إذا كان هناك إشعارات غير مقروءة
+                          if (unread > 0)
+                            Positioned(
+                              right: 8.w,
+                              top: 8.h,
+                              child: Container(
+                                padding: EdgeInsets.all(4.w),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  "$unread",
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 8.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               );
