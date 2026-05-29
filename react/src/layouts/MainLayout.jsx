@@ -7,10 +7,10 @@ import styles from './MainLayout.module.css';
 const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
     const location = useLocation();
 
-    // 🟢 1. حالة التحكم بالقائمة الجانبية
+    // 1. حالة التحكم بالقائمة الجانبية
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-    // 🟢 2. مراقبة حجم الشاشة لطي القائمة تلقائياً في الشاشات الصغيرة
+    // 2. مراقبة حجم الشاشة لطي القائمة تلقائياً في الشاشات الصغيرة
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 1024) {
@@ -19,7 +19,7 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
                 setIsSidebarOpen(true);
             }
         };
-        handleResize(); // التشغيل الأولي
+        handleResize(); 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -28,11 +28,10 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
     const closeSidebarMobile = () => { if (window.innerWidth <= 1024) setIsSidebarOpen(false); };
 
     const isAuditPage = location.pathname.includes('/admin/audit-logs');
-    const isReportsPage = location.pathname.includes('/admin/reports'); 
+    // 🟢 تم مسح isReportsPage من هنا
 
     const getDynamicTitle = () => {
         if (isAuditPage) return 'سجلات التدقيق';
-        if (isReportsPage) return 'التقارير و التصدير';
         if (location.pathname.includes('review')) return 'مراجعة بيانات الطلب';
         if (location.pathname.includes('pending-requests')) return 'قائمة الطلبات المعلّقة';
         if (location.pathname.includes('users')) return 'إدارة مستخدمي النظام';
@@ -52,16 +51,13 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
 
     const getDynamicSubtitle = () => {
         if (isAuditPage) return 'سجل غير قابل للحذف - Audit Log';
-        if (isReportsPage) return 'تصدير البيانات بحسب الفترة الزمنية';
         return activeRole;
     };
 
     return (
         <div className={styles.layoutContainer}>
-            {/* 🟢 تمرير حالة القائمة للسايدبار */}
             <Sidebar currentUser={currentUser} pendingCount={pendingCount} isOpen={isSidebarOpen} closeSidebar={closeSidebarMobile} />
             
-            {/* 🟢 طبقة تظليل تظهر فقط للموبايل عند فتح القائمة لإغلاقها عند الضغط خارجها */}
             {isSidebarOpen && <div className={styles.mobileOverlay} onClick={closeSidebarMobile}></div>}
 
             <div className={styles.mainWrapper}>
@@ -70,7 +66,7 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
                     subtitle={getDynamicSubtitle()} 
                     currentUser={currentUser}
                     activeRole={activeRole} 
-                    toggleSidebar={toggleSidebar} // 🟢 تمرير دالة الفتح/الإغلاق للهيدر
+                    toggleSidebar={toggleSidebar} 
                 />
                 
                 <main className={`${styles.contentArea} ${isAuditPage ? styles.auditContent : ''}`}>

@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { employeeService } from '../../../api/employeeService';
-import Header from '../../../components/Header/Header';
+import { employeeService } from "../../../api/employeeService";
 import DeleteConfirmModal from '../../../components/Modals/DeleteConfirmModal';
 import EmployeeFormModal from '../../../components/Modals/EmployeeFormModal';
+import EmployeePermissionsModal from '../../../components/Modals/EmployeePermissionsModal'; // 🟢 استيراد مودال الصلاحيات
 import CitizensTable from '../../../components/CitizensTable/CitizensTable';
 import { FaUserPlus, FaSearch, FaTrash, FaCheckCircle, FaExclamationCircle, FaTimes, FaIdCard } from 'react-icons/fa';
 import styles from './AdminUsersPage.module.css';
 
 const AdminUsersPage = () => {
-    // ==========================================
-    // 1. States (حالات المكون)
-    // ==========================================
-    
-    // حالات الفريق الوظيفي (Employees)
+    // حالات الفريق الوظيفي
     const [employees, setEmployees] = useState([]);
     const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, employeeId: null });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddMode, setIsAddMode] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+    // 🟢 حالة مودال الصلاحيات
+    const [permissionsModal, setPermissionsModal] = useState({ isOpen: false, employeeId: null, employeeName: '' });
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -26,27 +25,22 @@ const AdminUsersPage = () => {
     const [password, setPassword] = useState('');
     const [userStatus, setUserStatus] = useState('active');
 
-    // حالات المواطنين (Citizens) 🟢
+    // حالات المواطنين
     const [citizens, setCitizens] = useState([]);
     const [selectedCitizenDetails, setSelectedCitizenDetails] = useState(null);
     const [isCitizenModalOpen, setIsCitizenModalOpen] = useState(false);
 
-    // حالات عامة (UI/UX)
+    // حالات عامة
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('citizens'); // جعلنا المواطنين الافتراضي
+    const [activeTab, setActiveTab] = useState('team'); // تم جعله الافتراضي لرؤية الموظفين أسرع
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-
-    // ==========================================
-    // 2. Functions (الدوال المساعدة)
-    // ==========================================
 
     const showNotification = (message, type = 'success') => {
         setToast({ show: true, message, type });
         setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
     };
 
-    // 🟢 دالة جلب البيانات الديناميكية (مواطنين أو موظفين حسب التبويب النشط)
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -56,7 +50,6 @@ const AdminUsersPage = () => {
                 setEmployees(Array.isArray(data) ? data : []);
             } else if (activeTab === 'citizens') {
                 const response = await employeeService.getCitizens();
-                // حسب الـ JSON المرسل، مسار المصفوفة هو data.data.data
                 const data = response.data?.data?.data || [];
                 setCitizens(Array.isArray(data) ? data : []);
             }
@@ -71,17 +64,12 @@ const AdminUsersPage = () => {
 
     useEffect(() => {
         fetchData();
-        setSearchTerm(''); // تصفير البحث عند تغيير التبويب
+        setSearchTerm(''); 
     }, [activeTab]);
-
-    // ==========================================
-    // 3. Handlers for Citizens (دوال المواطنين) 🟢
-    // ==========================================
 
     const handleToggleCitizenStatus = async (id) => {
         try {
             await employeeService.toggleCitizenStatus(id);
-            // تحديث الحالة محلياً في الجدول مباشرة (Optimistic UI)
             setCitizens(prev => prev.map(c => 
                 c.id === id ? { ...c, account_status: c.account_status === 'active' ? 'suspended' : 'active' } : c
             ));
@@ -103,10 +91,6 @@ const AdminUsersPage = () => {
             setIsLoading(false);
         }
     };
-
-    // ==========================================
-    // 4. Handlers for Employees (دوال الموظفين الأصلية)
-    // ==========================================
 
     const handleOpenAddModal = () => {
         setIsAddMode(true); setSelectedEmployee(null); resetForm(); setIsModalOpen(true);
@@ -162,10 +146,6 @@ const AdminUsersPage = () => {
         setFirstName(''); setLastName(''); setNationalId(''); setUserEmail(''); setPassword(''); setUserStatus('active');
     };
 
-    // ==========================================
-    // 5. Filters (الفلاتر)
-    // ==========================================
-
     const filteredEmployees = employees.filter(emp => {
         const fullName = `${emp.first_name || ''} ${emp.last_name || ''}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase()) || (emp.email || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -179,9 +159,7 @@ const AdminUsersPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            <Header title="إدارة النظام" subtitle="admin" />
-
-            {/* نظام الإشعارات */}
+            {/* نظام التنبيهات الموحد */}
             {toast.show && (
                 <div className={`${styles.toastNotification} ${toast.type === 'success' ? styles.toastSuccess : styles.toastError}`}>
                     <div className={styles.toastBody}>
@@ -220,7 +198,6 @@ const AdminUsersPage = () => {
                     <div style={{ textAlign: 'center', padding: '40px', color: '#00a65a', fontWeight: 'bold' }}>جاري المزامنة...</div>
                 ) : (
                     <>
-                        {/* 🟢 عرض جدول المواطنين */}
                         {activeTab === 'citizens' && (
                             <CitizensTable 
                                 citizens={filteredCitizens} 
@@ -229,7 +206,6 @@ const AdminUsersPage = () => {
                             />
                         )}
 
-                        {/* عرض جدول الموظفين الأصلي */}
                         {activeTab === 'team' && (
                             <div className={styles.tableWrapper}>
                                 <table className={styles.usersTable}>
@@ -243,6 +219,16 @@ const AdminUsersPage = () => {
                                                 <td><span className={`${styles.statusBadge} ${emp.status === 'active' ? styles.active : styles.suspended}`}>{emp.status === 'active' ? 'نشط' : 'معلق'}</span></td>
                                                 <td>
                                                     <div className={styles.actionsContainer}>
+                                                        {/* 🟢 الزر الجديد الخاص بالصلاحيات باللون الأرجواني */}
+                                                        <button 
+                                                            style={{ backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', transition: '0.2s' }}
+                                                            onClick={() => setPermissionsModal({ isOpen: true, employeeId: emp.id, employeeName: `${emp.first_name} ${emp.last_name}` })}
+                                                            onMouseOver={(e) => e.target.style.backgroundColor = '#c7d2fe'}
+                                                            onMouseOut={(e) => e.target.style.backgroundColor = '#e0e7ff'}
+                                                        >
+                                                            صلاحيات
+                                                        </button>
+                                                        
                                                         <button className={styles.statusToggleBtn} onClick={() => handleOpenEditModal(emp)}>تعديل</button>
                                                         <button className={styles.deleteUserBtn} onClick={() => setConfirmDelete({ isOpen: true, employeeId: emp.id })}><FaTrash /></button>
                                                     </div>
@@ -257,12 +243,9 @@ const AdminUsersPage = () => {
                 )}
             </div>
 
-            {/* ========================================== */}
-            {/* النوافذ المنبثقة (Modals) */}
-            {/* ========================================== */}
-
-            {/* 1. نوافذ الموظفين */}
+            {/* ======================= النوافذ المنبثقة ======================= */}
             <DeleteConfirmModal isOpen={confirmDelete.isOpen} onClose={() => setConfirmDelete({ isOpen: false, employeeId: null })} onConfirm={executeDeleteEmployee} />
+            
             <EmployeeFormModal
                 isOpen={isModalOpen} isAddMode={isAddMode} onClose={() => setIsModalOpen(false)} onSave={handleSaveChanges}
                 firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName}
@@ -270,7 +253,16 @@ const AdminUsersPage = () => {
                 password={password} setPassword={setPassword} userStatus={userStatus} setUserStatus={setUserStatus}
             />
 
-            {/* 2. 🟢 نافذة تفاصيل المواطن */}
+            {/* 🟢 نافذة الصلاحيات الديناميكية */}
+            <EmployeePermissionsModal 
+                isOpen={permissionsModal.isOpen} 
+                employeeId={permissionsModal.employeeId}
+                employeeName={permissionsModal.employeeName}
+                onClose={() => setPermissionsModal({ isOpen: false, employeeId: null, employeeName: '' })}
+                showNotification={showNotification}
+            />
+
+            {/* نافذة تفاصيل المواطن */}
             {isCitizenModalOpen && selectedCitizenDetails && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
                     <div style={{ backgroundColor: '#fff', width: '600px', borderRadius: '12px', overflow: 'hidden', direction: 'rtl', maxHeight: '90vh', overflowY: 'auto' }}>

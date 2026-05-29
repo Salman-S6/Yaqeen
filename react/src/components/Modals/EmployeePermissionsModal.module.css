@@ -1,0 +1,155 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    direction: rtl;
+}
+
+.modalContent {
+    background: #f8fafc;
+    width: 650px;
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modalTitle {
+    margin: 0;
+    font-size: 18px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.titleIcon {
+    color: #6366f1;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.modalBody {
+    padding: 25px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.loadingState {
+    text-align: center;
+    color: #64748b;
+    font-weight: bold;
+    padding: 40px;
+}
+
+.permissionsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.categoryCard {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.categoryTitle {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    color: #334155;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.checkboxesContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.customCheckbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #6366f1;
+}
+
+.labelText {
+    font-size: 14px;
+    color: #475569;
+    font-weight: 600;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 15px 25px;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+}
+
+.cancelBtn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #475569;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.saveBtn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    background: #007c4d;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.saveBtn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}

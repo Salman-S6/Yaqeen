@@ -22,9 +22,8 @@ import AdminServicesPage from "./assets/pages/AdminServicesPage/AdminServicesPag
 // 🟢 استيراد صفحة السجل الشامل للأدمن
 import AdminRequestsPage from './assets/pages/AdminRequestsPage/AdminRequestsPage';
 
-// استيراد واجهات بتول (سجلات التدقيق والتقارير)
+// استيراد واجهات التدقيق
 import AdminAuditPage from './assets/pages/AdminAuditPage/AdminAuditPage';
-import Reports from './assets/pages/Reports/Reports';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -144,7 +143,6 @@ function App() {
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsersPage />} />
           
-          {/* 🟢 مسارات الطلبات الجديدة الخاصة بالأدمن */}
           <Route path="all-requests" element={<AdminRequestsPage />} />
           <Route path="review-request/:requestId" element={<RequestReview isAdminMode={true} />} />
 
@@ -154,7 +152,6 @@ function App() {
           <Route path="verify-qr" element={<ExternalVerifyPage />} />
           <Route path="services" element={<AdminServicesPage />} />
           
-          <Route path="reports" element={<Reports />} />
           <Route path="audit-logs" element={<AdminAuditPage />} />
         </Route>
 
