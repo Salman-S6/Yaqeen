@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { employeeRequestService } from '../../../api/employeeRequestService';
-import Header from '../../../components/Header/Header';
+// 🟢 تم إزالة استيراد Header لأنه مكرر مع الـ Layout الأساسي
 import ToastNotification from '../../../components/Common/ToastNotification';
 import CustomConfirmModal from '../../../components/Common/CustomConfirmModal';
-import { FaSearch, FaFilter, FaCheckCircle, FaHourglassHalf, FaTimesCircle, FaEye } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaCheckCircle, FaHourglassHalf, FaTimesCircle } from 'react-icons/fa';
 import styles from './PendingRequests.module.css';
 
 const PendingRequestsPage = () => {
     const navigate = useNavigate();
-    const [requests, setRequests] = useState([]); // تبدأ بمصفوفة فارغة تماماً لضمان الاعتماد على الباك-إند فقط
+    const [requests, setRequests] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    // حالات الفلترة المتقدمة (pending, approved, rejected)
-    const [statusFilter, setStatusFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('pending'); // الافتراضي قيد الانتظار
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
 
-    // نظام التنبيه والمودال الموحد لبوابة يقين
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmReview, setConfirmReview] = useState({ isOpen: false, requestId: null, citizenName: '' });
 
@@ -26,7 +24,6 @@ const PendingRequestsPage = () => {
         setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
     };
 
-    // 🟢 جلب البيانات الفعلي والمأمن ضد أخطاء السيرفر (500)
     const fetchRequests = async () => {
         try {
             setIsLoading(true);
@@ -34,24 +31,18 @@ const PendingRequestsPage = () => {
 
             if (response && response.data) {
                 const data = response.data.data ? response.data.data : response.data;
-                setRequests(Array.isArray(data) ? data : []);
+                const requestsArray = Array.isArray(data) ? data : [];
+                setRequests(requestsArray);
+
+                const pendingOnlyCount = requestsArray.filter(req => req.status === 'pending').length;
+                window.dispatchEvent(new CustomEvent('updatePendingCount', { detail: pendingOnlyCount }));
             } else {
                 setRequests([]);
             }
         } catch (error) {
             console.error("فشل جلب الطلبات من الباك-إند:", error);
-
-            const errorStatus = error.response?.status;
-            let friendlyMessage = "فشل الاتصال بخادم المعاملات المركزي.";
-
-            if (errorStatus === 500) {
-                friendlyMessage = "خطأ داخلي في السيرفر (500): يرجى تحقق مسؤول الباك-إند من تكامل علاقات الأنساب وقاعدة البيانات.";
-            } else if (error.response?.data?.message) {
-                friendlyMessage = error.response.data.message;
-            }
-
-            showNotification(friendlyMessage, 'error');
-            setRequests([]); // تأمين الجدول فارغاً بأمان في حال الانهيار
+            showNotification("فشل الاتصال بخادم المعاملات المركزي.", 'error');
+            setRequests([]); 
         } finally {
             setIsLoading(false);
         }
@@ -72,14 +63,12 @@ const PendingRequestsPage = () => {
             await employeeRequestService.reviewRequest(id);
             navigate(`/employee/review-request/${id}`);
         } catch (error) {
-            console.warn("جاري التوجيه التلقائي للمعاينة الفورية...");
             navigate(`/employee/review-request/${id}`);
         } finally {
             setConfirmReview({ isOpen: false, requestId: null, citizenName: '' });
         }
     };
 
-    // ترجمة الحالات القادمة من السيرفر إلى شارات ملونة وأنيقة
     const renderStatusBadge = (status) => {
         switch (status) {
             case 'pending':
@@ -93,7 +82,6 @@ const PendingRequestsPage = () => {
         }
     };
 
-    // دمج فلترة البحث الصارم مع فلاتر القائمة المنسدلة المضافة
     const filteredRequests = requests.filter(req => {
         const reqNumber = (req.request_number || '').toLowerCase();
         const citizenName = req.citizen ? `${req.citizen.first_name} ${req.citizen.last_name}`.toLowerCase() : '';
@@ -108,8 +96,7 @@ const PendingRequestsPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            <Header title="الطلبات المعلّقة" subtitle={`${requests.length} معاملات مسجلة بالنظام`} />
-
+            {/* 🟢 تم مسح مكون <Header /> من هنا لتنظيف الواجهة من التكرار */}
             <ToastNotification toast={toast} onClose={() => setToast({ ...toast, show: false })} />
 
             <div className={styles.mainContentCard}>
@@ -150,7 +137,7 @@ const PendingRequestsPage = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className={styles.loadingText}>جاري جلب المعاملات الحية من السيرفر وتحديث لوحة التحكم...</div>
+                    <div className={styles.loadingText}>جاري جلب المعاملات الحية من السيرفر...</div>
                 ) : (
                     <div className={styles.tableWrapper}>
                         <table className={styles.requestsTable}>
@@ -159,7 +146,7 @@ const PendingRequestsPage = () => {
                                     <th>رقم المعاملة</th>
                                     <th>المواطن صاحب الطلب</th>
                                     <th>نوع الخدمة الرقمية</th>
-                                    <th>تاريخ ووقت التقديم</th>
+                                    <th>تاريخ التقديم</th>
                                     <th>حالة الطلب</th>
                                     <th>الإجراء</th>
                                 </tr>
@@ -183,19 +170,23 @@ const PendingRequestsPage = () => {
                                             {renderStatusBadge(req.status)}
                                         </td>
                                         <td>
-                                            <button
-                                                className={`${styles.reviewBtn} ${styles.btnActiveGreen}`}
-                                                onClick={() => triggerReviewConfirmation(req)}
-                                            >
-                                                مراجعة
-                                            </button>
+                                            {req.status === 'pending' ? (
+                                                <button
+                                                    className={`${styles.reviewBtn} ${styles.btnActiveGreen}`}
+                                                    onClick={() => triggerReviewConfirmation(req)}
+                                                >
+                                                    مراجعة
+                                                </button>
+                                            ) : (
+                                                <span style={{ color: '#9ca3af', fontSize: '13px' }}>تمت المعالجة</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
                                 {filteredRequests.length === 0 && (
                                     <tr>
                                         <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: '#a0aec0', fontWeight: '600' }}>
-                                            لا توجد معاملات حية مسجلة بالسيرفر حالياً.
+                                            لا توجد معاملات مسجلة بهذه الحالة.
                                         </td>
                                     </tr>
                                 )}

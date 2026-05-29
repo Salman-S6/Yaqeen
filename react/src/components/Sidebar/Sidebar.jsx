@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../../api/authService';
 import {
     FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt,
     FaCog, FaThLarge, FaChartLine, FaEye,
-    FaQrcode, FaServer, FaTimes, FaFolderOpen // 🟢 استيراد أيقونة المجلد
+    FaQrcode, FaServer, FaTimes, FaFolderOpen
 } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
@@ -12,6 +12,21 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
     const navigate = useNavigate();
     const location = useLocation();
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    
+    // 🟢 حالة محلية لتتبع العداد الحي وتحديثه برمجياً
+    const [livePendingCount, setLivePendingCount] = useState(pendingCount);
+
+    // 🟢 استماع للإشعارات القادمة من أي صفحة لتحديث العداد فوراً
+    useEffect(() => {
+        setLivePendingCount(pendingCount); // التحديث الأولي
+
+        const handleUpdateCount = (event) => {
+            setLivePendingCount(event.detail); // تحديث الرقم فور وصول إشعار
+        };
+
+        window.addEventListener('updatePendingCount', handleUpdateCount);
+        return () => window.removeEventListener('updatePendingCount', handleUpdateCount);
+    }, [pendingCount]);
 
     let userRole = '';
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
@@ -53,21 +68,16 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
                         <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => { navigate('/admin/users'); closeSidebar(); }}>
                             <FaUsers className={styles.navIcon} /><span>إدارة المستخدمين</span>
                         </div>
-
-                        {/* 🟢 إضافة زر السجل الشامل للطلبات */}
                         <div className={`${styles.navItem} ${isActive('/admin/all-requests') ? styles.active : ''}`} onClick={() => { navigate('/admin/all-requests'); closeSidebar(); }}>
                             <FaFolderOpen className={styles.navIcon} /><span>سجل الطلبات</span>
                         </div>
-
                         <div className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`} onClick={() => { navigate('/admin/audit-logs'); closeSidebar(); }}>
                             <FaFileAlt className={styles.navIcon} /><span>سجلات التدقيق</span>
                         </div>
                         <div className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`} onClick={() => { navigate('/admin/stats'); closeSidebar(); }}>
                             <FaChartBar className={styles.navIcon} /><span>إحصائيات النظام</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/reports') ? styles.active : ''}`} onClick={() => { navigate('/admin/reports'); closeSidebar(); }}>
-                            <FaFileAlt className={styles.navIcon} /><span>التقارير</span>
-                        </div>
+                        {/* 🟢 تم حذف زر التقارير من هنا نهائياً */}
                         <div className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`} onClick={() => { navigate('/admin/performance'); closeSidebar(); }}>
                             <FaChartLine className={styles.navIcon} /><span>أداء الموظفين</span>
                         </div>
@@ -88,7 +98,8 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
                         </div>
                         <div className={`${styles.navItem} ${isActive('/employee/pending-requests') ? styles.active : ''}`} onClick={() => { navigate('/employee/pending-requests'); closeSidebar(); }}>
                             <FaFileAlt className={styles.navIcon} /><span>الطلبات المعلّقة</span>
-                            {pendingCount > 0 && <span className={styles.navBadge}>{pendingCount}</span>}
+                            {/* 🟢 استخدام العداد الحي المربوط */}
+                            {livePendingCount > 0 && <span className={styles.navBadge}>{livePendingCount}</span>}
                         </div>
                     </>
                 )}
