@@ -18,30 +18,40 @@ class EmployeeService
                 ->firstOrFail();
 
             $user = User::create([
-                'first_name'  => $data['first_name'],
-                'last_name'   => $data['last_name'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
                 'national_id' => $data['national_id'],
-                'email'       => $data['email'],
-                'password'    => Hash::make($data['password']),
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
             ]);
 
             $user->assignRole($role);
+
+            $defaultPermissions = [
+                'view_requests',
+                'process_requests',
+                'approve_requests',
+                'reject_requests',
+                'view_users',
+                'view_service_types',
+            ];
+            $user->syncPermissions($defaultPermissions);
 
             return $user;
         });
     }
 
-       public function update(User $user, array $data): User
+    public function update(User $user, array $data): User
     {
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
- 
+
         $user->update($data);
- 
+
         return $user->fresh();
     }
-    
+
     public function all()
     {
         return User::role('employee')->latest()->paginate(15);

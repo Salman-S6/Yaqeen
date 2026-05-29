@@ -44,7 +44,6 @@ class RolePermissionSeeder extends Seeder
             // Requests
             'view_requests',
             'create_requests',
-            'assign_requests',
             'process_requests',
             'approve_requests',
             'reject_requests',
@@ -97,15 +96,15 @@ class RolePermissionSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         // Employee → إدارة الطلبات فقط
-        $employee->givePermissionTo([
-            'view_requests',
-            'assign_requests',
-            'process_requests',
-            'approve_requests',
-            'reject_requests',
-            'view_users',
-            'view_service_types',
-        ]);
+        // $employee->givePermissionTo([
+        //     'view_requests',
+        //     'assign_requests',
+        //     'process_requests',
+        //     'approve_requests',
+        //     'reject_requests',
+        //     'view_users',
+        //     'view_service_types',
+        // ]);
 
         // Citizen → استخدام النظام فقط
         $citizen->givePermissionTo([

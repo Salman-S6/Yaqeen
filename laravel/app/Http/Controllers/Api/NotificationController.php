@@ -20,10 +20,9 @@ class NotificationController extends Controller
             ->whereNull('read_at')
             ->count();
 
-        return response()->json([
+        return NotificationResource::collection($notifications)->additional([
             'status' => 'success',
             'unread_count' => $unreadCount,
-            'data' => NotificationResource::collection($notifications)->response()->getData(true),
         ]);
     }
 

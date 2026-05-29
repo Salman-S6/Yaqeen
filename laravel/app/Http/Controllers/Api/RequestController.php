@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RejectRequestRequest;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Resources\RequestResource;
+use App\Models\Request as RequestModel;
 use App\Services\RequestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,13 +17,26 @@ class RequestController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->validate([
-            'status' => 'nullable|string|in:pending,approved,rejected',
-        ]);
+        $user = $request->user();
 
-        return RequestResource::collection(
-            $this->service->getAll(Auth::user(), $filters)
-        );
+        $requests = $this->service->getAll($user, $request->all());
+
+        $stats = null;
+
+        if ($user->hasRole('citizen') && $user->citizen) {
+            $citizenId = $user->citizen->id;
+
+            $stats = [
+                'total' => RequestModel::where('citizen_id', $citizenId)->count(),
+                'pending' => RequestModel::where('citizen_id', $citizenId)->where('status', 'pending')->count(),
+                'completed' => RequestModel::where('citizen_id', $citizenId)->whereIn('status', ['approved', 'rejected'])->count(),
+            ];
+        }
+
+        return RequestResource::collection($requests)->additional([
+            'status' => 'success',
+            'stats' => $stats,
+        ]);
     }
 
     public function store(StoreRequestRequest $request)
