@@ -40,7 +40,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const QrForgedScreen(),
+                builder: (context) => const QrForgedScreen(), // 🌟 الشاشة الحمراء
               ),
             ).then((_) {
               if (mounted) context.read<QrBloc>().add(ResetQrScannerEvent());
@@ -118,7 +118,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
                         ),
                       ),
                     ),
-                    // --- أزرار المحاكاة (للاختبار فقط - تحذف لاحقاً عند ربط الكاميرا) ---
+                    // 🚨 أزرار المحاكاة (المنقذ لك في العرض التقديمي)
                     Positioned(
                       bottom: 20.h,
                       child: Row(
@@ -127,7 +127,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
                             onPressed: () {
-                              context.read<QrBloc>().add(const VerifyScannedQrEvent("valid_signature_data"));
+                              // يرسل كود النجاح للـ Repository
+                              context.read<QrBloc>().add(const VerifyScannedQrEvent("SIMULATE_SUCCESS"));
                             },
                             child: const Text("محاكاة: QR صحيح", style: TextStyle(color: Colors.white)),
                           ),
@@ -135,7 +136,8 @@ class _QrScanScreenState extends State<QrScanScreen> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
                             onPressed: () {
-                              context.read<QrBloc>().add(const VerifyScannedQrEvent("fake_signature_data"));
+                              // يرسل كود الفشل للـ Repository
+                              context.read<QrBloc>().add(const VerifyScannedQrEvent("SIMULATE_FAKE"));
                             },
                             child: const Text("محاكاة: QR مزور", style: TextStyle(color: Colors.white)),
                           ),

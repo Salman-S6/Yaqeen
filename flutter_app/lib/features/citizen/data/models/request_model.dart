@@ -11,6 +11,7 @@ class RequestModel {
   final String? fullName;
   final String? nationalId;
   final String? registrationPlace;
+  final String? qrUrl; // 🌟 الحقل الجديد للـ QR Code
 
   RequestModel({
     required this.id,
@@ -22,10 +23,10 @@ class RequestModel {
     this.fullName,
     this.nationalId,
     this.registrationPlace,
+    this.qrUrl, // 🌟 أضفناه للـ Constructor
   });
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
-    // 🔍 طباعة البيانات الخام للطلب
     print("📥 MODEL [RequestModel]: Raw JSON -> $json");
 
     RequestStatus parseStatus(String? statusStr) {
@@ -68,6 +69,7 @@ class RequestModel {
       fullName: extractFullName(json),
       nationalId: json['citizen']?['national_id']?.toString() ?? json['national_id']?.toString() ?? 'غير متوفر',
       registrationPlace: json['citizen']?['place_of_registration']?.toString() ?? json['registration_place']?.toString() ?? 'غير متوفر',
+      qrUrl: json['qr_url']?.toString(), // 🌟 سحب الرابط من الـ JSON
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart'; // 🌟 استيراد مكتبة الـ QR
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
@@ -84,7 +86,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       return SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center, // 🌟 جعلنا المحتوى بالمنتصف للـ QR
           children: [
             _buildStatusCard(
                 title: request.title,
@@ -93,7 +95,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             ),
             SizedBox(height: 20.h),
 
-            Text("البيانات الشخصية", style: AppTextStyles.bodyBold.copyWith(fontSize: 12.sp)),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text("البيانات الشخصية", style: AppTextStyles.bodyBold.copyWith(fontSize: 12.sp)),
+            ),
             SizedBox(height: 8.h),
             _buildDataBox(
               fullName: request.fullName ?? 'غير متوفر',
@@ -103,7 +108,44 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
             SizedBox(height: 20.h),
 
-            Text("المرفقات", style: AppTextStyles.bodyBold.copyWith(fontSize: 12.sp)),
+            // 🌟 قسم التحقق العام (QR Code) يظهر فقط إذا كان الطلب مقبولاً وفيه رابط
+            if (isAccepted && request.qrUrl != null) ...[
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: AppColors.green, width: 2), // إطار أخضر مميز
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "رمز التحقق العام (Public Verification)",
+                      style: AppTextStyles.bodyBold.copyWith(color: AppColors.green, fontSize: 12.sp),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      "امسح الرمز بأي كاميرا هاتف للتحقق من صحة الوثيقة",
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.smallLabel.copyWith(fontSize: 10.sp),
+                    ),
+                    SizedBox(height: 16.h),
+                    QrImageView(
+                      data: request.qrUrl!,
+                      version: QrVersions.auto,
+                      size: 160.w,
+                      backgroundColor: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.h),
+            ],
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text("المرفقات", style: AppTextStyles.bodyBold.copyWith(fontSize: 12.sp)),
+            ),
             SizedBox(height: 8.h),
             _buildAttachmentCard(),
 
