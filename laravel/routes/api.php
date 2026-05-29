@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AdminAuditLogController;
 use App\Http\Controllers\Api\AdminCitizenController;
+use App\Http\Controllers\Api\AdminEmployeePermissionController;
 use App\Http\Controllers\Api\AdminOcrController;
 use App\Http\Controllers\Api\AdminStatsController;
 use App\Http\Controllers\Api\AdminVerificationLogController;
@@ -125,6 +126,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/ocr-logs', [AdminOcrController::class, 'index']);
 
             Route::get('/audit-logs', [AdminAuditLogController::class, 'index']);
+
+            Route::get('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'show']);
+            Route::put('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'sync']);
         });
 
     /*
