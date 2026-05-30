@@ -29,10 +29,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     if (state is NotificationLoaded) {
       final currentState = state as NotificationLoaded;
       try {
-        // إرسال الطلب للسيرفر بالخلفية
         await repository.markNotificationAsRead(event.notificationId);
 
-        // تحديث الواجهة محلياً فوراً لسرعة الاستجابة (UX)
         final updatedList = currentState.notifications.map((n) {
           if (n.id == event.notificationId) {
             return NotificationModel(
@@ -51,7 +49,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
         emit(NotificationLoaded(notifications: updatedList, unreadCount: newUnreadCount));
       } catch (e) {
-        // في حال فشل السيرفر، نحافظ على الحالة كما هي
       }
     }
   }

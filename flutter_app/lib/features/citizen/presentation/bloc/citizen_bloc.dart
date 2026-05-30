@@ -16,8 +16,13 @@ class CitizenBloc extends Bloc<CitizenEvent, CitizenState> {
   Future<void> _onFetchRequests(FetchRequestsEvent event, Emitter<CitizenState> emit) async {
     emit(CitizenLoading());
     try {
-      final requests = await repository.getRequests();
-      emit(RequestsLoaded(requests));
+      final response = await repository.getRequests();
+      emit(RequestsLoaded(
+        requests: response.requests,
+        totalCount: response.stats.total,
+        pendingCount: response.stats.pending,
+        completedCount: response.stats.completed,
+      ));
     } catch (e) {
       emit(CitizenError(e.toString().replaceAll("Exception: ", "")));
     }

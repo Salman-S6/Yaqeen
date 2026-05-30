@@ -38,7 +38,8 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
           if (state is NewRequestSubmitted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("تم تقديم الطلب بنجاح!", style: AppTextStyles.bodyBold.copyWith(color: AppColors.white)),
+                content: Text("تم تقديم الطلب بنجاح!",
+                    style: AppTextStyles.bodyBold.copyWith(color: AppColors.white)),
                 backgroundColor: AppColors.green,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -93,7 +94,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                           String citizenName = "جاري التحميل...";
                           String nationalId = "جاري التحميل...";
                           String? idImageUrl;
-                          String token = ""; // 🚀 متغير لحفظ التوكن
+                          String token = "";
 
                           if (authState is Authenticated) {
                             citizenName = "${authState.user.firstName} ${authState.user.lastName}";

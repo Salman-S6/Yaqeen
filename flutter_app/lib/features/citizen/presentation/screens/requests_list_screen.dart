@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
 import '../../../../core/widgets/cards_and_tiles/request_list_tile.dart';
 import '../../../../core/widgets/indicators/status_badge.dart';
-
 import '../bloc/citizen_bloc.dart';
+import '../bloc/citizen_event.dart';
 import '../bloc/citizen_state.dart';
 import 'request_detail_screen.dart';
 
@@ -22,6 +21,21 @@ class RequestsListScreen extends StatefulWidget {
 class _RequestsListScreenState extends State<RequestsListScreen> {
   String _selectedFilter = "الكل";
 
+  Future<void> _handleRefresh() async {
+    context.read<CitizenBloc>().add(FetchRequestsEvent());
+    await Future.delayed(const Duration(milliseconds: 800));
+  }
+
+  Widget _buildScrollableEmptyState(BoxConstraints constraints, Widget child) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: constraints.maxHeight),
+        child: Center(child: child),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,82 +48,93 @@ class _RequestsListScreenState extends State<RequestsListScreen> {
             backgroundColor: AppColors.black,
             showFlag: true,
           ),
-
           _buildFilters(),
-
           Expanded(
-            child: BlocBuilder<CitizenBloc, CitizenState>(
-              builder: (context, state) {
-                if (state is CitizenLoading) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.green));
-                }
-                else if (state is RequestsLoaded) {
-                  final allRequests = state.requests;
+            child: RefreshIndicator(
+              color: AppColors.green,
+              onRefresh: _handleRefresh,
+              child: BlocBuilder<CitizenBloc, CitizenState>(
+                builder: (context, state) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (state is CitizenLoading) {
+                        return _buildScrollableEmptyState(
+                          constraints,
+                          const CircularProgressIndicator(color: AppColors.green),
+                        );
+                      } else if (state is RequestsLoaded) {
+                        final allRequests = state.requests;
 
-                  if (allRequests.isEmpty) {
-                    return Center(
-                      child: Text(
-                        "لا يوجد لديك أي طلبات سابقة",
-                        style: AppTextStyles.bodyBold.copyWith(color: AppColors.grayMid),
-                      ),
-                    );
-                  }
-
-                  final filteredRequests = allRequests.where((request) {
-                    if (_selectedFilter == "الكل") return true;
-                    if (_selectedFilter == "مقبول" && request.status == RequestStatus.accepted) return true;
-                    if (_selectedFilter == "قيد المعالجة" && request.status == RequestStatus.review) return true;
-                    if (_selectedFilter == "مرفوض" && request.status == RequestStatus.rejected) return true;
-                    return false;
-                  }).toList();
-
-                  if (filteredRequests.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: 40.sp, color: AppColors.grayMid),
-                          SizedBox(height: 12.h),
-                          Text(
-                            "لا يوجد طلبات في هذا التصنيف",
-                            style: AppTextStyles.bodyBold.copyWith(color: AppColors.grayMid),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: filteredRequests.length,
-                    itemBuilder: (context, index) {
-                      final request = filteredRequests[index];
-                      return RequestListTile(
-                        title: request.title,
-                        requestId: request.id.toString(),
-                        date: request.date,
-                        icon: request.icon,
-                        status: request.status,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RequestDetailScreen(requestId: request.id.toString(),),
+                        if (allRequests.isEmpty) {
+                          return _buildScrollableEmptyState(
+                            constraints,
+                            Text(
+                              "لا يوجد لديك أي طلبات سابقة",
+                              style: AppTextStyles.bodyBold.copyWith(color: AppColors.grayMid),
                             ),
                           );
-                        },
-                      );
+                        }
+
+                        final filteredRequests = allRequests.where((request) {
+                          if (_selectedFilter == "الكل") return true;
+                          if (_selectedFilter == "مقبول" && request.status == RequestStatus.accepted) return true;
+                          if (_selectedFilter == "قيد المعالجة" && request.status == RequestStatus.review) return true;
+                          if (_selectedFilter == "مرفوض" && request.status == RequestStatus.rejected) return true;
+                          return false;
+                        }).toList();
+
+                        if (filteredRequests.isEmpty) {
+                          return _buildScrollableEmptyState(
+                            constraints,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.search_off, size: 40.sp, color: AppColors.grayMid),
+                                SizedBox(height: 12.h),
+                                Text(
+                                  "لا يوجد طلبات في هذا التصنيف",
+                                  style: AppTextStyles.bodyBold.copyWith(color: AppColors.grayMid),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: filteredRequests.length,
+                          itemBuilder: (context, index) {
+                            final request = filteredRequests[index];
+                            return RequestListTile(
+                              title: request.title,
+                              requestId: request.id.toString(),
+                              date: request.date,
+                              icon: request.icon,
+                              status: request.status,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RequestDetailScreen(requestId: request.id.toString()),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      } else if (state is CitizenError) {
+                        return _buildScrollableEmptyState(
+                          constraints,
+                          Text(state.message, style: AppTextStyles.bodyBold.copyWith(color: AppColors.red)),
+                        );
+                      }
+
+                      return _buildScrollableEmptyState(constraints, const SizedBox());
                     },
                   );
-                }
-                else if (state is CitizenError) {
-                  return Center(
-                    child: Text(state.message, style: AppTextStyles.bodyBold.copyWith(color: AppColors.red)),
-                  );
-                }
-
-                return const SizedBox();
-              },
+                },
+              ),
             ),
           ),
         ],

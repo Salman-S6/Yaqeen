@@ -1,5 +1,50 @@
 import '../../../../core/widgets/indicators/status_badge.dart';
 
+class RequestStats {
+  final int total;
+  final int pending;
+  final int completed;
+
+  RequestStats({
+    required this.total,
+    required this.pending,
+    required this.completed,
+  });
+
+  factory RequestStats.fromJson(Map<String, dynamic> json) {
+    return RequestStats(
+      total: json['total'] ?? 0,
+      pending: json['pending'] ?? 0,
+      completed: json['completed'] ?? 0,
+    );
+  }
+}
+
+class RequestsResponse {
+  final List<RequestModel> requests;
+  final RequestStats stats;
+
+  RequestsResponse({
+    required this.requests,
+    required this.stats,
+  });
+
+  factory RequestsResponse.fromJson(Map<String, dynamic> json) {
+    var list = json['data'] as List? ?? [];
+    List<RequestModel> requestsList = list.map((i) => RequestModel.fromJson(i)).toList();
+
+    RequestStats requestStats = RequestStats(total: 0, pending: 0, completed: 0);
+    if (json['stats'] != null) {
+      requestStats = RequestStats.fromJson(json['stats']);
+    }
+
+    return RequestsResponse(
+      requests: requestsList,
+      stats: requestStats,
+    );
+  }
+}
+
 class RequestModel {
   final int id;
   final String requestNumber;
@@ -11,7 +56,7 @@ class RequestModel {
   final String? fullName;
   final String? nationalId;
   final String? registrationPlace;
-  final String? qrUrl; // 🌟 الحقل الجديد للـ QR Code
+  final String? qrUrl;
 
   RequestModel({
     required this.id,
@@ -23,12 +68,10 @@ class RequestModel {
     this.fullName,
     this.nationalId,
     this.registrationPlace,
-    this.qrUrl, // 🌟 أضفناه للـ Constructor
+    this.qrUrl,
   });
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
-    print("📥 MODEL [RequestModel]: Raw JSON -> $json");
-
     RequestStatus parseStatus(String? statusStr) {
       if (statusStr == 'approved' || statusStr == 'accepted') return RequestStatus.accepted;
       if (statusStr == 'rejected') return RequestStatus.rejected;
@@ -69,7 +112,7 @@ class RequestModel {
       fullName: extractFullName(json),
       nationalId: json['citizen']?['national_id']?.toString() ?? json['national_id']?.toString() ?? 'غير متوفر',
       registrationPlace: json['citizen']?['place_of_registration']?.toString() ?? json['registration_place']?.toString() ?? 'غير متوفر',
-      qrUrl: json['qr_url']?.toString(), // 🌟 سحب الرابط من الـ JSON
+      qrUrl: json['qr_url']?.toString(),
     );
   }
 }

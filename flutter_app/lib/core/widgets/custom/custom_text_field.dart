@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_text_styles.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
@@ -26,6 +26,19 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -35,25 +48,41 @@ class CustomTextField extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(right: 4.w, bottom: 4.h),
             child: Text(
-              label,
+              widget.label,
               style: AppTextStyles.smallLabel.copyWith(color: AppColors.grayMid, fontSize: 8.sp),
             ),
           ),
           TextFormField(
-            controller: controller,
-            obscureText: isPassword,
-            keyboardType: keyboardType,
-            readOnly: readOnly,
-            onTap: onTap,
+            controller: widget.controller,
+            obscureText: _obscureText,
+            keyboardType: widget.keyboardType,
+            readOnly: widget.readOnly,
+            onTap: widget.onTap,
             style: AppTextStyles.bodyRegular.copyWith(color: AppColors.black, fontSize: 11.sp),
-            validator: validator,
+            validator: widget.validator,
             decoration: InputDecoration(
-              hintText: hint,
+              hintText: widget.hint,
               hintStyle: TextStyle(color: AppColors.grayMid, fontSize: 11.sp),
               filled: true,
               fillColor: AppColors.gray,
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+
+              suffixIcon: widget.isPassword
+                  ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: AppColors.grayMid,
+                  size: 18.sp,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
+                  : null,
+
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.r),
                 borderSide: const BorderSide(color: AppColors.green, width: 1),
