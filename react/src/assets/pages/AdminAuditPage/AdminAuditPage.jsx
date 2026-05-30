@@ -1,14 +1,76 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { employeeService } from '../../../api/employeeService';
-import { FaClock, FaNetworkWired, FaChevronDown, FaChevronUp, FaExchangeAlt } from 'react-icons/fa';
+import {
+    FaClock,
+    FaNetworkWired,
+    FaChevronDown,
+    FaChevronUp,
+    FaExchangeAlt
+} from 'react-icons/fa';
 import styles from './AdminAuditPage.module.css';
+
+const ACTION_OPTIONS = [
+    { value: 'الكل', label: 'كل الإجراءات' },
+    { value: 'إضافة', label: 'إضافة / إنشاء' },
+    { value: 'تعديل', label: 'تعديل / تحديث' },
+    { value: 'حذف', label: 'حذف' },
+    { value: 'اعتماد', label: 'اعتماد' },
+    { value: 'رفض', label: 'رفض' }
+];
+
+const ENTITY_OPTIONS = [
+    { value: 'الكل', label: 'كل الكيانات' },
+    { value: 'طلب', label: 'الطلبات' },
+    { value: 'مواطن', label: 'المواطنين' },
+    { value: 'مستخدم', label: 'المستخدمين' },
+    { value: 'نوع خدمة', label: 'أنواع الخدمات' }
+];
+
+const CustomDropdown = ({ value, options, onChange }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const selectedLabel = options.find(option => option.value === value)?.label || options[0]?.label;
+
+    return (
+        <div className={styles.customSelectWrapper}>
+            <button
+                type="button"
+                className={`${styles.customSelectButton} ${isOpen ? styles.customSelectButtonOpen : ''}`}
+                onClick={() => setIsOpen(prev => !prev)}
+            >
+                <span>{selectedLabel}</span>
+                <FaChevronDown className={`${styles.customSelectArrow} ${isOpen ? styles.arrowOpen : ''}`} />
+            </button>
+
+            {isOpen && (
+                <div className={styles.customSelectMenu}>
+                    {options.map(option => {
+                        const isSelected = option.value === value;
+
+                        return (
+                            <button
+                                key={option.value}
+                                type="button"
+                                className={`${styles.customSelectOption} ${isSelected ? styles.customSelectOptionActive : ''}`}
+                                onClick={() => {
+                                    onChange(option.value);
+                                    setIsOpen(false);
+                                }}
+                            >
+                                {option.label}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const AdminAuditPage = () => {
     const [auditLogs, setAuditLogs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [expandedLogId, setExpandedLogId] = useState(null);
 
-    // 🟢 States الفلترة
     const [actionFilter, setActionFilter] = useState('الكل');
     const [entityFilter, setEntityFilter] = useState('الكل');
     const [startDate, setStartDate] = useState('');
@@ -21,11 +83,12 @@ const AdminAuditPage = () => {
                 const data = response.data?.data?.data || response.data?.data || response.data || [];
                 setAuditLogs(Array.isArray(data) ? data : []);
             } catch (error) {
-                console.error("خطأ في جلب سجلات التدقيق:", error);
+                console.error('خطأ في جلب سجلات التدقيق:', error);
             } finally {
                 setIsLoading(false);
             }
         };
+
         fetchLogs();
     }, []);
 
@@ -38,18 +101,19 @@ const AdminAuditPage = () => {
     };
 
     const toggleDetails = (id) => {
-        if (expandedLogId === id) setExpandedLogId(null);
-        else setExpandedLogId(id);
+        setExpandedLogId(prev => (prev === id ? null : id));
     };
 
-    // 🟢 دالة تجميل الـ JSON وتحويله لقائمة مقروءة
     const formatChangesData = (dataObj) => {
         if (!dataObj || typeof dataObj !== 'object') {
             return <div className={styles.emptyData}>{dataObj || 'لا يوجد بيانات'}</div>;
         }
 
         const keys = Object.keys(dataObj);
-        if (keys.length === 0) return <div className={styles.emptyData}>لا توجد تفاصيل</div>;
+
+        if (keys.length === 0) {
+            return <div className={styles.emptyData}>لا توجد تفاصيل</div>;
+        }
 
         return (
             <ul className={styles.prettyList}>
@@ -57,7 +121,9 @@ const AdminAuditPage = () => {
                     <li key={key} className={styles.prettyListItem}>
                         <span className={styles.dataKey}>{key}</span>
                         <span className={styles.dataValue}>
-                            {dataObj[key] !== null && dataObj[key] !== '' ? String(dataObj[key]) : <span className={styles.nullValue}>فارغ</span>}
+                            {dataObj[key] !== null && dataObj[key] !== ''
+                                ? String(dataObj[key])
+                                : <span className={styles.nullValue}>فارغ</span>}
                         </span>
                     </li>
                 ))}
@@ -65,24 +131,23 @@ const AdminAuditPage = () => {
         );
     };
 
-    // 🟢 منطق الفلترة المدمج (تاريخ + إجراء + كيان)
     const filteredLogs = auditLogs.filter(log => {
-        // فلتر الإجراء
         const matchAction = actionFilter === 'الكل' || (log.action && log.action.includes(actionFilter));
-        
-        // فلتر الكيان
         const matchEntity = entityFilter === 'الكل' || (log.entity && log.entity.includes(entityFilter));
-        
-        // فلتر التاريخ
+
         let matchStartDate = true;
         let matchEndDate = true;
-        const logDate = new Date(log.date.split(' ')[0]); // أخذ جزء التاريخ فقط YYYY-MM-DD
-        
-        if (startDate) {
-            matchStartDate = logDate >= new Date(startDate);
-        }
-        if (endDate) {
-            matchEndDate = logDate <= new Date(endDate);
+
+        if (log.date) {
+            const logDate = new Date(String(log.date).split(' ')[0]);
+
+            if (startDate) {
+                matchStartDate = logDate >= new Date(startDate);
+            }
+
+            if (endDate) {
+                matchEndDate = logDate <= new Date(endDate);
+            }
         }
 
         return matchAction && matchEntity && matchStartDate && matchEndDate;
@@ -90,39 +155,26 @@ const AdminAuditPage = () => {
 
     return (
         <div className={styles.pageWrapper}>
-            {/* شريط الفلاتر المربوط بالـ States */}
             <div className={styles.filterBar}>
-                <select 
-                    className={styles.sturdySelect} 
-                    value={actionFilter} 
-                    onChange={(e) => setActionFilter(e.target.value)}
-                >
-                    <option value="الكل">كل الإجراءات</option>
-                    <option value="إضافة">إضافة / إنشاء</option>
-                    <option value="تعديل">تعديل / تحديث</option>
-                    <option value="حذف">حذف</option>
-                    <option value="اعتماد">اعتماد</option>
-                    <option value="رفض">رفض</option>
-                </select>
+                <CustomDropdown
+                    value={actionFilter}
+                    options={ACTION_OPTIONS}
+                    onChange={setActionFilter}
+                />
 
-                <select 
-                    className={styles.sturdySelect}
-                    value={entityFilter} 
-                    onChange={(e) => setEntityFilter(e.target.value)}
-                >
-                    <option value="الكل">كل الكيانات</option>
-                    <option value="طلب">الطلبات</option>
-                    <option value="مواطن">المواطنين</option>
-                    <option value="مستخدم">المستخدمين</option>
-                </select>
+                <CustomDropdown
+                    value={entityFilter}
+                    options={ENTITY_OPTIONS}
+                    onChange={setEntityFilter}
+                />
 
                 <div className={styles.dateItem}>
                     <span className={styles.label}>من</span>
                     <div className={styles.inputBox}>
-                        <input 
-                            type="date" 
-                            value={startDate} 
-                            onChange={(e) => setStartDate(e.target.value)} 
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
                         />
                     </div>
                 </div>
@@ -130,10 +182,10 @@ const AdminAuditPage = () => {
                 <div className={styles.dateItem}>
                     <span className={styles.label}>إلى</span>
                     <div className={styles.inputBox}>
-                        <input 
-                            type="date" 
-                            value={endDate} 
-                            onChange={(e) => setEndDate(e.target.value)} 
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
                         />
                     </div>
                 </div>
@@ -160,19 +212,24 @@ const AdminAuditPage = () => {
                             return (
                                 <div key={log.id} className={styles.timelineItem}>
                                     <div className={`${styles.statusDot} ${styles[getActionColor(log.action)]}`}></div>
-                                    
+
                                     <div className={styles.logContent}>
                                         <div className={styles.logHeader} onClick={() => toggleDetails(log.id)}>
                                             <div className={styles.textStack}>
                                                 <p className={styles.actionText}>
                                                     <strong>{log.user_name}</strong> {log.action}
                                                 </p>
+
                                                 <p className={styles.metaText}>
-                                                    <FaClock style={{marginLeft: '4px'}}/> {log.date} | الكيان: {log.entity} {log.entity_id ? `(#${log.entity_id})` : ''}
+                                                    <FaClock style={{ marginLeft: '4px' }} />
+                                                    {log.date} | الكيان: {log.entity}
+                                                    {log.entity_id ? ` (#${log.entity_id})` : ''}
                                                 </p>
                                             </div>
-                                            <button className={styles.expandBtn}>
-                                                {isExpanded ? <FaChevronUp /> : <FaChevronDown />} التفاصيل
+
+                                            <button className={styles.expandBtn} type="button">
+                                                {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+                                                التفاصيل
                                             </button>
                                         </div>
 
@@ -185,12 +242,15 @@ const AdminAuditPage = () => {
                                                 {hasChanges && (
                                                     <div className={styles.changesBox}>
                                                         <div className={styles.changeTitle}>التعديلات التي طرأت:</div>
+
                                                         <div className={styles.diffGrid}>
                                                             <div className={styles.oldValue}>
                                                                 <strong className={styles.diffHeading}>البيانات السابقة:</strong>
                                                                 {formatChangesData(log.changes.old)}
                                                             </div>
+
                                                             <div className={styles.diffArrow}><FaExchangeAlt /></div>
+
                                                             <div className={styles.newValue}>
                                                                 <strong className={styles.diffHeading}>البيانات الجديدة:</strong>
                                                                 {formatChangesData(log.changes.new)}

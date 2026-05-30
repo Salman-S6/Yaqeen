@@ -337,3 +337,92 @@
 .orange {
     background-color: #f59e0b !important;
 }
+/* ==========================================================================
+   Dropdown أخضر مخصص بدل select الافتراضي
+   ========================================================================== */
+
+.customSelectWrapper {
+    position: relative;
+    min-width: 160px;
+    z-index: 100;
+}
+
+.customSelectButton {
+    width: 100%;
+    height: 42px;
+    padding: 8px 14px;
+    border: 1px solid #00a65a;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #117b34;
+    font-size: 13px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    direction: rtl;
+    transition: all 0.2s ease;
+}
+
+.customSelectButton:hover,
+.customSelectButtonOpen {
+    background-color: #e6f6ec;
+    box-shadow: 0 0 0 3px rgba(0, 166, 90, 0.12);
+}
+
+.customSelectArrow {
+    font-size: 11px;
+    color: #00a65a;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.arrowOpen {
+    transform: rotate(180deg);
+}
+
+.customSelectMenu {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    z-index: 999999;
+}
+
+.customSelectOption {
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background-color: #ffffff;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: right;
+    transition: all 0.2s ease;
+}
+
+.customSelectOption:hover {
+    background-color: #e6f6ec;
+    color: #117b34;
+}
+
+.customSelectOptionActive {
+    background-color: #00a65a;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.customSelectOptionActive:hover {
+    background-color: #008d4c;
+    color: #ffffff;
+}

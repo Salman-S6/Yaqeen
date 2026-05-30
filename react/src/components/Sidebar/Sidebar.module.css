@@ -3,6 +3,7 @@
    ========================================= */
 
 .sidebar {
+    position: relative;
     width: 280px;
     min-width: 280px;
     height: 100vh;
@@ -14,28 +15,43 @@
     direction: rtl;
     flex-shrink: 0;
     z-index: 9999;
-    /* 🚀 أنيميشن النعومة عند الفتح والإغلاق */
     transition: margin-right 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* 🟢 سلوك الشاشات الكبيرة (Desktop): سحب القائمة لليمين لإخفائها وتوسعة الشاشة */
+.sidebarToggleBtn {
+    position: absolute;
+    top: 22px;
+    left: 18px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(0, 166, 90, 0.14);
+    color: #00a65a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 10000;
+    transition: all 0.2s ease;
+}
+
+.sidebarToggleBtn:hover {
+    background-color: #00a65a;
+    color: #ffffff;
+}
+
 @media (min-width: 1025px) {
     .sidebar.closed {
         margin-right: -280px;
         opacity: 0;
         pointer-events: none;
-        /* لمنع التفاعل معها وهي مخفية */
     }
 }
 
-/* 🟢 زر الإغلاق المخفي في الكمبيوتر ويظهر في الموبايل */
-.mobileCloseBtn {
-    display: none;
-}
-
-/* 🟢 سلوك الشاشات الصغيرة (Mobile & Tablet): القائمة تصبح عائمة (Off-Canvas) */
 @media (max-width: 1024px) {
     .sidebar {
         position: fixed;
@@ -43,38 +59,20 @@
         right: 0;
         height: 100vh;
         transform: translateX(100%);
-        /* مخفية افتراضياً بإزاحتها لليمين */
         margin-right: 0 !important;
-        /* منع تأثير الديسكتوب */
     }
 
     .sidebar.open {
         transform: translateX(0);
-        /* تظهر عند الفتح */
     }
 
     .sidebar.closed {
         transform: translateX(100%);
     }
-
-    .mobileCloseBtn {
-        display: flex;
-        justify-content: flex-start;
-        /* لأنه RTL نضعه في اليمين */
-        padding: 15px 20px 0;
-        font-size: 22px;
-        color: #9ca3af;
-        cursor: pointer;
-        transition: color 0.2s;
-    }
-
-    .mobileCloseBtn:hover {
-        color: #fff;
-    }
 }
 
 /* =========================================
-   2. تنسيقات المحتوى الداخلي الأصلية
+   2. تنسيقات المحتوى الداخلي
    ========================================= */
 
 .logoSection {
@@ -105,7 +103,6 @@
     margin-bottom: 8px;
     transition: 0.3s;
     text-decoration: none;
-    /* من إضافات بتول تم دمجها هنا */
 }
 
 .navItem:hover,
@@ -118,10 +115,8 @@
     font-size: 20px;
     margin-left: 15px;
     flex-shrink: 0;
-    /* من إضافات بتول تم دمجها هنا */
 }
 
-/* تنسيق إضافي لـ نص الرابط لضمان وضوحه (من إضافات بتول) */
 .navItem span {
     font-size: 15px;
     font-weight: 500;
@@ -225,9 +220,6 @@
     color: #fca5a5 !important;
 }
 
-/* --- إضافات لوحة التحكم (Batool) --- */
-
-/* تحسين شكل الـ Active ليعمل مع NavLink بشكل تلقائي */
 :global(.active) .navItem,
 .active {
     background-color: #007c4d !important;

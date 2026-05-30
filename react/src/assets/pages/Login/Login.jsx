@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { authService } from '../../../api/authService'; 
 import InputField from "../../../components/InputField/InputField";
 import Button from "../../../components/Button/Button";
@@ -7,7 +6,6 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 🟢 استيراد أي�
 import styles from './Login.module.css';
 
 const Login = () => {
-    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);

@@ -9,7 +9,6 @@
     justify-content: center;
     align-items: center;
     z-index: 999999;
-    /* رقم عالي جداً لضمان ظهوره فوق كل شيء */
     backdrop-filter: blur(4px);
 }
 
@@ -74,6 +73,53 @@
 .modalTextarea {
     resize: vertical;
     min-height: 80px;
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radioOption {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radioOption:hover {
+    background-color: #ffffff;
+    border-color: #007c4d;
+}
+
+.radioOption input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #007c4d;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.radioText {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.radioOptionActive {
+    border-color: #007c4d;
+    background-color: #e6f6ec;
+}
+
+.radioOptionInactive {
+    border-color: #e53e3e;
+    background-color: #fff5f5;
 }
 
 .modalActions {

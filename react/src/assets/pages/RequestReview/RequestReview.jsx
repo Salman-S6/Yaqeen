@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaFileAlt, FaArrowRight } from 'react-icons/fa';
 import UserInfoCard from '../../../components/UserInfoCard/UserInfoCard';
 import DecisionActions from '../../../components/DecisionActions/DecisionActions';
 import ConfirmModal from '../../../components/ConfirmModal/ConfirmModal';
 import RejectModal from '../../../components/RejectModal/RejectModal';
+import { useToast } from '../../../components/Common/ToastProvider';
 import { employeeRequestService } from '../../../api/employeeRequestService';
 import styles from './RequestReview.module.css';
 
@@ -17,6 +18,11 @@ const RequestReview = ({ isAdminMode = false }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [requestData, setRequestData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { showToast } = useToast();
+
+  const getBackPath = useCallback(() => {
+    return isAdminMode ? '/admin/all-requests' : '/employee/pending-requests';
+  }, [isAdminMode]);
 
   useEffect(() => {
     const fetchRequestDetails = async () => {
@@ -24,62 +30,101 @@ const RequestReview = ({ isAdminMode = false }) => {
         const response = await employeeRequestService.reviewRequest(requestId);
         setRequestData(response.data?.data || response.data);
       } catch (error) {
-        console.error("خطأ:", error);
+        console.error('خطأ في جلب تفاصيل الطلب:', error);
+        const backendMessage = error.response?.data?.message || error.response?.data?.error || 'فشل تحميل بيانات الطلب.';
+        showToast(backendMessage, 'error');
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchRequestDetails();
-  }, [requestId]);
+  }, [requestId, showToast]);
 
   const handleApproveSubmit = async () => {
     setIsProcessing(true);
+
     try {
       await employeeRequestService.approveRequest(requestId);
-      alert("تم الاعتماد بنجاح!");
-      navigate('/employee/pending-requests');
-    } catch (e) { alert("حدث خطأ!"); }
-    finally { setIsProcessing(false); }
+      setShowConfirm(false);
+
+      navigate(getBackPath(), {
+        state: {
+          toast: {
+            message: 'تم اعتماد الطلب بنجاح وإصدار الوثيقة.',
+            type: 'success'
+          }
+        }
+      });
+    } catch (error) {
+      console.error('خطأ أثناء اعتماد الطلب:', error);
+      setShowConfirm(false);
+
+      const backendMessage = error.response?.data?.message || error.response?.data?.error || 'حدث خطأ أثناء اعتماد الطلب. تأكد من أن الطلب ما زال قيد الانتظار.';
+      setTimeout(() => showToast(backendMessage, 'error'), 150);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleRejectSubmit = async (reason) => {
     setIsProcessing(true);
+
     try {
-      await employeeRequestService.rejectRequest(requestId, reason || "مرفوض");
-      alert("تم الرفض!");
-      navigate('/employee/pending-requests');
-    } catch (e) { alert("حدث خطأ!"); }
-    finally { setIsProcessing(false); }
+      await employeeRequestService.rejectRequest(requestId, reason || 'مرفوض');
+      setShowReject(false);
+
+      navigate(getBackPath(), {
+        state: {
+          toast: {
+            message: 'تم رفض الطلب بنجاح وتسجيل سبب الرفض.',
+            type: 'success'
+          }
+        }
+      });
+    } catch (error) {
+      console.error('خطأ أثناء رفض الطلب:', error);
+      setShowReject(false);
+
+      const backendMessage = error.response?.data?.message || error.response?.data?.error || 'حدث خطأ أثناء رفض الطلب. تأكد من أن الطلب ما زال قيد الانتظار.';
+      setTimeout(() => showToast(backendMessage, 'error'), 150);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  if (isLoading) return <div style={{ padding: '50px', textAlign: 'center' }}>جاري التحميل...</div>;
-  if (!requestData) return <div style={{ padding: '50px', textAlign: 'center' }}>لا يوجد طلب.</div>;
+  if (isLoading) {
+    return <div style={{ padding: '50px', textAlign: 'center' }}>جاري التحميل...</div>;
+  }
+
+  if (!requestData) {
+    return <div style={{ padding: '50px', textAlign: 'center' }}>لا يوجد طلب.</div>;
+  }
 
   const c = requestData.citizen || {};
   const fullData = [
-    { label: "الاسم", value: c.first_name },
-    { label: "النسبة", value: c.last_name },
-    { label: "اسم الأب", value: c.father_name },
-    { label: "اسم الأم", value: c.mother_first_name },
-    { label: "نسبة الأم", value: c.mother_last_name },
-    { label: "تاريخ الميلاد", value: c.date_of_birth },
-    { label: "مكان الولادة/القيد", value: c.place_of_registration },
-    { label: "الرقم الوطني", value: c.national_id },
+    { label: 'الاسم', value: c.first_name || '---' },
+    { label: 'النسبة', value: c.last_name || '---' },
+    { label: 'اسم الأب', value: c.father_name || '---' },
+    { label: 'اسم الأم', value: c.mother_first_name || '---' },
+    { label: 'نسبة الأم', value: c.mother_last_name || '---' },
+    { label: 'تاريخ الميلاد', value: c.date_of_birth || '---' },
+    { label: 'مكان الولادة/القيد', value: c.place_of_registration || '---' },
+    { label: 'الرقم الوطني', value: c.national_id || '---' }
   ];
 
   return (
     <div className={styles.pageWrapper}>
-      {/* 🟢 زر العودة المنسق */}
-      <button onClick={() => navigate(-1)} className={styles.backButton}>
-        <FaArrowRight /> عودة للسجل الشامل
+      <button onClick={() => navigate(getBackPath())} className={styles.backButton} type="button">
+        <FaArrowRight />
+        {isAdminMode ? 'عودة لسجل الطلبات' : 'عودة للطلبات المعلقة'}
       </button>
 
       <header className={styles.topHeader}>
-        <h2 className={styles.mainTitle}>مراجعة بيانات الطلب: {c.first_name} {c.last_name}</h2>
+        <h2 className={styles.mainTitle}>مراجعة بيانات الطلب: {c.first_name || ''} {c.last_name || ''}</h2>
       </header>
 
       <div className={styles.contentGrid}>
-        {/* العمود الأيمن: عرض الصورة */}
         <div className={styles.rightCol}>
           <div className={styles.sectionLabel}>صورة الهوية</div>
           <div className={styles.imageContainer}>
@@ -94,17 +139,27 @@ const RequestReview = ({ isAdminMode = false }) => {
           </div>
         </div>
 
-        {/* العمود الأيسر: البيانات */}
         <div className={styles.leftCol}>
           <div className={styles.sectionLabel}><FaFileAlt /> البيانات المدخلة</div>
           <UserInfoCard data={fullData} />
 
           {!isAdminMode && requestData.status === 'pending' && (
             <div className={styles.actionsContainer}>
-              <DecisionActions
-                onAccept={() => setShowConfirm(true)}
-                onReject={() => setShowReject(true)}
-              />
+              <DecisionActions onAccept={() => setShowConfirm(true)} onReject={() => setShowReject(true)} />
+            </div>
+          )}
+
+          {!isAdminMode && requestData.status !== 'pending' && (
+            <div style={{
+              marginTop: '20px',
+              padding: '14px',
+              borderRadius: '8px',
+              backgroundColor: '#f3f4f6',
+              color: '#4b5563',
+              fontWeight: '600',
+              textAlign: 'center'
+            }}>
+              تمت معالجة هذا الطلب مسبقاً.
             </div>
           )}
         </div>

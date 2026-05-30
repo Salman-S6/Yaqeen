@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useToast } from '../Common/ToastProvider';
 import styles from './RejectModal.module.css';
 
 // 🟢 أضفنا isLoading لتعطيل الزر أثناء الإرسال، و requestId ليكون العنوان ديناميكياً
 const RejectModal = ({ isOpen, onClose, onConfirm, isLoading, requestId }) => {
+  const { showToast } = useToast();
   // 🟢 1. إنشاء حالة (State) لتخزين النص المكتوب
   const [reason, setReason] = useState('');
 
@@ -11,7 +13,7 @@ const RejectModal = ({ isOpen, onClose, onConfirm, isLoading, requestId }) => {
   // 🟢 2. دالة لحماية الإرسال وتمرير النص (String) فقط
   const handleConfirmClick = () => {
     if (!reason.trim()) {
-        alert("يرجى كتابة سبب الرفض أولاً.");
+        showToast('يرجى كتابة سبب الرفض أولاً.', 'warning');
         return;
     }
     onConfirm(reason); // 🚀 نمرر النص الصافي هنا
