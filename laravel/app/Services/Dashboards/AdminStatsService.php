@@ -22,6 +22,7 @@ class AdminStatsService
             ->value('avg_time');
 
         $totalResolved = Request::whereNotNull('resolved_at')->count();
+        $pendingCount = Request::where('status', 'pending')->count();
         $approvedCount = Request::where('status', 'approved')->count();
         $rejectedCount = Request::where('status', 'rejected')->count();
 
@@ -29,6 +30,7 @@ class AdminStatsService
 
         $statusDistribution = [
             'approved' => $approvedCount,
+            'pending' => $pendingCount,
             'rejected' => $rejectedCount,
         ];
 

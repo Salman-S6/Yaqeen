@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class RequestService
 {
@@ -41,6 +42,17 @@ class RequestService
             throw new \Exception('لا يوجد ملف مواطن مرتبط بهذا الحساب.');
         }
 
+        $duplicate = Request::where('citizen_id', $citizen->id)
+            ->where('service_type_id', $data['service_type_id'])
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($duplicate) {
+            throw ValidationException::withMessages([
+                'service_type_id' => ['لديك طلب قيد الانتظار لنفس الخدمة. لا يمكن تقديم طلب مكرر.'],
+            ]);
+        }
+
         return DB::transaction(function () use ($data, $citizen) {
 
             $request = Request::create([
@@ -52,6 +64,8 @@ class RequestService
             ]);
 
             $this->autoAssignService->assign($request);
+
+            $this->notificationService->sendReceived($request);
 
             return $request->load(['citizen.user', 'serviceType', 'assignedEmployee']);
         });

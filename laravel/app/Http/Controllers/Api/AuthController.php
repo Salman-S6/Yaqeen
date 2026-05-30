@@ -7,7 +7,6 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
-use App\Services\RequestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

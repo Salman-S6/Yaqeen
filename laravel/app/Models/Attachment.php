@@ -33,25 +33,14 @@ class Attachment extends Model
         return $this->belongsTo(User::class, 'uploaded_by');
     }
 
-    public function request(): BelongsTo
-    {
-        return $this->belongsTo(Request::class);
-    }
-
     public function ocrResult(): HasOne
     {
         return $this->hasOne(OCRResult::class);
     }
 
-    public function fraudCheck(): HasOne
-    {
-        return $this->hasOne(FraudCheck::class);
-    }
-
     protected static function booted(): void
     {
         static::deleting(function ($attachment) {
-            // قبل حذف السجل، تأكد من وجود الملف الفيزيائي واحذفه من السيرفر
             if (Storage::disk($attachment->disk)->exists($attachment->path)) {
                 Storage::disk($attachment->disk)->delete($attachment->path);
             }

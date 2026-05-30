@@ -24,7 +24,6 @@ class StoreRequestRequest extends FormRequest
     {
         return [
             'service_type_id' => 'required|exists:service_types,id',
-            // 'citizen_id' => 'required|exists:citizens,id'
         ];
     }
 }

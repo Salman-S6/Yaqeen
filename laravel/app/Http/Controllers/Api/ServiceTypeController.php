@@ -16,10 +16,6 @@ class ServiceTypeController extends Controller
     public function __construct(ServiceTypeService $service)
     {
         $this->service = $service;
-        // $this->middleware('permission:view service types')->only(['index', 'show']);
-        // $this->middleware('permission:create service types')->only('store');
-        // $this->middleware('permission:edit service types')->only(['update']);
-        // $this->middleware('permission:delete service types')->only('destroy');
     }
 
     public function index()

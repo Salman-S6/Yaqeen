@@ -75,6 +75,10 @@ class AuthService
             ]);
         }
 
+        if ($user->status === 'suspended') {
+            throw ValidationException::withMessages(['email' => ['حسابك موقوف - يرجى التواصل مع الإدارة.']]);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return [

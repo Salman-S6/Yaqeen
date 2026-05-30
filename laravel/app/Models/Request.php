@@ -19,7 +19,6 @@ class Request extends Model
         'service_type_id',
         'assigned_employee_id',
         'status',
-        'matching_score',
         'submitted_at',
         'assigned_at',
         'resolved_at',
@@ -57,11 +56,6 @@ class Request extends Model
     public function document(): HasOne
     {
         return $this->hasOne(Document::class);
-    }
-
-    public function dataMatching(): HasOne
-    {
-        return $this->hasOne(DataMatching::class);
     }
 
     public function rejectionReason(): HasOne
