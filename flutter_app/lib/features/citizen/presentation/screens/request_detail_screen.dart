@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_flutter/qr_flutter.dart'; // 🌟 استيراد مكتبة الـ QR
-
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
 import '../../../../core/widgets/indicators/status_badge.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
-import '../../../../core/widgets/buttons/outline_button.dart';
+import '../../../../core/utils/pdf_exporter.dart';
 import '../bloc/citizen_bloc.dart';
 import '../bloc/citizen_event.dart';
 import '../bloc/citizen_state.dart';
@@ -86,7 +85,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       return SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // 🌟 جعلنا المحتوى بالمنتصف للـ QR
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildStatusCard(
                 title: request.title,
@@ -108,14 +107,13 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
             SizedBox(height: 20.h),
 
-            // 🌟 قسم التحقق العام (QR Code) يظهر فقط إذا كان الطلب مقبولاً وفيه رابط
             if (isAccepted && request.qrUrl != null) ...[
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: AppColors.green, width: 2), // إطار أخضر مميز
+                  border: Border.all(color: AppColors.green, width: 2),
                 ),
                 child: Column(
                   children: [
@@ -154,16 +152,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             if (isAccepted) ...[
               PrimaryButton(
                 text: "تحميل الوثيقة (PDF) 📥",
-                onPressed: () {
+                onPressed: () async {
+                  await PdfExporter.exportRequestToPdf(request);
                 },
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 24.h),
             ],
-
-            CustomOutlineButton(
-              text: "مشاركة تفاصيل الطلب",
-              onPressed: () {},
-            ),
           ],
         ),
       );

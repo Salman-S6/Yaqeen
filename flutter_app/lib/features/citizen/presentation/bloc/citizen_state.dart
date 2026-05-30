@@ -13,9 +13,19 @@ class CitizenLoading extends CitizenState {}
 
 class RequestsLoaded extends CitizenState {
   final List<RequestModel> requests;
-  const RequestsLoaded(this.requests);
+  final int totalCount;
+  final int pendingCount;
+  final int completedCount;
+
+  const RequestsLoaded({
+    required this.requests,
+    required this.totalCount,
+    required this.pendingCount,
+    required this.completedCount,
+  });
+
   @override
-  List<Object?> get props => [requests];
+  List<Object?> get props => [requests, totalCount, pendingCount, completedCount];
 }
 
 class RequestDetailLoaded extends CitizenState {

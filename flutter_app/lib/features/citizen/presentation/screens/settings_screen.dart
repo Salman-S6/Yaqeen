@@ -67,8 +67,7 @@ class SettingsScreen extends StatelessWidget {
         if (state is Authenticated) {
           final user = state.user;
 
-          // 🚀 أضف سطر الطباعة هنا لكشف السر!
-          print("🔑 التوكن في الإعدادات: ${user.token}");
+          print(" التوكن في الإعدادات: ${user.token}");
 
           return Container(
             padding: EdgeInsets.all(20.w),
@@ -94,12 +93,11 @@ class SettingsScreen extends StatelessWidget {
                     border: Border.all(color: AppColors.green.withOpacity(0.2), width: 2),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.r), // لجعل الصورة دائرية
+                    borderRadius: BorderRadius.circular(30.r),
                     child: user.idImage != null && user.idImage!.isNotEmpty
                         ? Image.network(
                       user.idImage!,
                       fit: BoxFit.cover,
-                      // الهيدرات التي أضفناها
                       headers: {
                         'Authorization': 'Bearer ${user.token}',
                         'Accept': 'application/json',

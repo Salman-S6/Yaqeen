@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/custom/qr_frame_overlay.dart';
@@ -19,7 +20,15 @@ class QrScanScreen extends StatefulWidget {
 }
 
 class _QrScanScreenState extends State<QrScanScreen> {
-  bool isFlashOn = false;
+  final MobileScannerController _scannerController = MobileScannerController();
+
+  bool _isProcessing = false;
+
+  @override
+  void dispose() {
+    _scannerController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +37,37 @@ class _QrScanScreenState extends State<QrScanScreen> {
       body: BlocConsumer<QrBloc, QrState>(
         listener: (context, state) {
           if (state is QrValid) {
+            _scannerController.stop();
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => QrSuccessScreen(documentData: state.documentData),
               ),
             ).then((_) {
-              if (mounted) context.read<QrBloc>().add(ResetQrScannerEvent());
+              if (mounted) {
+                _isProcessing = false;
+                _scannerController.start();
+                context.read<QrBloc>().add(ResetQrScannerEvent());
+              }
             });
           } else if (state is QrForged) {
+            _scannerController.stop();
+
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const QrForgedScreen(), // 🌟 الشاشة الحمراء
+                builder: (context) => const QrForgedScreen(),
               ),
             ).then((_) {
-              if (mounted) context.read<QrBloc>().add(ResetQrScannerEvent());
+              if (mounted) {
+                _isProcessing = false;
+                _scannerController.start();
+                context.read<QrBloc>().add(ResetQrScannerEvent());
+              }
             });
+          } else if (state is QrError) {
+            _isProcessing = false;
           }
         },
         builder: (context, state) {
@@ -56,14 +79,19 @@ class _QrScanScreenState extends State<QrScanScreen> {
                 backgroundColor: Colors.transparent,
                 showFlag: false,
                 actions: [
-                  IconButton(
-                    icon: Icon(
-                      isFlashOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
-                      color: AppColors.white,
-                      size: 22.sp,
-                    ),
-                    onPressed: () {
-                      setState(() => isFlashOn = !isFlashOn);
+                  ValueListenableBuilder(
+                    valueListenable: _scannerController,
+                    builder: (context, scannerState, child) {
+                      return IconButton(
+                        icon: Icon(
+                          scannerState.torchState == TorchState.on
+                              ? Icons.flash_on_rounded
+                              : Icons.flash_off_rounded,
+                          color: AppColors.white,
+                          size: 22.sp,
+                        ),
+                        onPressed: () => _scannerController.toggleTorch(),
+                      );
                     },
                   ),
                   IconButton(
@@ -77,14 +105,22 @@ class _QrScanScreenState extends State<QrScanScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(
-                      color: AppColors.black.withOpacity(0.4),
-                      child: Center(
-                        child: Text(
-                          "جاري تشغيل الكاميرا...",
-                          style: AppTextStyles.smallLabel.copyWith(color: AppColors.white.withOpacity(0.5)),
-                        ),
-                      ),
+                    MobileScanner(
+                      controller: _scannerController,
+                      onDetect: (capture) {
+                        if (_isProcessing) return;
+
+                        final List<Barcode> barcodes = capture.barcodes;
+                        if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
+                          setState(() {
+                            _isProcessing = true;
+                          });
+
+                          final String rawValue = barcodes.first.rawValue!;
+
+                          context.read<QrBloc>().add(VerifyScannedQrEvent(rawValue));
+                        }
+                      },
                     ),
 
                     QrFrameOverlay(size: 220.w),
@@ -116,32 +152,6 @@ class _QrScanScreenState extends State<QrScanScreen> {
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    // 🚨 أزرار المحاكاة (المنقذ لك في العرض التقديمي)
-                    Positioned(
-                      bottom: 20.h,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-                            onPressed: () {
-                              // يرسل كود النجاح للـ Repository
-                              context.read<QrBloc>().add(const VerifyScannedQrEvent("SIMULATE_SUCCESS"));
-                            },
-                            child: const Text("محاكاة: QR صحيح", style: TextStyle(color: Colors.white)),
-                          ),
-                          SizedBox(width: 10.w),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
-                            onPressed: () {
-                              // يرسل كود الفشل للـ Repository
-                              context.read<QrBloc>().add(const VerifyScannedQrEvent("SIMULATE_FAKE"));
-                            },
-                            child: const Text("محاكاة: QR مزور", style: TextStyle(color: Colors.white)),
-                          ),
-                        ],
                       ),
                     ),
                   ],

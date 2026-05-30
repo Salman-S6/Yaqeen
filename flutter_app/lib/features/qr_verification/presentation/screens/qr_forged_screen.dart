@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
-import '../../../../core/widgets/buttons/danger_button.dart'; // الويدجت الأحمر الذي برمجناه
-import '../../../../core/widgets/buttons/outline_button.dart';
+import '../../../../core/widgets/buttons/danger_button.dart';
 
 class QrForgedScreen extends StatelessWidget {
   const QrForgedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final String currentTime = DateFormat('hh:mm a').format(DateTime.now());
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Column(
@@ -82,7 +83,7 @@ class QrForgedScreen extends StatelessWidget {
                             Icon(Icons.history_toggle_off_rounded, color: AppColors.grayMid, size: 14.sp),
                             SizedBox(width: 6.w),
                             Text(
-                              "وقت الفحص: اليوم، 11:45 ص",
+                              "وقت الفحص: اليوم، $currentTime", // 🌟 استخدام الوقت الحقيقي هنا
                               style: AppTextStyles.smallLabel.copyWith(fontSize: 9.sp),
                             ),
                           ],
@@ -98,10 +99,7 @@ class QrForgedScreen extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                   ),
                   SizedBox(height: 12.h),
-                  CustomOutlineButton(
-                    text: "العودة للقائمة",
-                    onPressed: () => Navigator.pop(context),
-                  ),
+
                 ],
               ),
             ),

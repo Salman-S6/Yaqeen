@@ -12,13 +12,10 @@ import '../../../../core/widgets/cards_and_tiles/request_list_tile.dart';
 import '../bloc/citizen_bloc.dart';
 import '../bloc/citizen_event.dart';
 import '../bloc/citizen_state.dart';
-
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
-
 import 'new_request_screen.dart';
 import 'request_detail_screen.dart';
-
 
 class CitizenHomeScreen extends StatefulWidget {
   const CitizenHomeScreen({super.key});
@@ -28,17 +25,30 @@ class CitizenHomeScreen extends StatefulWidget {
 }
 
 class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
-
   @override
   void initState() {
     super.initState();
     _loadRequests();
-    // 🌟 جلب الإشعارات عند فتح الشاشة الرئيسية ليظهر العداد فوراً
     context.read<NotificationBloc>().add(LoadNotificationsEvent());
   }
 
   void _loadRequests() {
     context.read<CitizenBloc>().add(FetchRequestsEvent());
+  }
+
+  Future<void> _handleRefresh() async {
+    _loadRequests();
+    context.read<NotificationBloc>().add(LoadNotificationsEvent());
+    await Future.delayed(const Duration(milliseconds: 800));
+  }
+  Widget _buildScrollableEmptyState(BoxConstraints constraints, Widget child) {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: constraints.maxHeight),
+        child: Center(child: child),
+      ),
+    );
   }
 
   @override
@@ -63,7 +73,6 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
                 backgroundColor: AppColors.green,
                 showFlag: false,
                 actions: [
-                  // 🌟 تغليف الجرس بالـ BlocBuilder الخاص بالإشعارات
                   BlocBuilder<NotificationBloc, NotificationState>(
                     builder: (context, notifState) {
                       int unread = 0;
@@ -77,19 +86,16 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
                           IconButton(
                             icon: Icon(Icons.notifications_none, color: AppColors.white, size: 24.sp),
                             onPressed: () {
-                              // الانتقال لشاشة الإشعارات
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (_) => const NotificationsScreen()),
                               ).then((_) {
-                                // إعادة التحميل عند العودة في حال تم قراءة إشعارات جديدة
                                 if (mounted) {
                                   context.read<NotificationBloc>().add(LoadNotificationsEvent());
                                 }
                               });
                             },
                           ),
-                          // 🌟 رسم النقطة الحمراء إذا كان هناك إشعارات غير مقروءة
                           if (unread > 0)
                             Positioned(
                               right: 8.w,
@@ -119,7 +125,22 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
             },
           ),
 
-          _buildQuickStats(),
+          BlocBuilder<CitizenBloc, CitizenState>(
+            builder: (context, state) {
+              String total = "0";
+              String review = "0";
+              String completed = "0";
+
+              if (state is RequestsLoaded) {
+                total = state.totalCount.toString();
+                review = state.pendingCount.toString();
+                completed = state.completedCount.toString();
+              }
+
+              return _buildQuickStats(total, review, completed);
+            },
+          ),
+
           _buildNewRequestButton(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -131,50 +152,65 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
               ),
             ),
           ),
-
           Expanded(
-            child: BlocBuilder<CitizenBloc, CitizenState>(
-              buildWhen: (previous, current) {
-                return current is CitizenLoading || current is RequestsLoaded || current is CitizenError;
-              },
-              builder: (context, state) {
-                if (state is CitizenLoading) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.green));
-                }
-                else if (state is RequestsLoaded) {
-                  if (state.requests.isEmpty) {
-                    return const Center(child: Text("لا يوجد طلبات حالياً"));
-                  }
-                  return ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: state.requests.length,
-                    itemBuilder: (context, index) {
-                      final request = state.requests[index];
-                      return RequestListTile(
-                        title: request.title,
-                        requestId: request.id.toString(),
-                        date: request.date,
-                        icon: request.icon,
-                        status: request.status,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RequestDetailScreen(requestId: request.id.toString()),
-                            ),
-                          ).then((_) {
-                            _loadRequests();
-                          });
-                        },
-                      );
+            child: RefreshIndicator(
+              color: AppColors.green,
+              onRefresh: _handleRefresh,
+              child: BlocBuilder<CitizenBloc, CitizenState>(
+                buildWhen: (previous, current) {
+                  return current is CitizenLoading || current is RequestsLoaded || current is CitizenError;
+                },
+                builder: (context, state) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (state is CitizenLoading) {
+                        return _buildScrollableEmptyState(
+                          constraints,
+                          const CircularProgressIndicator(color: AppColors.green),
+                        );
+                      } else if (state is RequestsLoaded) {
+                        if (state.requests.isEmpty) {
+                          return _buildScrollableEmptyState(
+                            constraints,
+                            const Text("لا يوجد طلبات حالياً"),
+                          );
+                        }
+                        return ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemCount: state.requests.length,
+                          itemBuilder: (context, index) {
+                            final request = state.requests[index];
+                            return RequestListTile(
+                              title: request.title,
+                              requestId: request.id.toString(),
+                              date: request.date,
+                              icon: request.icon,
+                              status: request.status,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RequestDetailScreen(requestId: request.id.toString()),
+                                  ),
+                                ).then((_) {
+                                  _loadRequests();
+                                });
+                              },
+                            );
+                          },
+                        );
+                      } else if (state is CitizenError) {
+                        return _buildScrollableEmptyState(
+                          constraints,
+                          Text(state.message, style: const TextStyle(color: AppColors.red)),
+                        );
+                      }
+                      return _buildScrollableEmptyState(constraints, const SizedBox());
                     },
                   );
-                }
-                else if (state is CitizenError) {
-                  return Center(child: Text(state.message, style: const TextStyle(color: AppColors.red)));
-                }
-                return const SizedBox();
-              },
+                },
+              ),
             ),
           ),
         ],
@@ -182,18 +218,18 @@ class _CitizenHomeScreenState extends State<CitizenHomeScreen> {
     );
   }
 
-  Widget _buildQuickStats() {
+  Widget _buildQuickStats(String total, String review, String completed) {
     return Container(
       width: double.infinity,
       color: AppColors.green,
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Row(
         children: [
-          _buildStatItem("5", "إجمالي"),
+          _buildStatItem(total, "إجمالي"),
           SizedBox(width: 8.w),
-          _buildStatItem("2", "مراجعة"),
+          _buildStatItem(review, "مراجعة"),
           SizedBox(width: 8.w),
-          _buildStatItem("3", "مكتملة"),
+          _buildStatItem(completed, "مكتملة"),
         ],
       ),
     );

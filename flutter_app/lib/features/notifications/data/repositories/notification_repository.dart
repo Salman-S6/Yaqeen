@@ -7,10 +7,8 @@ class NotificationRepository {
 
   NotificationRepository({required this.dioClient});
 
-  /// جلب جميع الإشعارات مع العداد من السيرفر
   Future<NotificationsResponse> fetchNotifications() async {
     try {
-      // 🌟 التعديل هنا: استخدمنا dioClient.dio.get بدلاً من dioClient.get
       final response = await dioClient.dio.get(ApiEndpoints.notifications);
       return NotificationsResponse.fromJson(response.data);
     } catch (e) {
@@ -18,10 +16,8 @@ class NotificationRepository {
     }
   }
 
-  /// إرسال طلب PATCH للسيرفر لجعل الإشعار "مقروءاً"
   Future<bool> markNotificationAsRead(int id) async {
     try {
-      // 🌟 التعديل هنا: استخدمنا dioClient.dio.patch بدلاً من dioClient.patch
       await dioClient.dio.patch(ApiEndpoints.markNotificationAsRead(id));
       return true;
     } catch (e) {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/widgets/headers/custom_app_bar.dart';
 import '../../../../core/widgets/indicators/status_badge.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
-import '../../../../core/widgets/buttons/outline_button.dart';
 
 class QrSuccessScreen extends StatelessWidget {
   final Map<String, String> documentData;
@@ -14,6 +14,8 @@ class QrSuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String currentTime = DateFormat('hh:mm a').format(DateTime.now());
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Column(
@@ -30,7 +32,6 @@ class QrSuccessScreen extends StatelessWidget {
               ),
             ],
           ),
-
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16.w),
@@ -39,19 +40,11 @@ class QrSuccessScreen extends StatelessWidget {
                   SizedBox(height: 16.h),
                   _buildSuccessIndicator(),
                   SizedBox(height: 24.h),
-
-                  _buildDocumentDataCard(),
-
+                  _buildDocumentDataCard(currentTime),
                   SizedBox(height: 32.h),
-
                   PrimaryButton(
                     text: "العودة للمسح",
                     onPressed: () => Navigator.pop(context),
-                  ),
-                  SizedBox(height: 12.h),
-                  CustomOutlineButton(
-                    text: "مشاركة إثبات الصحة",
-                    onPressed: () {},
                   ),
                 ],
               ),
@@ -74,19 +67,13 @@ class QrSuccessScreen extends StatelessWidget {
           child: Icon(Icons.check_circle_rounded, color: AppColors.green, size: 60.sp),
         ),
         SizedBox(height: 12.h),
-        Text(
-          "الوثيقة أصلية ومعتمدة ✅",
-          style: AppTextStyles.sectionTitle.copyWith(color: AppColors.green, fontSize: 16.sp),
-        ),
-        Text(
-          "تم التحقق من التوقيع الرقمي بنجاح",
-          style: AppTextStyles.smallLabel.copyWith(color: AppColors.greenDark),
-        ),
+        Text("الوثيقة أصلية ومعتمدة ✅", style: AppTextStyles.sectionTitle.copyWith(color: AppColors.green, fontSize: 16.sp)),
+        Text("تم التحقق من التوقيع الرقمي بنجاح", style: AppTextStyles.smallLabel.copyWith(color: AppColors.greenDark)),
       ],
     );
   }
 
-  Widget _buildDocumentDataCard() {
+  Widget _buildDocumentDataCard(String time) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -94,9 +81,6 @@ class QrSuccessScreen extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.greenLight, width: 1.w),
-        boxShadow: [
-          BoxShadow(color: AppColors.green.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
       ),
       child: Column(
         children: [
@@ -110,28 +94,31 @@ class QrSuccessScreen extends StatelessWidget {
           SizedBox(height: 12.h),
           Divider(color: AppColors.border, height: 1.h),
           SizedBox(height: 12.h),
-
           _buildInfoRow("نوع الوثيقة:", documentData["document_type"] ?? "غير معروف"),
-          SizedBox(height: 10.h),
-          _buildInfoRow("رقم الطلب:", documentData["request_id"] ?? "غير معروف"),
-          SizedBox(height: 10.h),
+          _buildInfoRow("رقم الطلب:", documentData["request_id"] ?? "غير معروف", isLtr: true),
           _buildInfoRow("اسم المواطن:", documentData["citizen_name"] ?? "غير معروف"),
-          SizedBox(height: 10.h),
-          _buildInfoRow("الرقم الوطني:", documentData["national_id"] ?? "غير معروف"),
-          SizedBox(height: 10.h),
-          _buildInfoRow("تاريخ الإصدار:", documentData["issue_date"] ?? "غير معروف"),
+          _buildInfoRow("الرقم الوطني:", documentData["national_id"] ?? "غير معروف", isLtr: true),
+          _buildInfoRow("تاريخ الإصدار:", documentData["issue_date"] ?? "غير معروف", isLtr: true),
+          _buildInfoRow("وقت الفحص:", time, isLtr: true),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: AppTextStyles.smallLabel.copyWith(fontSize: 10.sp)),
-        Text(value, style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp, color: AppColors.greenDark)),
-      ],
+  Widget _buildInfoRow(String label, String value, {bool isLtr = false}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: AppTextStyles.smallLabel.copyWith(fontSize: 10.sp)),
+          Text(
+            value,
+            textDirection: isLtr ? TextDirection.ltr : null,
+            style: AppTextStyles.bodyBold.copyWith(fontSize: 10.sp, color: AppColors.greenDark),
+          ),
+        ],
+      ),
     );
   }
 }
