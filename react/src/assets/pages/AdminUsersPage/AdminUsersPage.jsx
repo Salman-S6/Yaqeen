@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { employeeService } from "../../../api/employeeService";
 import DeleteConfirmModal from '../../../components/Modals/DeleteConfirmModal';
 import EmployeeFormModal from '../../../components/Modals/EmployeeFormModal';
 import EmployeePermissionsModal from '../../../components/Modals/EmployeePermissionsModal'; // 🟢 استيراد مودال الصلاحيات
 import CitizensTable from '../../../components/CitizensTable/CitizensTable';
-import { FaUserPlus, FaSearch, FaTrash, FaCheckCircle, FaExclamationCircle, FaTimes, FaIdCard } from 'react-icons/fa';
+import { useToast } from '../../../components/Common/ToastProvider';
+import { FaUserPlus, FaSearch, FaTrash, FaTimes, FaIdCard } from 'react-icons/fa';
 import styles from './AdminUsersPage.module.css';
 
 const AdminUsersPage = () => {
@@ -34,14 +35,13 @@ const AdminUsersPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('team'); // تم جعله الافتراضي لرؤية الموظفين أسرع
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const { showToast } = useToast();
 
-    const showNotification = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
-    };
+    const showNotification = useCallback((message, type = 'success') => {
+        showToast(message, type);
+    }, [showToast]);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setIsLoading(true);
         try {
             if (activeTab === 'team') {
@@ -60,12 +60,12 @@ const AdminUsersPage = () => {
         } finally { 
             setIsLoading(false); 
         }
-    };
+    }, [activeTab, showNotification]);
 
     useEffect(() => {
         fetchData();
         setSearchTerm(''); 
-    }, [activeTab]);
+    }, [fetchData]);
 
     const handleToggleCitizenStatus = async (id) => {
         try {
@@ -75,6 +75,7 @@ const AdminUsersPage = () => {
             ));
             showNotification("تم تغيير حالة حساب المواطن بنجاح", "success");
         } catch (error) {
+            console.error("خطأ أثناء تغيير حالة المواطن:", error);
             showNotification("حدث خطأ أثناء تغيير حالة المواطن", "error");
         }
     };
@@ -86,6 +87,7 @@ const AdminUsersPage = () => {
             setSelectedCitizenDetails(response.data?.data);
             setIsCitizenModalOpen(true);
         } catch (error) {
+            console.error("فشل جلب تفاصيل المواطن:", error);
             showNotification("فشل جلب تفاصيل المواطن.", "error");
         } finally {
             setIsLoading(false);
@@ -159,17 +161,6 @@ const AdminUsersPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            {/* نظام التنبيهات الموحد */}
-            {toast.show && (
-                <div className={`${styles.toastNotification} ${toast.type === 'success' ? styles.toastSuccess : styles.toastError}`}>
-                    <div className={styles.toastBody}>
-                        {toast.type === 'success' ? <FaCheckCircle className={styles.toastIcon} /> : <FaExclamationCircle className={styles.toastIcon} />}
-                        <span className={styles.toastMessage}>{toast.message}</span>
-                    </div>
-                    <button className={styles.toastCloseBtn} onClick={() => setToast({ ...toast, show: false })}><FaTimes /></button>
-                </div>
-            )}
-
             <div className={styles.mainContentCard}>
                 <div className={styles.pageTitleSection}>
                     {activeTab === 'team' && <button className={styles.addEmployeeBtn} onClick={handleOpenAddModal}><FaUserPlus /> إضافة موظف جديد</button>}

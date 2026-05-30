@@ -2,22 +2,27 @@
     background-color: #ffffff;
     padding: 24px;
     margin-top: 24px;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    direction: rtl;
+    width: 100%;
+    overflow: hidden;
 }
 
 .tableHeaderControls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     width: 100%;
+    gap: 16px;
 }
 
 .controlsLeft {
     display: flex;
     gap: 12px;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .tableTitle {
@@ -25,6 +30,7 @@
     font-weight: 700;
     color: #1a202c;
     margin: 0;
+    white-space: nowrap;
 }
 
 .searchContainer {
@@ -33,14 +39,15 @@
     background-color: #f7fafc;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
-    padding: 6px 12px;
-    width: 200px;
+    padding: 8px 12px;
+    width: 250px;
     gap: 8px;
 }
 
 .searchIcon {
-    color: #00a65a; /* تم توحيد اللون للأخضر */
-    font-size: 14px;
+    color: #00a65a;
+    font-size: 15px;
+    flex-shrink: 0;
 }
 
 .customSearchInput {
@@ -52,19 +59,25 @@
     color: #4a5568;
 }
 
+.customSearchInput::placeholder {
+    color: #9ca3af;
+}
+
 .addServiceBtn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     background-color: #00a65a;
     color: #ffffff;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 18px;
     border-radius: 6px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
 
 .addServiceBtn:hover {
@@ -72,64 +85,84 @@
 }
 
 .btnIcon {
-    font-size: 11px;
+    font-size: 12px;
+    flex-shrink: 0;
 }
 
-.tableWrapper {
+.gridTable {
     width: 100%;
-    overflow-x: auto;
+    border-top: 1px solid #edf2f7;
 }
 
-.mainTable {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: right;
+.gridRow {
+    display: grid;
+    grid-template-columns: 110px minmax(280px, 1fr) 140px 150px 150px;
+    align-items: center;
+    column-gap: 16px;
+    min-height: 64px;
+    padding: 0 12px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.headerRow {
+    min-height: 48px;
+    color: #718096;
+    font-weight: 700;
     font-size: 13px;
 }
 
-.mainTable th {
-    color: #718096;
-    font-weight: 600;
-    padding: 12px 16px;
-    border-bottom: 1px solid #edf2f7;
-    background-color: #ffffff;
+.headerRow > div {
+    white-space: nowrap;
 }
 
-.mainTable td {
-    padding: 16px;
-    border-bottom: 1px solid #edf2f7;
-    color: #2d3748;
+.serviceId {
+    font-weight: 700;
+    color: #718096;
+    white-space: nowrap;
 }
 
 .serviceInfoColumn {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
+    min-width: 0;
 }
 
 .serviceName {
-    font-weight: 700;
+    font-weight: 800;
     color: #1a202c;
-}
-
-.serviceDescription {
-    font-size: 11px;
-    color: #a0aec0;
-    font-weight: 400;
-    max-width: 300px;
+    font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.serviceDescription {
+    font-size: 12px;
+    color: #a0aec0;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.centerCell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
 .statusBadge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
-    border-radius: 4px;
+    justify-content: center;
+    padding: 5px 12px;
+    border-radius: 6px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .active {
@@ -147,20 +180,26 @@
     height: 6px;
     border-radius: 50%;
     background-color: currentColor;
+    flex-shrink: 0;
 }
 
 .dateText {
     color: #718096;
     font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    direction: ltr;
 }
 
 .actionsWrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
+    white-space: nowrap;
 }
 
-/* 🟢 تم تحويل زر التعديل داخل الجدول إلى اللون الأخضر الموحد */
 .actionBtn {
     background: none;
     border: 1px solid #00a65a;
@@ -169,8 +208,9 @@
     cursor: pointer;
     font-size: 12px;
     color: #00a65a;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .actionBtn:hover {
@@ -191,24 +231,55 @@
     justify-content: center;
     border-radius: 4px;
     transition: background-color 0.2s;
+    flex-shrink: 0;
 }
 
 .deleteBtn:hover {
     background-color: #fff5f5;
 }
 
+.emptyState {
+    padding: 32px;
+    text-align: center;
+    color: #a0aec0;
+    font-weight: 700;
+    border-bottom: 1px solid #edf2f7;
+}
+
+@media (max-width: 1100px) {
+    .gridRow {
+        grid-template-columns: 90px minmax(220px, 1fr) 120px 130px 130px;
+        column-gap: 10px;
+        padding: 0 8px;
+    }
+
+    .searchContainer {
+        width: 220px;
+    }
+}
+
 @media (max-width: 768px) {
     .tableHeaderControls {
         flex-direction: column-reverse;
-        align-items: flex-start;
-        gap: 16px;
+        align-items: stretch;
     }
+
     .controlsLeft {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
     }
-    .searchContainer {
+
+    .searchContainer,
+    .addServiceBtn {
         width: 100%;
+    }
+
+    .gridTable {
+        overflow-x: auto;
+    }
+
+    .gridRow {
+        min-width: 760px;
     }
 }

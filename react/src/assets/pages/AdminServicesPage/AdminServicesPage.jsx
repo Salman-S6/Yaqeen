@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { serviceTypeService } from '../../../api/serviceTypeService';
-import Header from '../../../components/Header/Header';
 import AdminStatCard from '../../../components/AdminStatCard/AdminStatCard';
 import ServicesTable from '../../../components/ServicesTable/ServicesTable';
 import ServiceFormModal from '../../../components/Modals/ServiceFormModal';
-import ToastNotification from '../../../components/Common/ToastNotification';
+import { useToast } from '../../../components/Common/ToastProvider';
 import CustomConfirmModal from '../../../components/Common/CustomConfirmModal';
 import { FaServer, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import styles from './AdminServicesPage.module.css';
@@ -14,8 +13,7 @@ const AdminServicesPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoadingPage, setIsLoadingPage] = useState(true);
 
-    // نظام التنبيه المنبثق والمودال المشترك لتوحيد هوية المشروع
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const { showToast } = useToast();
     const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, serviceId: null });
 
     // مقاييس التحكم في الـ Modal والـ Inputs
@@ -26,12 +24,7 @@ const AdminServicesPage = () => {
     const [modalDescription, setModalDescription] = useState('');
     const [modalActive, setModalActive] = useState('1');
 
-    const showNotification = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
-    };
-
-    const fetchServices = async () => {
+    const fetchServices = useCallback(async () => {
         try {
             setIsLoadingPage(true);
             const response = await serviceTypeService.getAll();
@@ -39,15 +32,15 @@ const AdminServicesPage = () => {
             setServicesList(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("فشل جلب البيانات من الـ API الحقيقي:", error);
-            showNotification(error.response?.data?.message || "فشل جلب البيانات من الخادم.", "error");
+            showToast(error.response?.data?.message || "فشل جلب البيانات من الخادم.", "error");
         } finally {
             setIsLoadingPage(false);
         }
-    };
+    }, [showToast]);
 
     useEffect(() => {
         fetchServices();
-    }, []);
+    }, [fetchServices]);
 
     const triggerDeleteConfirmation = (id) => {
         setConfirmDelete({ isOpen: true, serviceId: id });
@@ -58,10 +51,10 @@ const AdminServicesPage = () => {
         try {
             const response = await serviceTypeService.delete(id);
             setServicesList(prev => prev.filter(service => service.id !== id));
-            showNotification(response.data?.message || "تم حذف الخدمة الحكومية بنجاح.", "success");
+            showToast(response.data?.message || "تم حذف الخدمة الحكومية بنجاح.", "success");
         } catch (error) {
             console.error("خطأ أثناء الحذف:", error);
-            showNotification(error.response?.data?.message || "فشل حذف الخدمة من السيرفر.", "error");
+            showToast(error.response?.data?.message || "فشل حذف الخدمة من السيرفر.", "error");
         } finally {
             setConfirmDelete({ isOpen: false, serviceId: null });
         }
@@ -86,7 +79,7 @@ const AdminServicesPage = () => {
 
     const handleSaveChanges = async (e) => {
         e.preventDefault();
-        if (!modalName.trim()) return showNotification("الرجاء إدخال اسم الخدمة الحكومية", "error");
+        if (!modalName.trim()) return showToast("الرجاء إدخال اسم الخدمة الحكومية", "error");
 
         const payload = {
             name: modalName,
@@ -99,7 +92,7 @@ const AdminServicesPage = () => {
                 const response = await serviceTypeService.create(payload);
                 const newService = response.data.data ? response.data.data : response.data;
                 setServicesList(prev => [...prev, newService]);
-                showNotification(response.data?.message || "تم إضافة الخدمة الجديدة بنجاح للمنصة.", "success");
+                showToast(response.data?.message || "تم إضافة الخدمة الجديدة بنجاح للمنصة.", "success");
             } else {
                 const response = await serviceTypeService.update(selectedService.id, payload);
                 const updatedService = response.data.data ? response.data.data : response.data;
@@ -107,13 +100,13 @@ const AdminServicesPage = () => {
                 setServicesList(prev => prev.map(s =>
                     s.id === selectedService.id ? { ...s, ...updatedService } : s
                 ));
-                showNotification(response.data?.message || "تم تحديث بيانات الخدمة بنجاح.", "success");
+                showToast(response.data?.message || "تم تحديث بيانات الخدمة بنجاح.", "success");
             }
             setIsModalOpen(false);
         } catch (error) {
             console.error("خطأ أثناء حفظ التغييرات:", error);
             const backendErrorMsg = error.response?.data?.message || "فشل في حفظ البيانات على السيرفر.";
-            showNotification(backendErrorMsg, "error");
+            showToast(backendErrorMsg, "error");
         }
     };
 
@@ -133,8 +126,6 @@ const AdminServicesPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            <ToastNotification toast={toast} onClose={() => setToast({ ...toast, show: false })} />
-
             <div className={styles.statsGrid}>
                 {mockStats.map((stat) => (
                     <AdminStatCard key={stat.id} title={stat.title} value={stat.value} icon={stat.icon} />

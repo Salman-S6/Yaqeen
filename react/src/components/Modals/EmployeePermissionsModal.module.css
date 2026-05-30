@@ -44,7 +44,7 @@
 }
 
 .titleIcon {
-    color: #6366f1;
+    color: #007c4d;
 }
 
 .closeBtn {
@@ -108,7 +108,7 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: #6366f1;
+    accent-color: #007c4d;
 }
 
 .labelText {

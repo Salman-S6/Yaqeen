@@ -7,10 +7,9 @@ import styles from './MainLayout.module.css';
 const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
     const location = useLocation();
 
-    // 1. حالة التحكم بالقائمة الجانبية
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [pendingCountState, setPendingCountState] = useState(pendingCount);
 
-    // 2. مراقبة حجم الشاشة لطي القائمة تلقائياً في الشاشات الصغيرة
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 1024) {
@@ -19,19 +18,38 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
                 setIsSidebarOpen(true);
             }
         };
-        handleResize(); 
+
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const closeSidebarMobile = () => { if (window.innerWidth <= 1024) setIsSidebarOpen(false); };
+    const toggleSidebar = () => {
+        setIsSidebarOpen((prev) => !prev);
+    };
+
+    const closeSidebarMobile = () => {
+        if (window.innerWidth <= 1024) {
+            setIsSidebarOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e && typeof e.detail === 'number') {
+                setPendingCountState(e.detail);
+            }
+        };
+
+        window.addEventListener('updatePendingCount', handler);
+        return () => window.removeEventListener('updatePendingCount', handler);
+    }, []);
 
     const isAuditPage = location.pathname.includes('/admin/audit-logs');
-    // 🟢 تم مسح isReportsPage من هنا
 
     const getDynamicTitle = () => {
         if (isAuditPage) return 'سجلات التدقيق';
+        if (location.pathname.includes('profile')) return 'الملف الشخصي';
         if (location.pathname.includes('review')) return 'مراجعة بيانات الطلب';
         if (location.pathname.includes('pending-requests')) return 'قائمة الطلبات المعلّقة';
         if (location.pathname.includes('users')) return 'إدارة مستخدمي النظام';
@@ -42,7 +60,7 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
 
     let activeRole = '';
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
-        activeRole = currentUser.roles[0]; 
+        activeRole = currentUser.roles[0];
     } else if (currentUser?.role) {
         activeRole = currentUser.role;
     } else {
@@ -56,19 +74,29 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
 
     return (
         <div className={styles.layoutContainer}>
-            <Sidebar currentUser={currentUser} pendingCount={pendingCount} isOpen={isSidebarOpen} closeSidebar={closeSidebarMobile} />
-            
-            {isSidebarOpen && <div className={styles.mobileOverlay} onClick={closeSidebarMobile}></div>}
+            <Sidebar
+                currentUser={currentUser}
+                pendingCount={pendingCountState}
+                isOpen={isSidebarOpen}
+                closeSidebar={closeSidebarMobile}
+                toggleSidebar={toggleSidebar}
+            />
+
+            {isSidebarOpen && (
+                <div
+                    className={styles.mobileOverlay}
+                    onClick={closeSidebarMobile}
+                ></div>
+            )}
 
             <div className={styles.mainWrapper}>
                 <Header
                     title={getDynamicTitle()}
-                    subtitle={getDynamicSubtitle()} 
-                    currentUser={currentUser}
-                    activeRole={activeRole} 
-                    toggleSidebar={toggleSidebar} 
+                    subtitle={getDynamicSubtitle()}
+                    toggleSidebar={toggleSidebar}
+                    showSidebarButton={!isSidebarOpen}
                 />
-                
+
                 <main className={`${styles.contentArea} ${isAuditPage ? styles.auditContent : ''}`}>
                     <Outlet />
                 </main>

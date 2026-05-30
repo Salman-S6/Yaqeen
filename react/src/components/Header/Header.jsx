@@ -1,25 +1,29 @@
 import React from 'react';
-import { FaBars } from 'react-icons/fa'; // 🟢 تم حذف FaBell بالكامل
+import { FaBars } from 'react-icons/fa';
 import styles from './Header.module.css';
 
-const Header = ({ title, subtitle, currentUser = {}, activeRole = '', toggleSidebar }) => {
+const Header = ({ title, subtitle, toggleSidebar, showSidebarButton = true }) => {
   return (
     <header className={styles.header}>
-      {/* 🟢 تجميعة زر القائمة + العنوان */}
       <div className={styles.headerRight}>
-        <button className={styles.menuToggleBtn} onClick={toggleSidebar}>
-          <FaBars />
-        </button>
+        {showSidebarButton && (
+          <button
+            className={styles.menuToggleBtn}
+            onClick={toggleSidebar}
+            type="button"
+            title="فتح القائمة الجانبية"
+          >
+            <FaBars />
+          </button>
+        )}
+
         <div className={styles.titleSection}>
           <h1 className={styles.title}>{title}</h1>
           <p className={styles.subtitle}>{subtitle}</p>
         </div>
       </div>
 
-      {/* 🟢 مساحة فارغة لترتيب العناصر إذا أردت إضافة شيء مستقبلاً مثل زر بحث سريع */}
-      <div className={styles.actions}>
-          {/* تم حذف جرس الإشعارات والقائمة المنسدلة بالكامل */}
-      </div>
+      <div className={styles.actions}></div>
     </header>
   );
 };

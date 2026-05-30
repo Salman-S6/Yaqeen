@@ -2,26 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../../api/authService';
 import {
-    FaUsers, FaFileAlt, FaChartBar, FaSignOutAlt,
-    FaCog, FaThLarge, FaChartLine, FaEye,
-    FaQrcode, FaServer, FaTimes, FaFolderOpen
+    FaUsers,
+    FaFileAlt,
+    FaChartBar,
+    FaSignOutAlt,
+    FaUserCircle,
+    FaThLarge,
+    FaChartLine,
+    FaEye,
+    FaQrcode,
+    FaServer,
+    FaTimes,
+    FaFolderOpen
 } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
-const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) => {
+const Sidebar = ({
+    currentUser = {},
+    pendingCount = 0,
+    isOpen,
+    closeSidebar,
+    toggleSidebar
+}) => {
     const navigate = useNavigate();
     const location = useLocation();
+
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-    
-    // 🟢 حالة محلية لتتبع العداد الحي وتحديثه برمجياً
     const [livePendingCount, setLivePendingCount] = useState(pendingCount);
 
-    // 🟢 استماع للإشعارات القادمة من أي صفحة لتحديث العداد فوراً
     useEffect(() => {
-        setLivePendingCount(pendingCount); // التحديث الأولي
+        setLivePendingCount(pendingCount);
 
         const handleUpdateCount = (event) => {
-            setLivePendingCount(event.detail); // تحديث الرقم فور وصول إشعار
+            setLivePendingCount(event.detail);
         };
 
         window.addEventListener('updatePendingCount', handleUpdateCount);
@@ -37,26 +50,61 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
         userRole = localStorage.getItem('userRole') || 'employee';
     }
 
-    const isAdmin = String(userRole).toLowerCase() === "admin" || userRole === "مدير النظام";
+    const isAdmin = String(userRole).toLowerCase() === 'admin' || userRole === 'مدير النظام';
+    const profilePath = isAdmin ? '/admin/profile' : '/employee/profile';
 
     const handleLogout = async () => {
-        try { await authService.logout(); }
-        catch (error) { console.error("فشل تسجيل الخروج من السيرفر، يتم الخروج محلياً..."); }
-        finally {
-            localStorage.removeItem('token'); localStorage.removeItem('user'); localStorage.removeItem('userRole'); window.location.replace('/login');
+        try {
+            await authService.logout();
+        } catch {
+            console.error('فشل تسجيل الخروج من السيرفر، يتم الخروج محلياً...');
+        } finally {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userRole');
+            window.location.replace('/login');
         }
     };
 
     const isActive = (path) => {
-        if (path === '/admin' || path === '/employee') return location.pathname === path;
-        return location.pathname.startsWith(path) || location.pathname.includes('review');
+        if (location.pathname.includes('/admin/review-request')) {
+            return path === '/admin/all-requests';
+        }
+
+        if (location.pathname.includes('/employee/review-request')) {
+            return path === '/employee/pending-requests';
+        }
+
+        return location.pathname.startsWith(path);
+    };
+
+    const handleNavigate = (path) => {
+        navigate(path);
+        if (typeof closeSidebar === 'function') {
+            closeSidebar();
+        }
+    };
+
+    const handleGoToProfile = () => {
+        navigate(profilePath);
+        setIsProfileMenuOpen(false);
+        if (typeof closeSidebar === 'function') {
+            closeSidebar();
+        }
     };
 
     return (
         <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
-            <div className={styles.mobileCloseBtn} onClick={closeSidebar}>
-                <FaTimes />
-            </div>
+            {isOpen && (
+                <button
+                    type="button"
+                    className={styles.sidebarToggleBtn}
+                    onClick={toggleSidebar}
+                    title="إغلاق القائمة الجانبية"
+                >
+                    <FaTimes />
+                </button>
+            )}
 
             <div className={styles.logoSection}>
                 <h2 className={styles.logoText}>يَقِين</h2>
@@ -65,41 +113,90 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
             <nav className={styles.navMenu}>
                 {isAdmin ? (
                     <>
-                        <div className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`} onClick={() => { navigate('/admin/users'); closeSidebar(); }}>
-                            <FaUsers className={styles.navIcon} /><span>إدارة المستخدمين</span>
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/users') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/users')}
+                        >
+                            <FaUsers className={styles.navIcon} />
+                            <span>إدارة المستخدمين</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/all-requests') ? styles.active : ''}`} onClick={() => { navigate('/admin/all-requests'); closeSidebar(); }}>
-                            <FaFolderOpen className={styles.navIcon} /><span>سجل الطلبات</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/all-requests') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/all-requests')}
+                        >
+                            <FaFolderOpen className={styles.navIcon} />
+                            <span>سجل الطلبات</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`} onClick={() => { navigate('/admin/audit-logs'); closeSidebar(); }}>
-                            <FaFileAlt className={styles.navIcon} /><span>سجلات التدقيق</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/audit-logs') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/audit-logs')}
+                        >
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>سجلات التدقيق</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`} onClick={() => { navigate('/admin/stats'); closeSidebar(); }}>
-                            <FaChartBar className={styles.navIcon} /><span>إحصائيات النظام</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/stats') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/stats')}
+                        >
+                            <FaChartBar className={styles.navIcon} />
+                            <span>إحصائيات النظام</span>
                         </div>
-                        {/* 🟢 تم حذف زر التقارير من هنا نهائياً */}
-                        <div className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`} onClick={() => { navigate('/admin/performance'); closeSidebar(); }}>
-                            <FaChartLine className={styles.navIcon} /><span>أداء الموظفين</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/performance') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/performance')}
+                        >
+                            <FaChartLine className={styles.navIcon} />
+                            <span>أداء الموظفين</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`} onClick={() => { navigate('/admin/ocr'); closeSidebar(); }}>
-                            <FaEye className={styles.navIcon} /><span>مراقبة OCR</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/ocr') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/ocr')}
+                        >
+                            <FaEye className={styles.navIcon} />
+                            <span>مراقبة OCR</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/verify-qr') ? styles.active : ''}`} onClick={() => { navigate('/admin/verify-qr'); closeSidebar(); }}>
-                            <FaQrcode className={styles.navIcon} /><span>التحقق الخارجي QR</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/verify-qr') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/verify-qr')}
+                        >
+                            <FaQrcode className={styles.navIcon} />
+                            <span>التحقق الخارجي QR</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/admin/services') ? styles.active : ''}`} onClick={() => { navigate('/admin/services'); closeSidebar(); }}>
-                            <FaServer className={styles.navIcon} /><span>إدارة الخدمات</span>
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/admin/services') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/admin/services')}
+                        >
+                            <FaServer className={styles.navIcon} />
+                            <span>إدارة الخدمات</span>
                         </div>
                     </>
                 ) : (
                     <>
-                        <div className={`${styles.navItem} ${isActive('/employee/dashboard') ? styles.active : ''}`} onClick={() => { navigate('/employee/dashboard'); closeSidebar(); }}>
-                            <FaThLarge className={styles.navIcon} /><span>لوحة التحكم</span>
+                        <div
+                            className={`${styles.navItem} ${isActive('/employee/dashboard') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/employee/dashboard')}
+                        >
+                            <FaThLarge className={styles.navIcon} />
+                            <span>لوحة التحكم</span>
                         </div>
-                        <div className={`${styles.navItem} ${isActive('/employee/pending-requests') ? styles.active : ''}`} onClick={() => { navigate('/employee/pending-requests'); closeSidebar(); }}>
-                            <FaFileAlt className={styles.navIcon} /><span>الطلبات المعلّقة</span>
-                            {/* 🟢 استخدام العداد الحي المربوط */}
-                            {livePendingCount > 0 && <span className={styles.navBadge}>{livePendingCount}</span>}
+
+                        <div
+                            className={`${styles.navItem} ${isActive('/employee/pending-requests') ? styles.active : ''}`}
+                            onClick={() => handleNavigate('/employee/pending-requests')}
+                        >
+                            <FaFileAlt className={styles.navIcon} />
+                            <span>الطلبات المعلّقة</span>
+
+                            {livePendingCount > 0 && (
+                                <span className={styles.navBadge}>{livePendingCount}</span>
+                            )}
                         </div>
                     </>
                 )}
@@ -108,16 +205,28 @@ const Sidebar = ({ currentUser = {}, pendingCount = 0, isOpen, closeSidebar }) =
             <div className={styles.userSection}>
                 {isProfileMenuOpen && (
                     <div className={styles.profileMenu}>
-                        <div className={styles.profileHeader}>{currentUser?.email || localStorage.getItem('userEmail') || 'employee@yaqeen.gov.sy'}</div>
+                        <div className={styles.profileHeader}>
+                            {currentUser?.email || localStorage.getItem('userEmail') || 'employee@yaqeen.gov.sy'}
+                        </div>
+
                         <ul className={styles.menuList}>
-                            <li><FaCog className={styles.menuIcon} /><span>إعدادات الحساب</span></li>
+                            <li onClick={handleGoToProfile}>
+                                <FaUserCircle className={styles.menuIcon} />
+                                <span>الملف الشخصي</span>
+                            </li>
+
                             <li onClick={handleLogout} className={styles.logoutBtn}>
-                                <FaSignOutAlt className={styles.menuIcon} /><span>تسجيل الخروج</span>
+                                <FaSignOutAlt className={styles.menuIcon} />
+                                <span>تسجيل الخروج</span>
                             </li>
                         </ul>
                     </div>
                 )}
-                <div className={styles.userInfo} onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
+
+                <div
+                    className={styles.userInfo}
+                    onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+                >
                     <div className={styles.avatar}>{currentUser?.initials || (isAdmin ? 'Admin' : 'Emp')}</div>
                     <div className={styles.userDetails}>
                         <h4 className={styles.userName}>{currentUser?.name || (isAdmin ? 'مدير النظام' : 'خالد الأحمد')}</h4>

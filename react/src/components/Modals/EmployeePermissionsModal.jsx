@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { employeeService } from '../../api/employeeService';
 import { FaTimes, FaShieldAlt, FaSave } from 'react-icons/fa';
 import styles from './EmployeePermissionsModal.module.css';
@@ -8,13 +8,7 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
-    useEffect(() => {
-        if (isOpen && employeeId) {
-            fetchPermissions();
-        }
-    }, [isOpen, employeeId]);
-
-    const fetchPermissions = async () => {
+    const fetchPermissions = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await employeeService.getEmployeePermissions(employeeId);
@@ -24,12 +18,19 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
             
             setPermissionsData(groups);
         } catch (error) {
+            console.error("فشل جلب صلاحيات الموظف:", error);
             showNotification("فشل جلب صلاحيات الموظف.", "error");
             onClose();
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [employeeId, onClose, showNotification]);
+
+    useEffect(() => {
+        if (isOpen && employeeId) {
+            fetchPermissions();
+        }
+    }, [isOpen, employeeId, fetchPermissions]);
 
     const handleToggle = (category, permName) => {
         setPermissionsData(prev => ({
@@ -57,6 +58,7 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
             showNotification("تم تحديث صلاحيات الموظف بنجاح", "success");
             onClose();
         } catch (error) {
+            console.error("فشل حفظ التعديلات:", error);
             showNotification("فشل حفظ التعديلات", "error");
         } finally {
             setIsSaving(false);

@@ -42,14 +42,30 @@ const ServiceFormModal = ({
 
                     <div className={styles.formGroup}>
                         <label>حالة الخدمة بالنظام:</label>
-                        <select
-                            value={modalActive}
-                            onChange={(e) => setModalActive(e.target.value)}
-                            className={styles.modalSelect}
-                        >
-                            <option value="1">مفعلة ومتاحة للمواطنين</option>
-                            <option value="0">معطلة / قيد الصيانة مؤقتاً</option>
-                        </select>
+
+                        <div className={styles.radioGroup}>
+                            <label className={`${styles.radioOption} ${modalActive === '1' ? styles.radioOptionActive : ''}`}>
+                                <input
+                                    type="radio"
+                                    name="serviceStatus"
+                                    value="1"
+                                    checked={modalActive === '1'}
+                                    onChange={(e) => setModalActive(e.target.value)}
+                                />
+                                <span className={styles.radioText}>مفعلة ومتاحة للمواطنين</span>
+                            </label>
+
+                            <label className={`${styles.radioOption} ${modalActive === '0' ? styles.radioOptionInactive : ''}`}>
+                                <input
+                                    type="radio"
+                                    name="serviceStatus"
+                                    value="0"
+                                    checked={modalActive === '0'}
+                                    onChange={(e) => setModalActive(e.target.value)}
+                                />
+                                <span className={styles.radioText}>معطلة / قيد الصيانة مؤقتاً</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div className={styles.modalActions}>

@@ -1,56 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { employeeRequestService } from '../../../api/employeeRequestService';
-// 🟢 تم إزالة استيراد Header لأنه مكرر مع الـ Layout الأساسي
-import ToastNotification from '../../../components/Common/ToastNotification';
+import { useToast } from '../../../components/Common/ToastProvider';
 import CustomConfirmModal from '../../../components/Common/CustomConfirmModal';
 import { FaSearch, FaFilter, FaCheckCircle, FaHourglassHalf, FaTimesCircle } from 'react-icons/fa';
 import styles from './PendingRequests.module.css';
 
 const PendingRequestsPage = () => {
     const navigate = useNavigate();
+    const { showToast } = useToast();
+
     const [requests, setRequests] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-
-    const [statusFilter, setStatusFilter] = useState('pending'); // الافتراضي قيد الانتظار
+    const [statusFilter, setStatusFilter] = useState('pending');
     const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
-
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [confirmReview, setConfirmReview] = useState({ isOpen: false, requestId: null, citizenName: '' });
 
-    const showNotification = (message, type = 'success') => {
-        setToast({ show: true, message, type });
-        setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
-    };
 
-    const fetchRequests = async () => {
+    const fetchRequests = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await employeeRequestService.getPendingRequests();
 
-            if (response && response.data) {
+            if (response?.data) {
                 const data = response.data.data ? response.data.data : response.data;
                 const requestsArray = Array.isArray(data) ? data : [];
                 setRequests(requestsArray);
 
-                const pendingOnlyCount = requestsArray.filter(req => req.status === 'pending').length;
+                const pendingOnlyCount = requestsArray.filter((req) => req.status === 'pending').length;
                 window.dispatchEvent(new CustomEvent('updatePendingCount', { detail: pendingOnlyCount }));
             } else {
                 setRequests([]);
+                window.dispatchEvent(new CustomEvent('updatePendingCount', { detail: 0 }));
             }
         } catch (error) {
-            console.error("فشل جلب الطلبات من الباك-إند:", error);
-            showNotification("فشل الاتصال بخادم المعاملات المركزي.", 'error');
-            setRequests([]); 
+            console.error('فشل جلب الطلبات من الباك-إند:', error);
+            showToast('فشل الاتصال بخادم المعاملات المركزي.', 'error');
+            setRequests([]);
+            window.dispatchEvent(new CustomEvent('updatePendingCount', { detail: 0 }));
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [showToast]);
 
     useEffect(() => {
         fetchRequests();
-    }, []);
+    }, [fetchRequests]);
 
     const triggerReviewConfirmation = (req) => {
         const fullName = req.citizen ? `${req.citizen.first_name} ${req.citizen.last_name}` : 'غير معروف';
@@ -61,11 +57,11 @@ const PendingRequestsPage = () => {
         const id = confirmReview.requestId;
         try {
             await employeeRequestService.reviewRequest(id);
-            navigate(`/employee/review-request/${id}`);
-        } catch (error) {
-            navigate(`/employee/review-request/${id}`);
+        } catch (reviewError) {
+            console.warn('تعذر سحب الطلب قبل فتح المراجعة:', reviewError);
         } finally {
             setConfirmReview({ isOpen: false, requestId: null, citizenName: '' });
+            navigate(`/employee/review-request/${id}`);
         }
     };
 
@@ -82,7 +78,7 @@ const PendingRequestsPage = () => {
         }
     };
 
-    const filteredRequests = requests.filter(req => {
+    const filteredRequests = requests.filter((req) => {
         const reqNumber = (req.request_number || '').toLowerCase();
         const citizenName = req.citizen ? `${req.citizen.first_name} ${req.citizen.last_name}`.toLowerCase() : '';
         const serviceName = req.service_type ? (req.service_type.name || '').toLowerCase() : '';
@@ -96,9 +92,6 @@ const PendingRequestsPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            {/* 🟢 تم مسح مكون <Header /> من هنا لتنظيف الواجهة من التكرار */}
-            <ToastNotification toast={toast} onClose={() => setToast({ ...toast, show: false })} />
-
             <div className={styles.mainContentCard}>
                 <div className={styles.tableTopHeader}>
                     <h3 className={styles.tableTitle}>قائمة المعاملات ({filteredRequests.length})</h3>
@@ -119,6 +112,7 @@ const PendingRequestsPage = () => {
                                 className={`${styles.filterBtn} ${statusFilter !== 'all' ? styles.filterActive : ''}`}
                                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
                                 title="تصفية حسب حالة الطلب"
+                                type="button"
                             >
                                 <FaFilter />
                             </button>
@@ -126,10 +120,10 @@ const PendingRequestsPage = () => {
                             {isFilterDropdownOpen && (
                                 <div className={styles.filterMenu}>
                                     <div className={styles.filterMenuTitle}>تصفية حسب الحالة</div>
-                                    <button className={`${styles.filterOption} ${statusFilter === 'all' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('all'); setIsFilterDropdownOpen(false); }}>كل الطلبات</button>
-                                    <button className={`${styles.filterOption} ${statusFilter === 'pending' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('pending'); setIsFilterDropdownOpen(false); }}>قيد الانتظار</button>
-                                    <button className={`${styles.filterOption} ${statusFilter === 'approved' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('approved'); setIsFilterDropdownOpen(false); }}>المقبولة</button>
-                                    <button className={`${styles.filterOption} ${statusFilter === 'rejected' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('rejected'); setIsFilterDropdownOpen(false); }}>المرفوضة</button>
+                                    <button className={`${styles.filterOption} ${statusFilter === 'all' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('all'); setIsFilterDropdownOpen(false); }} type="button">كل الطلبات</button>
+                                    <button className={`${styles.filterOption} ${statusFilter === 'pending' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('pending'); setIsFilterDropdownOpen(false); }} type="button">قيد الانتظار</button>
+                                    <button className={`${styles.filterOption} ${statusFilter === 'approved' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('approved'); setIsFilterDropdownOpen(false); }} type="button">المقبولة</button>
+                                    <button className={`${styles.filterOption} ${statusFilter === 'rejected' ? styles.optionActive : ''}`} onClick={() => { setStatusFilter('rejected'); setIsFilterDropdownOpen(false); }} type="button">المرفوضة</button>
                                 </div>
                             )}
                         </div>
@@ -154,26 +148,17 @@ const PendingRequestsPage = () => {
                             <tbody>
                                 {filteredRequests.map((req) => (
                                     <tr key={req.id}>
-                                        <td className={`${styles.reqIdText} ${styles.normalIdText}`}>
-                                            {req.request_number}
-                                        </td>
-                                        <td className={styles.citizenName}>
-                                            {req.citizen ? `${req.citizen.first_name} ${req.citizen.last_name}` : '---'}
-                                        </td>
-                                        <td className={styles.serviceName}>
-                                            {req.service_type ? req.service_type.name : '---'}
-                                        </td>
-                                        <td className={styles.dateText}>
-                                            {req.submitted_at || '---'}
-                                        </td>
-                                        <td>
-                                            {renderStatusBadge(req.status)}
-                                        </td>
+                                        <td className={`${styles.reqIdText} ${styles.normalIdText}`}>{req.request_number}</td>
+                                        <td className={styles.citizenName}>{req.citizen ? `${req.citizen.first_name} ${req.citizen.last_name}` : '---'}</td>
+                                        <td className={styles.serviceName}>{req.service_type ? req.service_type.name : '---'}</td>
+                                        <td className={styles.dateText}>{req.submitted_at || '---'}</td>
+                                        <td>{renderStatusBadge(req.status)}</td>
                                         <td>
                                             {req.status === 'pending' ? (
                                                 <button
                                                     className={`${styles.reviewBtn} ${styles.btnActiveGreen}`}
                                                     onClick={() => triggerReviewConfirmation(req)}
+                                                    type="button"
                                                 >
                                                     مراجعة
                                                 </button>
