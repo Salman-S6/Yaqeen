@@ -12,15 +12,15 @@ class CheckPermission
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
-                'message' => 'Unauthenticated'
+                'message' => 'Unauthenticated',
             ], 401);
         }
 
-        if (!$user->can($permission)) {
+        if (! $user->can($permission)) {
             return response()->json([
-                'message' => 'Forbidden - No Permission'
+                'message' => 'Forbidden - No Permission',
             ], 403);
         }
 

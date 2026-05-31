@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminEmployeePerformanceResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         $employee = $this['employee'];
 

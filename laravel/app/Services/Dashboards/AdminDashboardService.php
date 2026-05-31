@@ -81,7 +81,7 @@ class AdminDashboardService
             ? round(($totalWithinSlaOverall / $totalResolvedOverall) * 100)
             : 0;
 
-        usort($employeeStats, fn($a, $b) => $b['performance_score'] <=> $a['performance_score']);
+        usort($employeeStats, fn ($a, $b) => $b['performance_score'] <=> $a['performance_score']);
 
         $topPerformer = $employeeStats[0]['employee'] ?? null;
         $topPerformerName = $topPerformer ? trim("{$topPerformer->first_name} {$topPerformer->last_name}") : 'لا يوجد بيانات';
@@ -92,7 +92,7 @@ class AdminDashboardService
                 'team_efficiency' => $teamEfficiency,
                 'top_performer_name' => $topPerformerName,
             ],
-            'employees' => $employeeStats
+            'employees' => $employeeStats,
         ];
     }
 }

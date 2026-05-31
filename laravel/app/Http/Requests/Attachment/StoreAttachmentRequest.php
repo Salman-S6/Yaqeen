@@ -8,7 +8,7 @@ class StoreAttachmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // التحقق من الصلاحيات يتم عبر الـ Middleware
+        return true;
     }
 
     public function rules(): array

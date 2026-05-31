@@ -26,12 +26,6 @@ class RequestController extends Controller
         if ($user->hasRole('citizen') && $user->citizen) {
             $citizenId = $user->citizen->id;
 
-            // $stats = [
-            //     'total' => RequestModel::where('citizen_id', $citizenId)->count(),
-            //     'pending' => RequestModel::where('citizen_id', $citizenId)->where('status', 'pending')->count(),
-            //     'completed' => RequestModel::where('citizen_id', $citizenId)->whereIn('status', ['approved', 'rejected'])->count(),
-            // ];
-
             $counts = RequestModel::where('citizen_id', $citizenId)
                 ->selectRaw("COUNT(*) as total,
         SUM(status = 'pending') as pending,
@@ -61,21 +55,21 @@ class RequestController extends Controller
         return new RequestResource($result);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         return new RequestResource(
             $this->service->findById($id, Auth::user())
         );
     }
 
-    public function approve($id)
+    public function approve(int $id)
     {
         $result = $this->service->approve($id);
 
         return new RequestResource($result);
     }
 
-    public function reject($id, RejectRequestRequest $request)
+    public function reject(int $id, RejectRequestRequest $request)
     {
         $result = $this->service->reject(
             $id,

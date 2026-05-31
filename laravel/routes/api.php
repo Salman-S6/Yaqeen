@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\AdminAuditLogController;
-use App\Http\Controllers\Api\AdminCitizenController;
-use App\Http\Controllers\Api\AdminEmployeePermissionController;
-use App\Http\Controllers\Api\AdminOcrController;
-use App\Http\Controllers\Api\AdminStatsController;
-use App\Http\Controllers\Api\AdminVerificationLogController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\Dashboards\AdminDashboardController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminAuditLogController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminCitizenController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminDashboardController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminEmployeePermissionController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminOcrController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminStatsController;
+use App\Http\Controllers\Api\Dashboards\Admin\AdminVerificationLogController;
 use App\Http\Controllers\Api\Dashboards\EmployeeDashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::prefix('auth')->group(function () {
-
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
 
@@ -38,14 +37,12 @@ Route::prefix('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
-
     /*
     |----------------------------------------------------------------------
     | Requests
     |----------------------------------------------------------------------
     */
     Route::prefix('requests')->group(function () {
-
         Route::get('/', [RequestController::class, 'index'])
             ->middleware('check.permission:view_requests');
 
@@ -68,7 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
     |----------------------------------------------------------------------
     */
     Route::prefix('attachments')->group(function () {
-
         Route::post('/', [AttachmentController::class, 'store'])
             ->middleware('check.permission:upload_attachments');
     });
@@ -79,7 +75,6 @@ Route::middleware('auth:sanctum')->group(function () {
     |----------------------------------------------------------------------
     */
     Route::prefix('service-types')->group(function () {
-
         Route::get('/', [ServiceTypeController::class, 'index'])
             ->middleware('check.permission:view_service_types');
 
@@ -98,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | Admin — Employee Management
+    | Admin — Employee Management & Stats
     |----------------------------------------------------------------------
     */
     Route::middleware('check.permission:manage_employees')
@@ -111,9 +106,10 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/employees/{id}', [EmployeeController::class, 'show']);
             Route::put('/employees/{id}', [EmployeeController::class, 'update']);
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+            Route::get('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'show']);
+            Route::put('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'sync']);
 
             Route::middleware('check.permission:manage_citizens')->group(function () {
-
                 Route::get('/citizens', [AdminCitizenController::class, 'index']);
                 Route::get('/citizens/{id}', [AdminCitizenController::class, 'show']);
                 Route::patch('/citizens/{id}/toggle-status', [AdminCitizenController::class, 'toggleStatus']);
@@ -126,9 +122,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/ocr-logs', [AdminOcrController::class, 'index']);
 
             Route::get('/audit-logs', [AdminAuditLogController::class, 'index']);
-
-            Route::get('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'show']);
-            Route::put('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'sync']);
         });
 
     /*
@@ -137,14 +130,13 @@ Route::middleware('auth:sanctum')->group(function () {
     |----------------------------------------------------------------------
     */
     Route::prefix('employee')->group(function () {
-
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
             ->middleware('check.permission:view_requests');
     });
 
     /*
     |----------------------------------------------------------------------
-    | Notifications (In-App Bell)
+    | Notifications
     |----------------------------------------------------------------------
     */
     Route::prefix('notifications')->group(function () {
@@ -160,7 +152,6 @@ Route::middleware('auth:sanctum')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// رابط عرض المرفق — موقّع (Signed URL) لا يحتاج auth لكنه محمي بالتوقيع
 Route::get('/attachments/{id}/view', [AttachmentController::class, 'view'])
     ->name('attachments.view')
     ->middleware('signed');

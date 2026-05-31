@@ -8,17 +8,19 @@ use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class RequestReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public int $tries   = 3;
+    public int $tries = 3;
+
     public int $backoff = 60;
 
     public function __construct(
         public readonly Request $request,
-        public readonly int     $notificationRecordId,
+        public readonly int $notificationRecordId,
     ) {}
 
     public function via(object $notifiable): array
@@ -45,12 +47,12 @@ class RequestReceivedNotification extends Notification implements ShouldQueue
         NotificationRecord::where('id', $this->notificationRecordId)
             ->increment('retry_count');
 
-        \Illuminate\Support\Facades\Log::critical(
+        Log::critical(
             'RequestReceivedNotification: فشل الإرسال نهائياً',
             [
                 'notification_record_id' => $this->notificationRecordId,
-                'request_id'             => $this->request->id,
-                'error'                  => $exception->getMessage(),
+                'request_id' => $this->request->id,
+                'error' => $exception->getMessage(),
             ]
         );
     }

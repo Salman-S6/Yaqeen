@@ -14,28 +14,32 @@ class RequestReceivedMail extends Mailable
     use Queueable, SerializesModels;
 
     public string $citizenName;
+
     public string $requestNumber;
+
     public string $serviceName;
+
     public string $submittedAt;
+
     public string $appUrl;
 
     public function __construct(public readonly Request $request)
     {
         $user = $request->citizen->user;
 
-        $this->citizenName   = $user->first_name . ' ' . $user->last_name;
+        $this->citizenName = $user->first_name.' '.$user->last_name;
         $this->requestNumber = $request->request_number;
-        $this->serviceName   = $request->serviceType?->name ?? '—';
-        $this->submittedAt   = $request->submitted_at
+        $this->serviceName = $request->serviceType?->name ?? '—';
+        $this->submittedAt = $request->submitted_at
             ? $request->submitted_at->format('Y/m/d — H:i')
             : now()->format('Y/m/d — H:i');
-        $this->appUrl        = config('app.url');
+        $this->appUrl = config('app.url');
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم استلام طلبك — ' . $this->requestNumber,
+            subject: 'تم استلام طلبك — '.$this->requestNumber,
         );
     }
 
@@ -44,11 +48,11 @@ class RequestReceivedMail extends Mailable
         return new Content(
             view: 'emails.request.received',
             with: [
-                'citizenName'   => $this->citizenName,
+                'citizenName' => $this->citizenName,
                 'requestNumber' => $this->requestNumber,
-                'serviceName'   => $this->serviceName,
-                'submittedAt'   => $this->submittedAt,
-                'appUrl'        => $this->appUrl,
+                'serviceName' => $this->serviceName,
+                'submittedAt' => $this->submittedAt,
+                'appUrl' => $this->appUrl,
             ],
         );
     }
