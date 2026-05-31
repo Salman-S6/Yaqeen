@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile_details_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -67,94 +68,107 @@ class SettingsScreen extends StatelessWidget {
         if (state is Authenticated) {
           final user = state.user;
 
-          print(" التوكن في الإعدادات: ${user.token}");
-
-          return Container(
-            padding: EdgeInsets.all(20.w),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileDetailsScreen(user: user),
                 ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 55.w,
-                  height: 55.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.greenPale,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.green.withOpacity(0.2), width: 2),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.r),
-                    child: user.idImage != null && user.idImage!.isNotEmpty
-                        ? Image.network(
-                      user.idImage!,
-                      fit: BoxFit.cover,
-                      headers: {
-                        'Authorization': 'Bearer ${user.token}',
-                        'Accept': 'application/json',
-                        'ngrok-skip-browser-warning': 'true',
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(
-                          child: Text(
-                            user.firstName.isNotEmpty ? user.firstName[0] : "؟",
-                            style: AppTextStyles.sectionTitle.copyWith(
-                              color: AppColors.green,
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.bold,
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 55.w,
+                    height: 55.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.greenPale,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.green.withOpacity(0.2), width: 2),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30.r),
+                      child: user.idImage != null && user.idImage!.isNotEmpty
+                          ? Image.network(
+                        user.idImage!,
+                        fit: BoxFit.cover,
+                        headers: {
+                          'Authorization': 'Bearer ${user.token}',
+                          'Accept': 'application/json',
+                          'ngrok-skip-browser-warning': 'true',
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Text(
+                              user.firstName.isNotEmpty ? user.firstName[0] : "؟",
+                              style: AppTextStyles.sectionTitle.copyWith(
+                                color: AppColors.green,
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                          );
+                        },
+                      )
+                          : Center(
+                        child: Text(
+                          user.firstName.isNotEmpty ? user.firstName[0] : "؟",
+                          style: AppTextStyles.sectionTitle.copyWith(
+                            color: AppColors.green,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      },
-                    )
-                        : Center(
-                      child: Text(
-                        user.firstName.isNotEmpty ? user.firstName[0] : "؟",
-                        style: AppTextStyles.sectionTitle.copyWith(
-                          color: AppColors.green,
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${user.firstName} ${user.lastName}",
-                        style: AppTextStyles.sectionTitle.copyWith(fontSize: 15.sp),
-                      ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Icon(Icons.badge_outlined, size: 14.sp, color: AppColors.green),
-                          SizedBox(width: 6.w),
-                          Text(
-                            "الرقم الوطني: ${user.nationalId}",
-                            style: AppTextStyles.smallLabel.copyWith(
-                              color: AppColors.grayMid,
-                              fontSize: 11.sp,
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${user.firstName} ${user.lastName}",
+                          style: AppTextStyles.sectionTitle.copyWith(fontSize: 15.sp),
+                        ),
+                        SizedBox(height: 4.h),
+                        Row(
+                          children: [
+                            Icon(Icons.badge_outlined, size: 14.sp, color: AppColors.green),
+                            SizedBox(width: 6.w),
+                            Text(
+                              "الرقم الوطني: ${user.nationalId}",
+                              style: AppTextStyles.smallLabel.copyWith(
+                                color: AppColors.grayMid,
+                                fontSize: 11.sp,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: AppColors.grayMid.withOpacity(0.5),
+                    size: 16.sp,
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -162,6 +176,7 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
+
   Widget _buildLogoutButton(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
