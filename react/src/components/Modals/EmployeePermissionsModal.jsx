@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { employeeService } from '../../api/employeeService';
+import { getApiErrorMessage } from '../../utils/apiResponse';
 import { FaTimes, FaShieldAlt, FaSave } from 'react-icons/fa';
 import styles from './EmployeePermissionsModal.module.css';
 
@@ -19,7 +20,7 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
             setPermissionsData(groups);
         } catch (error) {
             console.error("فشل جلب صلاحيات الموظف:", error);
-            showNotification("فشل جلب صلاحيات الموظف.", "error");
+            showNotification(getApiErrorMessage(error, "فشل جلب صلاحيات الموظف."), "error");
             onClose();
         } finally {
             setIsLoading(false);
@@ -59,7 +60,7 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
             onClose();
         } catch (error) {
             console.error("فشل حفظ التعديلات:", error);
-            showNotification("فشل حفظ التعديلات", "error");
+            showNotification(getApiErrorMessage(error, "فشل حفظ التعديلات"), "error");
         } finally {
             setIsSaving(false);
         }
@@ -75,7 +76,7 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
                         <FaShieldAlt className={styles.titleIcon} /> 
                         تخصيص صلاحيات: {employeeName}
                     </h3>
-                    <button className={styles.closeBtn} onClick={onClose}><FaTimes /></button>
+                    <button type="button" className={styles.closeBtn} onClick={onClose}><FaTimes /></button>
                 </div>
 
                 <div className={styles.modalBody}>
@@ -112,8 +113,8 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
                 </div>
 
                 <div className={styles.modalFooter}>
-                    <button className={styles.cancelBtn} onClick={onClose}>إلغاء</button>
-                    <button className={styles.saveBtn} onClick={handleSave} disabled={isSaving || isLoading}>
+                    <button type="button" className={styles.cancelBtn} onClick={onClose}>إلغاء</button>
+                    <button type="button" className={styles.saveBtn} onClick={handleSave} disabled={isSaving || isLoading}>
                         <FaSave /> {isSaving ? 'جاري الحفظ...' : 'حفظ التعديلات'}
                     </button>
                 </div>

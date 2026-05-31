@@ -10,10 +10,11 @@ const OCRTable = ({ data = [], onViewResult }) => {
     // دالة لتلوين شارة الثقة حسب النسبة المئوية
     const getConfidenceBadge = (confidenceStr) => {
         // تحويل النسبة (مثلاً "75%") إلى رقم
-        const value = parseInt(confidenceStr);
-        if (value >= 80) return <span className={`${styles.badge} ${styles.badgeSuccess}`}>{confidenceStr}</span>;
-        if (value >= 60) return <span className={`${styles.badge} ${styles.badgeWarning}`}>{confidenceStr}</span>;
-        return <span className={`${styles.badge} ${styles.badgeDanger}`}>{confidenceStr}</span>;
+        const value = parseInt(confidenceStr, 10);
+        const displayValue = confidenceStr || '0%';
+        if (value >= 80) return <span className={`${styles.badge} ${styles.badgeSuccess}`}>{displayValue}</span>;
+        if (value >= 60) return <span className={`${styles.badge} ${styles.badgeWarning}`}>{displayValue}</span>;
+        return <span className={`${styles.badge} ${styles.badgeDanger}`}>{displayValue}</span>;
     };
 
     // الفلترة بناءً على حقول الـ API الحقيقية
@@ -73,6 +74,7 @@ const OCRTable = ({ data = [], onViewResult }) => {
                                     
                                     <td>
                                         <button 
+                                            type="button"
                                             onClick={() => onViewResult(row)}
                                             style={{
                                                 backgroundColor: '#e8f5e9', color: '#007c4d', border: 'none',
@@ -100,11 +102,11 @@ const OCRTable = ({ data = [], onViewResult }) => {
 
             {totalPages > 1 && (
                 <div className={styles.pagination}>
-                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                    <button type="button" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
                         <FaChevronRight />
                     </button>
                     <span>صفحة {currentPage} من {totalPages}</span>
-                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                    <button type="button" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
                         <FaChevronLeft />
                     </button>
                 </div>

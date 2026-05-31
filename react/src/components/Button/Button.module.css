@@ -24,3 +24,8 @@
     font-size: 13px;
     cursor: default;
 }
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}

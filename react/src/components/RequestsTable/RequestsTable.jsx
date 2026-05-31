@@ -48,6 +48,7 @@ const RequestsTable = ({ data = [], onReview, isAdminMode = false }) => {
                             </td>
                             <td>
                                 <button
+                                    type="button"
                                     onClick={() => onReview(req.id)}
                                     className={isAdminMode ? styles.btnGreenView : styles.btnNormal}
                                 >

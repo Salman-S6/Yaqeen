@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaExclamationCircle } from 'react-icons/fa';
-import styles from '../../assets/pages/AdminUsersPage/AdminUsersPage.module.css';
+import styles from '../../pages/AdminUsersPage/AdminUsersPage.module.css';
 
 const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
     if (!isOpen) return null;
@@ -16,10 +16,10 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
                     هل أنت متأكد من سحب صلاحيات هذا الموظف وحذفه نهائياً من نظام يقين؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.
                 </p>
                 <div className={styles.modalActions} style={{ justifyContent: 'center', marginTop: '24px' }}>
-                    <button className={styles.deleteConfirmBtn} onClick={onConfirm}>
+                    <button type="button" className={styles.deleteConfirmBtn} onClick={onConfirm}>
                         نعم، احذف الحساب
                     </button>
-                    <button className={styles.cancelBtn} onClick={onClose}>
+                    <button type="button" className={styles.cancelBtn} onClick={onClose}>
                         إلغاء الإجراء
                     </button>
                 </div>

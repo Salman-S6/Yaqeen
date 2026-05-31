@@ -40,12 +40,14 @@ const CitizensTable = ({ citizens, onToggleStatus, onViewDetails }) => {
                             </td>
                             <td className={styles.actions} style={{ display: 'flex', gap: '10px' }}>
                                 <button
+                                    type="button"
                                     onClick={() => onViewDetails(citizen.id)}
                                     style={{ background: '#e0f2fe', color: '#0284c7', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold' }}
                                 >
                                     <FaEye /> تفاصيل
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => onToggleStatus(citizen.id)}
                                     style={{ background: citizen.account_status === 'active' ? '#fee2e2' : '#d1fae5', color: citizen.account_status === 'active' ? '#dc2626' : '#059669', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold' }}
                                 >

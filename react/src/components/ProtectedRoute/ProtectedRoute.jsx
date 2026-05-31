@@ -1,27 +1,82 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-
-// خريطة لتحويل الأدوار العربية والإنجليزية إلى قيم موحدة
-const roleMap = {
-    employee: 'employee',
-    'موظف': 'employee',
-    admin: 'admin',
-    'مدير النظام': 'admin'
-};
+import { authService } from '../../api/authService';
+import { clearAuthData, getPrimaryRole, normalizeRole } from '../../utils/auth';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-    // قراءة الدور من LocalStorage (يمكن أن يكون بالعربية أو الإنجليزية)
-    const rawRole = localStorage.getItem('userRole');
-    // تحويل الدور إلى قيمة موحدة حسب الخريطة
-    const canonicalRole = rawRole && roleMap[rawRole] ? roleMap[rawRole] : rawRole;
-    const roleKey = canonicalRole ? canonicalRole.toLowerCase() : null;
+    const rolesKey = useMemo(() => allowedRoles.map((role) => normalizeRole(role)).join('|'), [allowedRoles]);
+    const [loading, setLoading] = useState(true);
+    const [isAllowed, setIsAllowed] = useState(false);
 
-    // التحقق من أن الدور موجود ضمن الأدوار المسموح بها (مع تحويل الأدوار العربية)
-    const isAllowed = roleKey && allowedRoles.some((role) => {
-        const canonicalAllowed = roleMap[role] ? roleMap[role] : role;
-        return canonicalAllowed.toLowerCase() === roleKey;
-    });
-    
-    // إذا كان الدور غير صالح أو غير مسموح به، إعادة التوجيه لصفحة الدخول
+    useEffect(() => {
+        const checkAccess = async () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                clearAuthData();
+                setIsAllowed(false);
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await authService.getProfile();
+
+                const user =
+                    response.data?.user ||
+                    response.data?.data ||
+                    response.data;
+
+                const realRole = getPrimaryRole(user);
+                const normalizedRealRole = normalizeRole(realRole);
+
+                const allowed = rolesKey.split('|').includes(normalizedRealRole);
+
+                if (!allowed) {
+                    setIsAllowed(false);
+                    setLoading(false);
+                    return;
+                }
+
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('userRole', normalizedRealRole);
+
+                if (user?.email) {
+                    localStorage.setItem('userEmail', user.email);
+                }
+
+                setIsAllowed(true);
+            } catch (error) {
+                console.error('فشل التحقق من صلاحية المستخدم:', error);
+                clearAuthData();
+                setIsAllowed(false);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAccess();
+    }, [rolesKey]);
+
+    if (loading) {
+        return (
+            <div
+                style={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    direction: 'rtl',
+                    color: '#2d5a4c',
+                    fontWeight: '700',
+                    fontFamily: 'Arial, sans-serif'
+                }}
+            >
+                جاري التحقق من الصلاحيات...
+            </div>
+        );
+    }
+
     if (!isAllowed) {
         return <Navigate to="/login" replace />;
     }

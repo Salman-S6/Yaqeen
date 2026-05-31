@@ -42,6 +42,7 @@ const Sidebar = ({
     }, [pendingCount]);
 
     let userRole = '';
+
     if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
         userRole = currentUser.roles[0];
     } else if (currentUser?.role) {
@@ -53,6 +54,20 @@ const Sidebar = ({
     const isAdmin = String(userRole).toLowerCase() === 'admin' || userRole === 'مدير النظام';
     const profilePath = isAdmin ? '/admin/profile' : '/employee/profile';
 
+    const displayName =
+        currentUser?.name ||
+        currentUser?.full_name ||
+        currentUser?.username ||
+        (isAdmin ? 'مدير النظام' : 'مستخدم النظام');
+
+    const displayEmail =
+        currentUser?.email ||
+        'بريد غير متوفر';
+
+    const displayInitials =
+        currentUser?.initials ||
+        (isAdmin ? 'A' : 'E');
+
     const handleLogout = async () => {
         try {
             await authService.logout();
@@ -62,6 +77,7 @@ const Sidebar = ({
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('userRole');
+            localStorage.removeItem('userEmail');
             window.location.replace('/login');
         }
     };
@@ -80,6 +96,7 @@ const Sidebar = ({
 
     const handleNavigate = (path) => {
         navigate(path);
+
         if (typeof closeSidebar === 'function') {
             closeSidebar();
         }
@@ -88,6 +105,7 @@ const Sidebar = ({
     const handleGoToProfile = () => {
         navigate(profilePath);
         setIsProfileMenuOpen(false);
+
         if (typeof closeSidebar === 'function') {
             closeSidebar();
         }
@@ -206,7 +224,7 @@ const Sidebar = ({
                 {isProfileMenuOpen && (
                     <div className={styles.profileMenu}>
                         <div className={styles.profileHeader}>
-                            {currentUser?.email || localStorage.getItem('userEmail') || 'employee@yaqeen.gov.sy'}
+                            {displayEmail}
                         </div>
 
                         <ul className={styles.menuList}>
@@ -227,10 +245,13 @@ const Sidebar = ({
                     className={styles.userInfo}
                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
                 >
-                    <div className={styles.avatar}>{currentUser?.initials || (isAdmin ? 'Admin' : 'Emp')}</div>
+                    <div className={styles.avatar}>{displayInitials}</div>
+
                     <div className={styles.userDetails}>
-                        <h4 className={styles.userName}>{currentUser?.name || (isAdmin ? 'مدير النظام' : 'خالد الأحمد')}</h4>
-                        <p className={styles.userRole}>{isAdmin ? 'مدير النظام' : 'موظف النظام'}</p>
+                        <h4 className={styles.userName}>{displayName}</h4>
+                        <p className={styles.userRole}>
+                            {isAdmin ? 'مدير النظام' : 'موظف النظام'}
+                        </p>
                     </div>
                 </div>
             </div>
