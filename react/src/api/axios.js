@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleUnauthorized } from '../utils/auth';
 
 const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 const normalizedBaseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl : `${rawBaseUrl}/`;
@@ -16,12 +17,27 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
         return config;
     },
     (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+
+        if (status === 401 || status === 419) {
+            handleUnauthorized();
+        }
+
+        return Promise.reject(error);
+    }
 );
 
 export default api;

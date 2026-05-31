@@ -1,31 +1,44 @@
-import { useState, useEffect } from 'react';
-import { employeeService } from '../api/employeeService'; // تأكد من صحة مسار الاستيراد
+import { useState, useEffect, useCallback } from 'react';
+import { employeeService } from '../api/employeeService';
+import { getApiErrorMessage, getResponseCollection, getResponseData } from '../utils/apiResponse';
 
 export const useOCRMonitoring = () => {
     const [ocrData, setOcrData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await employeeService.getOcrLogs();
-                
-                // هنا نقوم بتمرير البيانات بالكامل كما وردت في الـ JSON الخاص بك
-                // الـ response.data هي الكائن الذي يحتوي على { status, data: { kpis, ocr_logs } }
-                setOcrData(response.data.data);
-                
-                setLoading(false);
-            } catch (err) {
-                console.error("خطأ في جلب بيانات OCR من السيرفر:", err);
-                setError(err);
-                setLoading(false);
-            }
-        };
+    const fetchData = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError('');
 
-        fetchData();
+            const response = await employeeService.getOcrLogs();
+            const payload = getResponseData(response, {});
+            const logs = getResponseCollection(payload.ocr_logs || payload.logs || payload.ocrLogs || []);
+
+            setOcrData({
+                kpis: payload.kpis || {},
+                ocr_logs: {
+                    data: logs
+                }
+            });
+        } catch (err) {
+            console.error('خطأ في جلب بيانات OCR من السيرفر:', err);
+            setError(getApiErrorMessage(err, 'تعذر تحميل سجلات OCR. تحقق من تشغيل الباك إند ومن صحة رابط API.'));
+            setOcrData(null);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    return { ocrData, loading, error };
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    return {
+        ocrData,
+        loading,
+        error,
+        refetch: fetchData
+    };
 };

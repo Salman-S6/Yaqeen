@@ -97,11 +97,11 @@ const PerformanceTable = ({ data = [] }) => {
             </div>
 
             <div className={styles.pagination}>
-                <button onClick={handlePrevPage} disabled={currentPage === 1} className={styles.pageBtn}>
+                <button type="button" onClick={handlePrevPage} disabled={currentPage === 1} className={styles.pageBtn}>
                     <FaChevronRight /> السابق
                 </button>
                 <span className={styles.pageInfo}>صفحة {currentPage} من {totalPages}</span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages} className={styles.pageBtn}>
+                <button type="button" onClick={handleNextPage} disabled={currentPage === totalPages} className={styles.pageBtn}>
                     التالي <FaChevronLeft />
                 </button>
             </div>

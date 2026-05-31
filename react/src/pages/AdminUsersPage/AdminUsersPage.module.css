@@ -1,0 +1,477 @@
+.pageContainer {
+    padding: 24px 32px;
+    direction: rtl;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* التخلص الكامل والنهائي من الجرس الزائد والمكرر باللوحة بصرياً */
+.pageContainer :global(.notification-icon),
+.pageContainer :global(.bell-btn),
+.pageContainer :global(.notificationContainer),
+.pageContainer :global([class*="notification"]),
+.pageContainer :global([class*="bell"]) {
+    display: none !important;
+}
+
+.mainContentCard {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+}
+
+/* 🟢 التنسيق المصلح للعنوان */
+.pageTitleSection {
+    display: flex;
+    justify-content: flex-start;
+    /* 🟢 السحر هنا: يجمع العناصر في بداية السطر (اليمين بسبب الـ RTL) */
+    align-items: center;
+    gap: 20px;
+    /* 🟢 مسافة ذكية بين العنوان وأي زر بجانبه إن وُجد */
+    border-bottom: 1px solid #edf2f7;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.titleInfo h2 {
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    color: #1a202c;
+    text-align: right;
+}
+
+.titleInfo p {
+    margin: 0;
+    font-size: 13px;
+    color: #718096;
+}
+
+.addEmployeeBtn {
+    background-color: #00a65a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.addEmployeeBtn:hover {
+    background-color: #008d4c;
+}
+
+.tabsContainer {
+    display: flex;
+    gap: 16px;
+    border-bottom: 2px solid #edf2f7;
+    margin-bottom: 24px;
+}
+
+.tabBtn {
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #718096;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+.activeTab {
+    color: #00a65a;
+    border-bottom: 2px solid #00a65a;
+}
+
+.searchSection {
+    margin-bottom: 20px;
+}
+
+.searchBarContainer {
+    display: flex;
+    align-items: center;
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 14px;
+    max-width: 360px;
+    gap: 10px;
+}
+
+.searchIcon {
+    color: #00a65a;
+}
+
+.searchInput {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: right;
+    font-size: 13px;
+}
+
+.usersTable th {
+    color: #718096;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 2px solid #edf2f7;
+    background-color: #ffffff;
+}
+
+.usersTable td {
+    padding: 16px;
+    border-bottom: 1px solid #edf2f7;
+    color: #2d3748;
+}
+
+.userNameText {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1a202c;
+}
+
+.userEmailText {
+    color: #4a5568;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.active {
+    background-color: #e6f6ec;
+    color: #117b34;
+}
+
+.suspended {
+    background-color: #fdebee;
+    color: #cb2431;
+}
+
+.actionsContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.statusToggleBtn {
+    background: none;
+    border: 1px solid #00a65a;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #00a65a;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.statusToggleBtn:hover {
+    background-color: #e6f6ec;
+}
+
+.deleteUserBtn {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 14px;
+}
+
+.deleteUserBtn:hover {
+    color: #c53030;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+/* تنسيقات الـ Modal المريحة والمؤمنة للعين بستايل يقين */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.confirmModalWidth {
+    max-width: 450px;
+    /* جعل مودال التأكيد أصغر قليلاً ومضغوط للتركيز */
+    padding: 32px;
+}
+
+.confirmTitle {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.confirmDescription {
+    text-align: center;
+    font-size: 14px;
+    color: #718096;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.deleteConfirmBtn {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.deleteConfirmBtn:hover {
+    background-color: #c53030;
+}
+
+.modalTitle {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a202c;
+    border-bottom: 2px solid #edf2f7;
+    padding-bottom: 12px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.formGroup label,
+.subFormGroup label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.modalInput {
+    padding: 12px 16px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+}
+
+.modalInput:focus {
+    border-color: #00a65a;
+    box-shadow: 0 0 0 3px rgba(0, 166, 90, 0.1);
+}
+
+.formGroupRow {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.subFormGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.modalSelect {
+    padding: 12px 14px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f7fafc;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.modalSelect:focus {
+    border-color: #00a65a;
+}
+
+.modalActions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.saveBtn {
+    background-color: #00a65a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+    background-color: #008d4c;
+}
+
+.cancelBtn {
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   تنسيقات التنبيه المنبثق الأنيق المدمج بديل الـ alert والـ windows
+   ========================================================================== */
+.toastNotification {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    min-width: 320px;
+    max-width: 450px;
+    gap: 16px;
+    direction: rtl;
+    animation: slideIn 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toastSuccess {
+    background-color: #e6f6ec;
+    border-right: 5px solid #00a65a;
+    color: #117b34;
+}
+
+.toastError {
+    background-color: #fff5f5;
+    border-right: 5px solid #e53e3e;
+    color: #c53030;
+}
+
+.toastBody {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toastIcon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.toastMessage {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.toastCloseBtn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+.toastCloseBtn:hover {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.saveBtn:disabled,
+.cancelBtn:disabled,
+.modalInput:disabled,
+.modalSelect:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}

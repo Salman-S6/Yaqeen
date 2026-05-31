@@ -70,3 +70,8 @@
   background-color: #f9fafb;
   color: #333;
 }
+.confirmBtn:disabled,
+.cancelBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

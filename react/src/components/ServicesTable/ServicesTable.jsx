@@ -35,7 +35,7 @@ const ServicesTable = ({
                         />
                     </div>
 
-                    <button className={styles.addServiceBtn} onClick={onAddClick}>
+                    <button type="button" className={styles.addServiceBtn} onClick={onAddClick}>
                         <FaPlus className={styles.btnIcon} />
                         إضافة خدمة جديدة
                     </button>
@@ -77,11 +77,11 @@ const ServicesTable = ({
                             <div className={styles.dateText}>{formatDate(service.created_at)}</div>
 
                             <div className={styles.actionsWrapper}>
-                                <button className={styles.actionBtn} onClick={() => onEditClick(service)}>
+                                <button type="button" className={styles.actionBtn} onClick={() => onEditClick(service)}>
                                     تعديل
                                 </button>
 
-                                <button className={styles.deleteBtn} onClick={() => onDeleteClick(service.id)} title="حذف">
+                                <button type="button" className={styles.deleteBtn} onClick={() => onDeleteClick(service.id)} title="حذف">
                                     <FaTrash />
                                 </button>
                             </div>

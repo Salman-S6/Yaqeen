@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Header from '../components/Header/Header';
+import { getPrimaryRole, normalizeRole } from '../utils/auth';
 import styles from './MainLayout.module.css';
 
 const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
@@ -20,8 +21,24 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
         };
 
         handleResize();
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        setPendingCountState(pendingCount);
+    }, [pendingCount]);
+
+    useEffect(() => {
+        const handler = (event) => {
+            if (event && typeof event.detail === 'number') {
+                setPendingCountState(event.detail);
+            }
+        };
+
+        window.addEventListener('updatePendingCount', handler);
+        return () => window.removeEventListener('updatePendingCount', handler);
     }, []);
 
     const toggleSidebar = () => {
@@ -34,17 +51,6 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
         }
     };
 
-    useEffect(() => {
-        const handler = (e) => {
-            if (e && typeof e.detail === 'number') {
-                setPendingCountState(e.detail);
-            }
-        };
-
-        window.addEventListener('updatePendingCount', handler);
-        return () => window.removeEventListener('updatePendingCount', handler);
-    }, []);
-
     const isAuditPage = location.pathname.includes('/admin/audit-logs');
 
     const getDynamicTitle = () => {
@@ -55,21 +61,19 @@ const MainLayout = ({ headerTitle, pendingCount = 0, currentUser = {} }) => {
         if (location.pathname.includes('users')) return 'إدارة مستخدمي النظام';
         if (location.pathname.includes('services')) return 'إدارة الخدمات الحكومية';
         if (location.pathname.includes('verify-qr')) return 'واجهة التحقق الخارجي QR';
+
         return headerTitle || 'نظام يقين الرقمي';
     };
 
-    let activeRole = '';
-    if (currentUser?.roles && Array.isArray(currentUser.roles) && currentUser.roles.length > 0) {
-        activeRole = currentUser.roles[0];
-    } else if (currentUser?.role) {
-        activeRole = currentUser.role;
-    } else {
-        activeRole = localStorage.getItem('userRole') || 'جاري التحقق...';
-    }
-
     const getDynamicSubtitle = () => {
         if (isAuditPage) return 'سجل غير قابل للحذف - Audit Log';
-        return activeRole;
+
+        const role = normalizeRole(getPrimaryRole(currentUser));
+
+        if (role === 'admin') return 'مدير النظام';
+        if (role === 'employee') return 'موظف النظام';
+
+        return 'جاري التحقق...';
     };
 
     return (

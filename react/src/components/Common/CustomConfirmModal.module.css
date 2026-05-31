@@ -104,3 +104,9 @@
         transform: translateY(0);
     }
 }
+.deleteConfirmBtn:disabled,
+.saveBtn:disabled,
+.cancelBtn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}

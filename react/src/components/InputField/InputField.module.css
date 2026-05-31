@@ -58,3 +58,13 @@
 .eyeIcon:hover {
     color: #007c4d;
 }
+.eyeIcon {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.eyeIcon:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
