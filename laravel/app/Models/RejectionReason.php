@@ -21,6 +21,6 @@ class RejectionReason extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'employee_id', 'user_id');
+        return $this->belongsTo(User::class, 'employee_id', 'id');
     }
 }

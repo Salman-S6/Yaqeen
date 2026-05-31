@@ -35,14 +35,15 @@ class AuthService
 
             $user->assignRole('citizen');
 
-            $ocrResponse = app(OCRService::class)->process($data['id_image']);
+            $ocrResult = app(OCRService::class)->process($data['id_image']);
 
             $verificationService = app(IdentityVerificationService::class);
-            $score = $verificationService->calculateScore($citizen, $ocrResponse['data']);
 
-            if ($score < 50) {
+            $score = $verificationService->calculateScore($citizen, $ocrResult['data'] ?? $ocrResult);
+
+            if ($score < 70) {
                 throw ValidationException::withMessages([
-                    'id_image' => ['الصورة المرفقة لا تتطابق مع بياناتك المدخلة، أو أنها ليست صورة هوية واضحة.'],
+                    'id_image' => ['بيانات الهوية المرفقة لا تتطابق بشكل كافٍ مع البيانات المدخلة. (نسبة المطابقة: '.$score.'%، المطلوب 70% كحد أدنى).'],
                 ]);
             }
 
@@ -53,15 +54,17 @@ class AuthService
                 attachmentType: 'identity_card'
             );
 
-            app(OCRService::class)->saveResult($attachment->id, $ocrResponse);
+            app(OCRService::class)->saveResult($attachment->id, $ocrResult, $score);
 
             $citizen->update([
-                'is_verified' => $score >= 90,
-                // 'verification_score' => $score,
+                'is_verified' => $score >= 70,
                 'verified_at' => now(),
             ]);
 
-            return $user->load(['citizen.attachments']);
+            return [
+                'user' => $user->load(['citizen.attachments']),
+                'token' => $user->createToken('api-token')->plainTextToken,
+            ];
         });
     }
 

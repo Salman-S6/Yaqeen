@@ -23,6 +23,7 @@ class EmployeeService
                 'national_id' => $data['national_id'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
+                'status' => $data['status'] ?? 'active',
             ]);
 
             $user->assignRole($role);

@@ -30,7 +30,6 @@ class RegisterRequest extends FormRequest
             'place_of_registration' => 'required|string',
 
             // ID Image
-            // 'id_image' => 'required|file|mimes:jpg,png,pdf|max:2048'
             'id_image' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ];
     }
@@ -38,40 +37,40 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'first_name.required' => 'First name is required.',
-            'first_name.max' => 'First name may not be greater than 255 characters.',
+            'first_name.required' => 'الاسم الأول مطلوب.',
+            'first_name.max' => 'الاسم الأول لا يمكن أن يكون أكثر من 255 حرف.',
 
-            'last_name.required' => 'Last name is required.',
-            'last_name.max' => 'Last name may not be greater than 255 characters.',
+            'last_name.required' => 'الاسم الأخير مطلوب.',
+            'last_name.max' => 'الاسم الأخير لا يمكن أن يكون أكثر من 255 حرف.',
 
-            'email.required' => 'Email is required.',
-            'email.email' => 'Email must be a valid email address.',
-            'email.unique' => 'Email is already taken.',
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'البريد الإلكتروني يجب أن يكون عنوانًا إلكترونيًا صالحًا.',
+            'email.unique' => 'البريد الإلكتروني مستخدم بالفعل.',
 
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.min' => 'كلمة المرور يجب أن تكون على الأقل 8 أحرف.',
+            'password.confirmed' => 'تأكيد كلمة المرور لا يتطابق.',
 
-            'national_id.required' => 'National ID is required.',
-            'national_id.size' => 'National ID must be 11 characters long.',
-            'national_id.unique' => 'National ID is already taken.',
+            'national_id.required' => 'الرقم الوطني مطلوب.',
+            'national_id.size' => 'الرقم الوطني يجب أن يكون 11 أحرف.',
+            'national_id.unique' => 'الرقم الوطني مستخدم بالفعل.',
 
-            'father_name.required' => 'Father name is required.',
-            'father_name.max' => 'Father name may not be greater than 255 characters.',
+            'father_name.required' => 'اسم الأب مطلوب.',
+            'father_name.max' => 'اسم الأب لا يمكن أن يكون أكثر من 255 حرف.',
 
-            'mother_first_name.required' => 'Mother first name is required.',
-            'mother_first_name.max' => 'Mother first name may not be greater than 255 characters.',
+            'mother_first_name.required' => 'اسم الأم الأول مطلوب.',
+            'mother_first_name.max' => 'اسم الأم الأول لا يمكن أن يكون أكثر من 255 حرف.',
 
-            'mother_last_name.required' => 'Mother last name is required.',
-            'mother_last_name.max' => 'Mother last name may not be greater than 255 characters.',
+            'mother_last_name.required' => 'اسم الأم الأخير مطلوب.',
+            'mother_last_name.max' => 'اسم الأم الأخير لا يمكن أن يكون أكثر من 255 حرف.',
 
-            'date_of_birth.required' => 'Date of birth is required.',
-            'date_of_birth.date' => 'Date of birth must be a valid date.',
+            'date_of_birth.required' => 'تاريخ الميلاد مطلوب.',
+            'date_of_birth.date' => 'تاريخ الميلاد يجب أن يكون تاريخًا صحيحًا.',
 
-            'place_of_registration.required' => 'Place of registration is required.',
+            'place_of_registration.required' => 'مكان التسجيل مطلوب.',
 
-            'id_image.mimes' => 'The ID image must be a file of type: jpg, jpeg, png, pdf.',
-            'id_image.max' => 'The ID image may not be greater than 5MB.',
+            'id_image.mimes' => 'صورة الهوية يجب أن تكون ملفًا من النوع: jpg, jpeg, png, pdf.',
+            'id_image.max' => 'صورة الهوية لا يمكن أن تكون أكبر من 5MB.',
         ];
     }
 }

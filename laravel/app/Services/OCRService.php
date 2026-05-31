@@ -53,9 +53,13 @@ class OCRService
         return $ocrResponse;
     }
 
-    public function saveResult(int $attachmentId, array $ocrResponse): OCRResult
+    public function saveResult(int $attachmentId, array $ocrResponse, float $matchScore = 0): OCRResult
     {
         $citizenData = $ocrResponse['data'] ?? [];
+
+        $confidence = isset($ocrResponse['confidence_score']) && $ocrResponse['confidence_score'] > 0
+                    ? $ocrResponse['confidence_score']
+                    : $matchScore;
 
         return OCRResult::create([
             'attachment_id' => $attachmentId,
@@ -68,7 +72,7 @@ class OCRService
             'extracted_place' => $citizenData['birth_place_and_date'] ?? null,
             'extracted_dob' => null,
 
-            'confidence_score' => $ocrResponse['confidence_score'] ?? 0,
+            'confidence_score' => $confidence,
             'engine_used' => $ocrResponse['engine_used'] ?? 'Gemini 2.5 Flash',
             'processed_at' => now(),
         ]);

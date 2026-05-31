@@ -29,7 +29,7 @@ class Document extends Model
 
     public function issuedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'issued_by', 'user_id');
+        return $this->belongsTo(User::class, 'issued_by', 'id');
     }
 
     public function qrCode(): HasOne

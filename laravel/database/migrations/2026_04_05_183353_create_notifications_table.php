@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('is_sent')->default(false);
             $table->tinyInteger('retry_count')->default(0);
             $table->timestamp('sent_at')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

@@ -24,8 +24,8 @@ class StoreAttachmentRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'file.max' => 'file size must be less than 5MB.',
-            'file.mimes' => 'only files of type: jpg, png, pdf are allowed.',
+            'file.max' => 'حجم الملف يجب أن يكون أقل من 5MB.',
+            'file.mimes' => 'يُسمح فقط بالملفات من النوع: jpg, jpeg, png, pdf.',
         ];
     }
 }

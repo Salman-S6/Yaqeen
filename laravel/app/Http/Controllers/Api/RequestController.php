@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RejectRequestRequest;
+use App\Http\Requests\Request\RejectRequestRequest;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Resources\RequestResource;
 use App\Models\Request as RequestModel;
@@ -26,10 +26,22 @@ class RequestController extends Controller
         if ($user->hasRole('citizen') && $user->citizen) {
             $citizenId = $user->citizen->id;
 
+            // $stats = [
+            //     'total' => RequestModel::where('citizen_id', $citizenId)->count(),
+            //     'pending' => RequestModel::where('citizen_id', $citizenId)->where('status', 'pending')->count(),
+            //     'completed' => RequestModel::where('citizen_id', $citizenId)->whereIn('status', ['approved', 'rejected'])->count(),
+            // ];
+
+            $counts = RequestModel::where('citizen_id', $citizenId)
+                ->selectRaw("COUNT(*) as total,
+        SUM(status = 'pending') as pending,
+        SUM(status IN ('approved','rejected')) as completed")
+                ->first();
+
             $stats = [
-                'total' => RequestModel::where('citizen_id', $citizenId)->count(),
-                'pending' => RequestModel::where('citizen_id', $citizenId)->where('status', 'pending')->count(),
-                'completed' => RequestModel::where('citizen_id', $citizenId)->whereIn('status', ['approved', 'rejected'])->count(),
+                'total' => $counts->total,
+                'pending' => $counts->pending,
+                'completed' => $counts->completed,
             ];
         }
 
