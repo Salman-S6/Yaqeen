@@ -14,7 +14,7 @@ class SignatureService
 
         $isSigned = openssl_sign($dataToSign, $signature, $privateKey, OPENSSL_ALGO_SHA256);
 
-        if (!$isSigned) {
+        if (! $isSigned) {
             throw new \Exception('فشلت عملية التوقيع الرقمي.');
         }
 
@@ -25,8 +25,8 @@ class SignatureService
     {
         return route('document.verify.public', [
             'req' => $documentId,
-            'p'   => $base64Payload,
-            'sig' => $signature
+            'p' => $base64Payload,
+            'sig' => $signature,
         ]);
     }
 }

@@ -21,6 +21,7 @@ class ServiceTypeController extends Controller
     public function index()
     {
         $types = $this->service->all();
+
         return ServiceTypeResource::collection($types);
     }
 
@@ -32,18 +33,21 @@ class ServiceTypeController extends Controller
     public function store(StoreServiceTypeRequest $request)
     {
         $type = $this->service->create($request->validated());
+
         return new ServiceTypeResource($type);
     }
 
     public function update(UpdateServiceTypeRequest $request, ServiceType $serviceType)
     {
         $type = $this->service->update($serviceType, $request->validated());
+
         return new ServiceTypeResource($type);
     }
 
     public function destroy(ServiceType $serviceType)
     {
         $this->service->delete($serviceType);
+
         return response()->json(['message' => 'Deleted successfully']);
     }
 }

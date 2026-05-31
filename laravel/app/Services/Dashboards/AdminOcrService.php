@@ -18,11 +18,11 @@ class AdminOcrService
 
         return [
             'kpis' => [
-                'avg_confidence' => round((float) $avgConfidence) . '%',
+                'avg_confidence' => round((float) $avgConfidence).'%',
                 'total_processed' => $totalProcessed,
                 'active_engine' => $activeEngine,
             ],
-            'logs' => $logs
+            'logs' => $logs,
         ];
     }
 }

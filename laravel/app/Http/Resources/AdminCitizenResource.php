@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminCitizenResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         return [
             'id' => $this->id,
@@ -19,7 +20,7 @@ class AdminCitizenResource extends JsonResource
 
             'email' => $this->user?->email,
             'father_name' => $this->father_name,
-            'mother_full_name' => trim($this->mother_first_name . ' ' . $this->mother_last_name),
+            'mother_full_name' => trim($this->mother_first_name.' '.$this->mother_last_name),
             'date_of_birth' => $this->date_of_birth?->format('Y-m-d'),
             'place_of_registration' => $this->place_of_registration,
 

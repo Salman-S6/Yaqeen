@@ -10,12 +10,7 @@ use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
 {
-    protected $service;
-
-    public function __construct(EmployeeService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(protected EmployeeService $service) {}
 
     public function store(StoreEmployeeRequest $request)
     {
@@ -35,14 +30,12 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        // return $this->service->all();
         return EmployeeResource::collection($this->service->all());
 
     }
 
     public function show($id)
     {
-        // return $this->service->find($id);
         return new EmployeeResource($this->service->find($id));
 
     }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Dashboards;
 
 use App\Http\Controllers\Controller;
-use App\Services\Dashboards\EmployeeDashboardService;
 use App\Http\Resources\DashboardRequestResource;
+use App\Services\Dashboards\EmployeeDashboardService;
 use Illuminate\Http\Request;
 
 class EmployeeDashboardController extends Controller
@@ -23,7 +23,7 @@ class EmployeeDashboardController extends Controller
             'data' => [
                 'kpis' => $metrics,
                 'latest_assigned_requests' => DashboardRequestResource::collection($latestRequests),
-            ]
+            ],
         ]);
     }
 }

@@ -34,7 +34,7 @@ class VerificationController extends Controller
             'document_id' => $document->id,
             'result' => $resultStatus,
             'ip_address' => $ipAddress,
-            //يمكن لاحقاً استخدام مكتبة مثل stevebauman/location لتحويل الـ IP إلى اسم منظمة هنا
+            // يمكن لاحقاً استخدام مكتبة مثل stevebauman/location لتحويل الـ IP إلى اسم منظمة هنا
             'verifier_organization' => null,
             'verified_at' => now(),
         ]);

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Dashboards\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\VerificationLog;
 use App\Http\Resources\AdminVerificationLogResource;
+use App\Models\VerificationLog;
 use Illuminate\Http\Request;
 
 class AdminVerificationLogController extends Controller
@@ -17,7 +17,7 @@ class AdminVerificationLogController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => AdminVerificationLogResource::collection($logs)->response()->getData(true)
+            'data' => AdminVerificationLogResource::collection($logs)->response()->getData(true),
         ]);
     }
 }

@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\URL;
 
 class RequestResource extends JsonResource
 {
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         $identityAttachment = $this->whenLoaded('citizen', function () {
             return $this->citizen?->attachments

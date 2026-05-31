@@ -13,24 +13,18 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 🚨 0. تفريغ الجداول بأمان
-        // نوقف التحقق من المفاتيح الأجنبية لتجنب أخطاء الـ Foreign Key Constraint
         Schema::disableForeignKeyConstraints();
 
-        // نفرغ الجداول الوسيطة والأساسية الخاصة بحزمة Spatie
         DB::table(config('permission.table_names.role_has_permissions'))->truncate();
         DB::table(config('permission.table_names.model_has_roles'))->truncate();
         DB::table(config('permission.table_names.model_has_permissions'))->truncate();
         Role::truncate();
         Permission::truncate();
 
-        // نعيد تشغيل التحقق من المفاتيح الأجنبية
         Schema::enableForeignKeyConstraints();
 
-        // 🧹 تنظيف الكاش (مهم جداً)
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // 🟢 1. إنشاء Permissions
         $permissions = [
 
             // Users
@@ -69,33 +63,27 @@ class RolePermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::create([
                 'name' => $permission,
-                'guard_name' => 'api', //  مهم
+                'guard_name' => 'api',
             ]);
         }
-
-        // 🟡 2. إنشاء Roles
 
         $admin = Role::create([
             'name' => 'admin',
             'guard_name' => 'api',
         ]);
 
-        $employee = Role::create([
-            'name' => 'employee',
-            'guard_name' => 'api',
-        ]);
+        // $employee = Role::create([
+        //     'name' => 'employee',
+        //     'guard_name' => 'api',
+        // ]);
 
         $citizen = Role::create([
             'name' => 'citizen',
             'guard_name' => 'api',
         ]);
 
-        // 🔴 3. إعطاء صلاحيات
-
-        // Admin → كل شيء
         $admin->givePermissionTo(Permission::all());
 
-        // Employee → إدارة الطلبات فقط
         // $employee->givePermissionTo([
         //     'view_requests',
         //     'assign_requests',
@@ -106,7 +94,6 @@ class RolePermissionSeeder extends Seeder
         //     'view_service_types',
         // ]);
 
-        // Citizen → استخدام النظام فقط
         $citizen->givePermissionTo([
             'create_requests',
             'view_requests',
