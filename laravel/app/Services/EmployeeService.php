@@ -30,10 +30,8 @@ class EmployeeService
 
             $defaultPermissions = [
                 'view_requests',
-                'process_requests',
                 'approve_requests',
                 'reject_requests',
-                'view_users',
                 'view_service_types',
             ];
             $user->syncPermissions($defaultPermissions);

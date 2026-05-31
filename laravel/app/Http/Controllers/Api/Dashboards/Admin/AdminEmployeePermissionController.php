@@ -11,30 +11,29 @@ use Spatie\Permission\PermissionRegistrar;
 class AdminEmployeePermissionController extends Controller
 {
     protected $permissionTranslations = [
-        'view_users' => 'عرض المستخدمين',
-        'create_users' => 'إضافة مستخدمين',
-        'edit_users' => 'تعديل المستخدمين',
-        'delete_users' => 'حذف المستخدمين',
-        'manage_employees' => 'إدارة الموظفين',
-        'manage_citizens' => 'إدارة المواطنين',
-        'view_requests' => 'عرض الطلبات',
-        'create_requests' => 'إنشاء الطلبات',
-        'assign_requests' => 'إسناد الطلبات',
-        'process_requests' => 'معالجة الطلبات',
-        'approve_requests' => 'اعتماد الطلبات',
+        'manage_employees' => 'إدارة حسابات الموظفين',
+        'manage_citizens' => 'إدارة حسابات المواطنين',
+        'manage_permissions' => 'تعديل صلاحيات الموظفين',
+
+        'view_requests' => 'عرض ومتابعة الطلبات',
+        'create_requests' => 'إنشاء طلبات جديدة',
+        'approve_requests' => 'الموافقة على الطلبات',
         'reject_requests' => 'رفض الطلبات',
-        'manage_roles' => 'إدارة الأدوار',
-        'manage_permissions' => 'إدارة الصلاحيات',
+
         'upload_attachments' => 'رفع المرفقات',
-        'view_attachments' => 'عرض المرفقات',
+
         'view_service_types' => 'عرض أنواع الخدمات',
-        'create_service_types' => 'إضافة أنواع خدمات',
-        'update_service_types' => 'تعديل أنواع الخدمات',
-        'delete_service_types' => 'حذف أنواع الخدمات',
-        'view_audit_logs' => 'عرض سجلات النظام',
+        'create_service_types' => 'إضافة خدمات جديدة',
+        'update_service_types' => 'تعديل الخدمات',
+        'delete_service_types' => 'حذف الخدمات',
+
+        'view_statistics' => 'عرض الإحصائيات العامة',
+        'view_audit_logs' => 'مراقبة سجلات النظام (Audit)',
+        'view_ocr_logs' => 'مراقبة سجلات الذكاء الاصطناعي (OCR)',
+        'view_verification_logs' => 'مراقبة سجلات التحقق الخارجي',
     ];
 
-    public function show($id)
+    public function show(int $id)
     {
         $employee = User::role('employee')->findOrFail($id);
 
@@ -42,10 +41,9 @@ class AdminEmployeePermissionController extends Controller
         $employeePermissions = $employee->getAllPermissions()->pluck('name')->toArray();
 
         $groupedPermissions = [
-            'الطلبات والخدمات' => $this->mapPermissions($allPermissions, ['requests', 'service_types'], $employeePermissions),
-            'إدارة المستخدمين' => $this->mapPermissions($allPermissions, ['users', 'employees', 'citizens'], $employeePermissions),
-            'النظام والرقابة' => $this->mapPermissions($allPermissions, ['roles', 'permissions', 'audit_logs'], $employeePermissions),
-            'المرفقات' => $this->mapPermissions($allPermissions, ['attachments'], $employeePermissions),
+            'إدارة الطلبات والخدمات' => $this->mapPermissions($allPermissions, ['requests', 'service_types', 'attachments'], $employeePermissions),
+            'إدارة المستخدمين' => $this->mapPermissions($allPermissions, ['employees', 'citizens', 'permissions'], $employeePermissions),
+            'النظام والرقابة' => $this->mapPermissions($allPermissions, ['statistics', 'audit_logs', 'ocr_logs', 'verification_logs'], $employeePermissions),
         ];
 
         return response()->json([
@@ -60,7 +58,7 @@ class AdminEmployeePermissionController extends Controller
         ]);
     }
 
-    public function sync(Request $request, $id)
+    public function sync(Request $request, int $id)
     {
         $employee = User::role('employee')->findOrFail($id);
 

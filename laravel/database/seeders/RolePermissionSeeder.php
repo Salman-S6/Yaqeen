@@ -26,38 +26,31 @@ class RolePermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-
-            // Users
-            'view_users',
-            'create_users',
-            'edit_users',
-            'delete_users',
+            // Users Management
             'manage_employees',
             'manage_citizens',
+            'manage_permissions',
 
-            // Requests
+            // Requests Management
             'view_requests',
             'create_requests',
-            'process_requests',
             'approve_requests',
             'reject_requests',
 
-            // Roles & Permissions
-            'manage_roles',
-            'manage_permissions',
-
             // Attachments
             'upload_attachments',
-            'view_attachments',
 
-            // service types
+            // Service Types
             'view_service_types',
             'create_service_types',
             'update_service_types',
             'delete_service_types',
 
-            // System
+            // System Logs & Analytics
+            'view_statistics',
             'view_audit_logs',
+            'view_ocr_logs',
+            'view_verification_logs',
         ];
 
         foreach ($permissions as $permission) {
@@ -67,38 +60,23 @@ class RolePermissionSeeder extends Seeder
             ]);
         }
 
-        $admin = Role::create([
-            'name' => 'admin',
-            'guard_name' => 'api',
-        ]);
-
-        // $employee = Role::create([
-        //     'name' => 'employee',
-        //     'guard_name' => 'api',
-        // ]);
-
-        $citizen = Role::create([
-            'name' => 'citizen',
-            'guard_name' => 'api',
-        ]);
+        $admin = Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        $employee = Role::create(['name' => 'employee', 'guard_name' => 'api']);
+        $citizen = Role::create(['name' => 'citizen', 'guard_name' => 'api']);
 
         $admin->givePermissionTo(Permission::all());
 
-        // $employee->givePermissionTo([
-        //     'view_requests',
-        //     'assign_requests',
-        //     'process_requests',
-        //     'approve_requests',
-        //     'reject_requests',
-        //     'view_users',
-        //     'view_service_types',
-        // ]);
+        $employee->givePermissionTo([
+            'view_requests',
+            'approve_requests',
+            'reject_requests',
+            'view_service_types',
+        ]);
 
         $citizen->givePermissionTo([
             'create_requests',
             'view_requests',
             'upload_attachments',
-            'view_attachments',
             'view_service_types',
         ]);
     }
