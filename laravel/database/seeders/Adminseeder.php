@@ -21,16 +21,15 @@ class AdminSeeder extends Seeder
         $admin = User::updateOrCreate(
             ['email' => 'admin@yaqeen.test'],
             [
-                'first_name'  => 'مدير',
-                'last_name'   => 'النظام',
+                'first_name' => 'مدير',
+                'last_name' => 'النظام',
                 'national_id' => '00000000001',
-                'email'       => 'admin@yaqeen.test',
-                'password'    => Hash::make('Password@123'),
-                'status'      => 'active',
+                'email' => 'admin@yaqeen.test',
+                'password' => Hash::make('Password@123'),
+                'status' => 'active',
             ]
         );
 
-        // منع تكرار الدور عند إعادة الـ Seed
         if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
@@ -44,12 +43,12 @@ class AdminSeeder extends Seeder
         $employee = User::updateOrCreate(
             ['email' => 'employee@yaqeen.test'],
             [
-                'first_name'  => 'موظف',
-                'last_name'   => 'الاختبار',
+                'first_name' => 'موظف',
+                'last_name' => 'الاختبار',
                 'national_id' => '00000000002',
-                'email'       => 'employee@yaqeen.test',
-                'password'    => Hash::make('Password@123'),
-                'status'      => 'active',
+                'email' => 'employee@yaqeen.test',
+                'password' => Hash::make('Password@123'),
+                'status' => 'active',
             ]
         );
 

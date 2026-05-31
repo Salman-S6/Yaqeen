@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminAuditLogResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         $actions = [
             'created' => 'إضافة جديدة',
@@ -23,7 +24,7 @@ class AdminAuditLogResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'user_name' => $this->user ? trim($this->user->first_name . ' ' . $this->user->last_name) : 'النظام / زائر',
+            'user_name' => $this->user ? trim($this->user->first_name.' '.$this->user->last_name) : 'النظام / زائر',
             'action' => $actions[$this->action] ?? $this->action,
             'entity' => $entities[$this->entity_type] ?? $this->entity_type,
             'entity_id' => $this->entity_id,

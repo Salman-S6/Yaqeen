@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('type', ['accepted', 'rejected', 'received']);
             $table->string('subject');
             $table->text('message');
-            $table->string('email_to')->required();
+            $table->string('email_to');
             $table->boolean('is_sent')->default(false);
             $table->tinyInteger('retry_count')->default(0);
             $table->timestamp('sent_at')->nullable();

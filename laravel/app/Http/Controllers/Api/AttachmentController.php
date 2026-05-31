@@ -18,14 +18,6 @@ class AttachmentController extends Controller
 
     public function store(StoreAttachmentRequest $request)
     {
-        // $attachableClass = $request->attachable_type;
-
-        // if (! class_exists($attachableClass)) {
-        //     return response()->json(['message' => 'نوع الكائن غير صالح'], 400);
-        // }
-
-        // $attachableModel = $attachableClass::findOrFail($request->attachable_id);
-
         $allowedTypes = [
             'citizen' => Citizen::class,
             'request' => Request::class,

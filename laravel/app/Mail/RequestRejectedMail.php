@@ -14,30 +14,34 @@ class RequestRejectedMail extends Mailable
     use Queueable, SerializesModels;
 
     public string $citizenName;
+
     public string $requestNumber;
+
     public string $serviceName;
+
     public string $resolvedAt;
+
     public string $appUrl;
 
     public function __construct(
         public readonly Request $request,
-        public readonly string  $reason,
+        public readonly string $reason,
     ) {
         $user = $request->citizen->user;
 
-        $this->citizenName   = $user->first_name . ' ' . $user->last_name;
+        $this->citizenName = $user->first_name.' '.$user->last_name;
         $this->requestNumber = $request->request_number;
-        $this->serviceName   = $request->serviceType?->name ?? '—';
-        $this->resolvedAt    = $request->resolved_at
+        $this->serviceName = $request->serviceType?->name ?? '—';
+        $this->resolvedAt = $request->resolved_at
             ? $request->resolved_at->format('Y/m/d — H:i')
             : now()->format('Y/m/d — H:i');
-        $this->appUrl        = config('app.url');
+        $this->appUrl = config('app.url');
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم رفض طلبك — ' . $this->requestNumber,
+            subject: 'تم رفض طلبك — '.$this->requestNumber,
         );
     }
 
@@ -46,12 +50,12 @@ class RequestRejectedMail extends Mailable
         return new Content(
             view: 'emails.request.rejected',
             with: [
-                'citizenName'   => $this->citizenName,
+                'citizenName' => $this->citizenName,
                 'requestNumber' => $this->requestNumber,
-                'serviceName'   => $this->serviceName,
-                'resolvedAt'    => $this->resolvedAt,
-                'reason'        => $this->reason,
-                'appUrl'        => $this->appUrl,
+                'serviceName' => $this->serviceName,
+                'resolvedAt' => $this->resolvedAt,
+                'reason' => $this->reason,
+                'appUrl' => $this->appUrl,
             ],
         );
     }
