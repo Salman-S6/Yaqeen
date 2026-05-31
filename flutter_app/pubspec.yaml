@@ -29,15 +29,14 @@ dependencies:
   encrypt: ^5.0.3
   mobile_scanner: ^7.2.0
   intl: ^0.20.2
+  shared_preferences: ^2.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  # إضافة مكتبة توليد الأيقونات في قسم التطوير
   flutter_launcher_icons: ^0.13.1
-  shared_preferences: ^2.2.2 # رح نحتاجها لحفظ الـ Token تبع تسجيل الدخول
 
-# إعدادات أيقونة التطبيق
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

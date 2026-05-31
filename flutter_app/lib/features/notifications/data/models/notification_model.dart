@@ -18,6 +18,43 @@ class NotificationModel {
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
+
+    String parseSmartTime(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) return 'الآن';
+
+      try {
+        if (dateStr.endsWith('Z')) {
+          dateStr = dateStr.substring(0, dateStr.length - 1);
+        }
+
+        DateTime parsedDate = DateTime.parse(dateStr);
+        DateTime now = DateTime.now();
+        Duration diff = now.difference(parsedDate);
+
+        if (diff.isNegative) {
+          return 'الآن';
+        }
+
+        if (diff.inDays > 365) {
+          int years = (diff.inDays / 365).floor();
+          return years == 1 ? 'منذ سنة' : (years == 2 ? 'منذ سنتين' : 'منذ $years سنوات');
+        } else if (diff.inDays > 30) {
+          int months = (diff.inDays / 30).floor();
+          return months == 1 ? 'منذ شهر' : (months == 2 ? 'منذ شهرين' : 'منذ $months أشهر');
+        } else if (diff.inDays > 0) {
+          return diff.inDays == 1 ? 'منذ يوم' : (diff.inDays == 2 ? 'منذ يومين' : (diff.inDays <= 10 ? 'منذ ${diff.inDays} أيام' : 'منذ ${diff.inDays} يوماً'));
+        } else if (diff.inHours > 0) {
+          return diff.inHours == 1 ? 'منذ ساعة' : (diff.inHours == 2 ? 'منذ ساعتين' : (diff.inHours <= 10 ? 'منذ ${diff.inHours} ساعات' : 'منذ ${diff.inHours} ساعة'));
+        } else if (diff.inMinutes > 0) {
+          return diff.inMinutes == 1 ? 'منذ دقيقة' : (diff.inMinutes == 2 ? 'منذ دقيقتين' : (diff.inMinutes <= 10 ? 'منذ ${diff.inMinutes} دقائق' : 'منذ ${diff.inMinutes} دقيقة'));
+        } else {
+          return 'الآن';
+        }
+      } catch (e) {
+        return 'الآن';
+      }
+    }
+
     return NotificationModel(
       id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
 
@@ -32,7 +69,7 @@ class NotificationModel {
           json['is_read'] == '1' ||
           json['read_at'] != null,
 
-      createdAt: json['created_at']?.toString() ?? '',
+      createdAt: parseSmartTime(json['created_at']?.toString()),
     );
   }
 }

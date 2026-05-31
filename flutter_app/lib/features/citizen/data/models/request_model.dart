@@ -12,10 +12,18 @@ class RequestStats {
   });
 
   factory RequestStats.fromJson(Map<String, dynamic> json) {
+    int safeInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      if (value is String) return int.tryParse(value) ?? 0;
+      return 0;
+    }
+
     return RequestStats(
-      total: json['total'] ?? 0,
-      pending: json['pending'] ?? 0,
-      completed: json['completed'] ?? 0,
+      total: safeInt(json['total']),
+      pending: safeInt(json['pending']),
+      completed: safeInt(json['completed']),
     );
   }
 }
