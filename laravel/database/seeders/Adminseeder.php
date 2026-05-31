@@ -11,7 +11,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $this->createAdmin();
-        $this->createEmployee();
+        // $this->createEmployee();
     }
 
     // -------------------------------------------------------------------------

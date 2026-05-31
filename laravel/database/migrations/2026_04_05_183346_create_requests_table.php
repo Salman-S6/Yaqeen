@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('service_type_id')->constrained('service_types');
             $table->foreignId('assigned_employee_id')->nullable()->constrained('users');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->float('matching_score')->nullable();
             $table->timestamp('submitted_at')->nullable();
             $table->timestamp('assigned_at')->nullable();
             $table->timestamp('resolved_at')->nullable();

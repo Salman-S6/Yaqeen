@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('document_id')->constrained('documents')->cascadeOnDelete();
             $table->enum('result', ['valid', 'invalid', 'forged']);
+            $table->string('ip_address', 45)->nullable();
             $table->string('verifier_organization')->nullable();
             $table->timestamp('verified_at');
             $table->timestamps();

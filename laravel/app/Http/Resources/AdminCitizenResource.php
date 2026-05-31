@@ -11,7 +11,7 @@ class AdminCitizenResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'full_name' => $this->user?->first_name . ' ' . $this->user?->last_name,
+            'full_name' => $this->user?->full_name,
             'national_id' => $this->user?->national_id,
             'registration_date' => $this->created_at?->format('Y-m-d'),
             'is_verified' => (bool) $this->is_verified,

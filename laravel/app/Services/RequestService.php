@@ -6,7 +6,9 @@ use App\Models\Request;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class RequestService
 {
@@ -41,7 +43,26 @@ class RequestService
             throw new \Exception('لا يوجد ملف مواطن مرتبط بهذا الحساب.');
         }
 
-        return DB::transaction(function () use ($data, $citizen) {
+        $duplicate = Request::where('citizen_id', $citizen->id)
+            ->where('service_type_id', $data['service_type_id'])
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($duplicate) {
+            throw ValidationException::withMessages([
+                'service_type_id' => ['لديك طلب قيد الانتظار لنفس الخدمة. لا يمكن تقديم طلب مكرر.'],
+            ]);
+        }
+
+        $employee = $this->autoAssignService->getAvailableEmployee();
+
+        if (! $employee) {
+            throw ValidationException::withMessages([
+                'system' => ['نعتذر، لا يوجد موظفون متاحون حالياً لمعالجة الخدمات. يرجى المحاولة في وقت لاحق.'],
+            ]);
+        }
+
+        return DB::transaction(function () use ($data, $citizen, $employee) {
 
             $request = Request::create([
                 'request_number' => $this->generateRequestNumber(),
@@ -49,9 +70,11 @@ class RequestService
                 'service_type_id' => $data['service_type_id'],
                 'status' => 'pending',
                 'submitted_at' => now(),
+                'assigned_employee_id' => $employee->id,
+                'assigned_at' => now(),
             ]);
 
-            $this->autoAssignService->assign($request);
+            $this->notificationService->sendReceived($request);
 
             return $request->load(['citizen.user', 'serviceType', 'assignedEmployee']);
         });
@@ -65,7 +88,27 @@ class RequestService
                 'citizen.user',
                 'serviceType',
                 'assignedEmployee',
-            ])->findOrFail($requestId);
+            ])
+                ->lockForUpdate()
+                ->findOrFail($requestId);
+
+            if ($request->assigned_employee_id !== Auth::id()) {
+                throw ValidationException::withMessages([
+                    'request' => ['غير مصرح لك باعتماد هذا الطلب لأنه مخصص لموظف آخر.'],
+                ]);
+            }
+
+            if ($request->status !== 'pending') {
+                throw ValidationException::withMessages([
+                    'request' => ['لا يمكن اعتماد طلب تمت معالجته مسبقاً.'],
+                ]);
+            }
+
+            if ($request->document()->exists()) {
+                throw ValidationException::withMessages([
+                    'request' => ['تم إصدار وثيقة لهذا الطلب مسبقاً.'],
+                ]);
+            }
 
             $request->update([
                 'status' => 'approved',
@@ -88,11 +131,17 @@ class RequestService
                 'issued_at' => $document->generated_at->toIso8601String(),
             ];
 
-            $base64Payload = base64_encode(json_encode($payloadData, JSON_UNESCAPED_UNICODE));
+            $base64Payload = base64_encode(
+                json_encode($payloadData, JSON_UNESCAPED_UNICODE)
+            );
 
             $signature = $this->signatureService->sign($base64Payload);
 
-            $verifyUrl = $this->signatureService->generateVerifyUrl($document->id, $base64Payload, $signature);
+            $verifyUrl = $this->signatureService->generateVerifyUrl(
+                $document->id,
+                $base64Payload,
+                $signature
+            );
 
             $finalPayload = [
                 'data' => $payloadData,
@@ -100,7 +149,7 @@ class RequestService
                 'verify_url' => $verifyUrl,
             ];
 
-            $jsonPayload = json_encode($finalPayload);
+            $jsonPayload = json_encode($finalPayload, JSON_UNESCAPED_UNICODE);
 
             $document->qrCode()->create([
                 'payload' => $jsonPayload,
@@ -109,10 +158,12 @@ class RequestService
 
             $this->notificationService->sendApproval($request);
 
-            // 7. (SD-09: 3.1.8 INSERT INTO audit_log)
-            // سيتم إضافتها لاحقاً AuditLogService
-
-            return $request;
+            return $request->load([
+                'citizen.user',
+                'serviceType',
+                'assignedEmployee',
+                'document.qrCode',
+            ]);
         });
     }
 
@@ -124,7 +175,21 @@ class RequestService
                 'citizen.user',
                 'serviceType',
                 'assignedEmployee',
-            ])->findOrFail($requestId);
+            ])
+                ->lockForUpdate()
+                ->findOrFail($requestId);
+
+            if ($request->assigned_employee_id !== $employee->id) {
+                throw ValidationException::withMessages([
+                    'request' => ['غير مصرح لك برفض هذا الطلب لأنه مخصص لموظف آخر.'],
+                ]);
+            }
+
+            if ($request->status !== 'pending') {
+                throw ValidationException::withMessages([
+                    'request' => ['لا يمكن رفض طلب تمت معالجته مسبقاً.'],
+                ]);
+            }
 
             $request->update([
                 'status' => 'rejected',
@@ -138,7 +203,12 @@ class RequestService
 
             $this->notificationService->sendRejection($request, $reason);
 
-            return $request->load(['citizen.user', 'serviceType', 'assignedEmployee', 'rejectionReason']);
+            return $request->load([
+                'citizen.user',
+                'serviceType',
+                'assignedEmployee',
+                'rejectionReason',
+            ]);
         });
     }
 
@@ -163,8 +233,11 @@ class RequestService
     private function generateRequestNumber(): string
     {
         $today = now()->format('Ymd');
+        $cacheKey = "request_sequence_{$today}";
 
-        $count = Request::whereDate('created_at', today())->count() + 1;
+        Cache::add($cacheKey, 0, now()->endOfDay());
+
+        $count = Cache::increment($cacheKey);
 
         return 'REQ-'.$today.'-'.str_pad($count, 4, '0', STR_PAD_LEFT);
     }

@@ -31,11 +31,11 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Email is required.',
-            'email.email' => 'Email must be a valid email address.',
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'البريد الإلكتروني يجب أن يكون عنوانًا إلكترونيًا صالحًا.',
 
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 8 characters.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.min' => 'كلمة المرور يجب أن تكون على الأقل 8 أحرف.',
         ];
     }
 }

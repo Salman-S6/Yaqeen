@@ -15,8 +15,12 @@ class NotificationResource extends JsonResource
             'message' => $this->message,
             'request_number' => $this->request?->request_number,
             'is_read' => $this->read_at !== null,
-            'read_at' => $this->read_at?->format('Y-m-d H:i:s'),
-            'created_at' => $this->created_at?->diffForHumans(),
+            // 'read_at' => $this->read_at?->format('Y-m-d H:i:s'),
+            // 'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+
+            'read_at' => $this->read_at ? $this->read_at->toISOString() : null,
+            'sent_at' => $this->sent_at ? $this->sent_at->toISOString() : null,
+            'created_at' => $this->created_at ? $this->created_at->toISOString() : null,
         ];
     }
 }

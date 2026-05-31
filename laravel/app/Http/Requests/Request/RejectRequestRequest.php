@@ -5,7 +5,7 @@ namespace App\Http\Requests\Request;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AssignRequestRequest extends FormRequest
+class RejectRequestRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,16 @@ class AssignRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_id' => 'required|exists:users,id',
+            'reason' => 'required|string|min:10|max:1000',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'reason.required' => 'سبب الرفض مطلوب.',
+            'reason.min' => 'سبب الرفض يجب أن يكون 10 أحرف على الأقل.',
+            'reason.max' => 'سبب الرفض يجب ألا يتجاوز 1000 حرف.',
         ];
     }
 }

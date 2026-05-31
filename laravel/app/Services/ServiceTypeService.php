@@ -3,11 +3,16 @@
 namespace App\Services;
 
 use App\Models\ServiceType;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceTypeService
 {
     public function all()
     {
+        if (Auth::user()->hasRole('citizen')) {
+            return ServiceType::where('is_active', true)->get();
+        }
+
         return ServiceType::all();
     }
 
