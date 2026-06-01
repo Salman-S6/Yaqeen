@@ -5,7 +5,6 @@
     min-height: 100vh;
 }
 
-/* التخلص الكامل والنهائي من الجرس الزائد والمكرر باللوحة بصرياً */
 .pageContainer :global(.notification-icon),
 .pageContainer :global(.bell-btn),
 .pageContainer :global(.notificationContainer),
@@ -22,14 +21,11 @@
     margin-top: 20px;
 }
 
-/* 🟢 التنسيق المصلح للعنوان */
 .pageTitleSection {
     display: flex;
     justify-content: flex-start;
-    /* 🟢 السحر هنا: يجمع العناصر في بداية السطر (اليمين بسبب الـ RTL) */
     align-items: center;
     gap: 20px;
-    /* 🟢 مسافة ذكية بين العنوان وأي زر بجانبه إن وُجد */
     border-bottom: 1px solid #edf2f7;
     padding-bottom: 20px;
     margin-bottom: 20px;
@@ -215,7 +211,6 @@
     font-size: 14px;
 }
 
-/* تنسيقات الـ Modal المريحة والمؤمنة للعين بستايل يقين */
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -241,7 +236,6 @@
 
 .confirmModalWidth {
     max-width: 450px;
-    /* جعل مودال التأكيد أصغر قليلاً ومضغوط للتركيز */
     padding: 32px;
 }
 

@@ -1,5 +1,5 @@
 .alertBar {
-  background-color: #fef08a; /* أصفر أغمق وأوضح */
+  background-color: #fef08a; 
   border: 1px solid #facc15; 
   padding: 15px 25px;
   border-radius: 8px;
@@ -11,7 +11,7 @@
 }
 
 .alertText {
-  color: #713f12; /* بني غامق للنص لزيادة التباين */
+  color: #713f12;  
   font-size: 0.95rem;
   margin: 0;
   font-weight: 500;

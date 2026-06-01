@@ -65,24 +65,18 @@
 .passwordIcon {
     position: absolute;
     left: 15px;
-    /* تثبيت الأيقونة على اليسار */
     top: 40px;
-    /* 💡 النزول من أعلى لتجاوز مساحة عنوان الحقل (Label) */
     cursor: pointer;
     color: #4b5563;
-    /* لون غامق لضمان رؤيتها بوضوح */
     font-size: 1.3rem;
     transition: color 0.2s ease;
     z-index: 999999 !important;
-    /* 🚨 السحر هنا: إجبارها على الظهور فوق أي مكون آخر */
 }
 
 .passwordIcon:hover {
     color: #007c4d;
-    /* لون أخضر يقين عند تمرير الماوس */
 }
 
-/* تنسيق رسالة الخطأ */
 .errorMessage {
     color: #ef4444;
     font-size: 0.85rem;

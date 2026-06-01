@@ -7,9 +7,7 @@ const OCRTable = ({ data = [], onViewResult }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
 
-    // دالة لتلوين شارة الثقة حسب النسبة المئوية
     const getConfidenceBadge = (confidenceStr) => {
-        // تحويل النسبة (مثلاً "75%") إلى رقم
         const value = parseInt(confidenceStr, 10);
         const displayValue = confidenceStr || '0%';
         if (value >= 80) return <span className={`${styles.badge} ${styles.badgeSuccess}`}>{displayValue}</span>;
@@ -17,7 +15,6 @@ const OCRTable = ({ data = [], onViewResult }) => {
         return <span className={`${styles.badge} ${styles.badgeDanger}`}>{displayValue}</span>;
     };
 
-    // الفلترة بناءً على حقول الـ API الحقيقية
     const filteredData = data.filter((row) => {
         const citizenName = (row.citizen_name || '').toLowerCase();
         const nationalId = (row.national_id || '').toLowerCase();

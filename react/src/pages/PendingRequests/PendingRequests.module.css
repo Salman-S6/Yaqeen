@@ -5,7 +5,6 @@
     min-height: 100vh;
 }
 
-/* 🚨 إبادة وقمع الجرس المكرر والزائد جهة اليمين تماماً وضمان نظافة اللوحة 🚨 */
 .pageContainer :global(.notification-icon),
 .pageContainer :global(.bell-btn),
 .pageContainer :global(.notificationContainer),

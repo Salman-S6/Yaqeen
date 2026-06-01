@@ -14,7 +14,6 @@ const EmployeePermissionsModal = ({ isOpen, onClose, employeeId, employeeName, s
         try {
             const response = await employeeService.getEmployeePermissions(employeeId);
             
-            // 🟢 التعديل هنا: قراءة المفتاح الصحيح permissions_groups من الـ JSON
             const groups = response.data?.data?.permissions_groups || {};
             
             setPermissionsData(groups);
