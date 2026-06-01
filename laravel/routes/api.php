@@ -93,36 +93,44 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | Admin — Employee Management & Stats
+    | Admin — Management & System Logs
     |----------------------------------------------------------------------
     */
-    Route::middleware('check.permission:manage_employees')
-        ->prefix('admin')
-        ->group(function () {
-            Route::get('/dashboard', [AdminDashboardController::class, 'index']);
-
+    Route::prefix('admin')->group(function () {
+        Route::middleware('check.permission:manage_employees')->group(function () {
             Route::get('/employees', [EmployeeController::class, 'index']);
             Route::post('/employees', [EmployeeController::class, 'store']);
             Route::get('/employees/{id}', [EmployeeController::class, 'show']);
             Route::put('/employees/{id}', [EmployeeController::class, 'update']);
             Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
-            Route::get('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'show']);
-            Route::put('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'sync']);
 
-            Route::middleware('check.permission:manage_citizens')->group(function () {
-                Route::get('/citizens', [AdminCitizenController::class, 'index']);
-                Route::get('/citizens/{id}', [AdminCitizenController::class, 'show']);
-                Route::patch('/citizens/{id}/toggle-status', [AdminCitizenController::class, 'toggleStatus']);
-            });
-
-            Route::get('/verification-logs', [AdminVerificationLogController::class, 'index']);
-
-            Route::get('/stats', [AdminStatsController::class, 'index']);
-
-            Route::get('/ocr-logs', [AdminOcrController::class, 'index']);
-
-            Route::get('/audit-logs', [AdminAuditLogController::class, 'index']);
+            Route::get('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'show'])
+                ->middleware('check.permission:manage_permissions');
+            Route::put('/employees/{id}/permissions', [AdminEmployeePermissionController::class, 'sync'])
+                ->middleware('check.permission:manage_permissions');
         });
+
+        Route::middleware('check.permission:manage_citizens')->group(function () {
+            Route::get('/citizens', [AdminCitizenController::class, 'index']);
+            Route::get('/citizens/{id}', [AdminCitizenController::class, 'show']);
+            Route::patch('/citizens/{id}/toggle-status', [AdminCitizenController::class, 'toggleStatus']);
+        });
+
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->middleware('check.permission:view_statistics');
+
+        Route::get('/stats', [AdminStatsController::class, 'index'])
+            ->middleware('check.permission:view_statistics');
+
+        Route::get('/verification-logs', [AdminVerificationLogController::class, 'index'])
+            ->middleware('check.permission:view_verification_logs');
+
+        Route::get('/ocr-logs', [AdminOcrController::class, 'index'])
+            ->middleware('check.permission:view_ocr_logs');
+
+        Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])
+            ->middleware('check.permission:view_audit_logs');
+    });
 
     /*
     |----------------------------------------------------------------------

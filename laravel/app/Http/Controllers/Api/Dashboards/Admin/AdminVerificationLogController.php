@@ -15,9 +15,7 @@ class AdminVerificationLogController extends Controller
             ->orderBy('verified_at', 'desc')
             ->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => AdminVerificationLogResource::collection($logs)->response()->getData(true),
-        ]);
+        return AdminVerificationLogResource::collection($logs)
+            ->additional(['status' => 'success']);
     }
 }

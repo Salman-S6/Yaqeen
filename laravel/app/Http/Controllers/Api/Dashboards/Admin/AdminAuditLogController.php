@@ -12,9 +12,7 @@ class AdminAuditLogController extends Controller
     {
         $logs = AuditLog::with('user')->latest()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => AdminAuditLogResource::collection($logs)->response()->getData(true),
-        ]);
+        return AdminAuditLogResource::collection($logs)
+            ->additional(['status' => 'success']);
     }
 }

@@ -12,23 +12,19 @@ class AdminCitizenController extends Controller
     {
         $citizens = Citizen::with('user')->latest()->paginate(15);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => AdminCitizenResource::collection($citizens)->response()->getData(true),
-        ]);
+        return AdminCitizenResource::collection($citizens)
+            ->additional(['status' => 'success']);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $citizen = Citizen::with(['user', 'attachments'])->findOrFail($id);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => new AdminCitizenResource($citizen),
-        ]);
+        return (new AdminCitizenResource($citizen))
+            ->additional(['status' => 'success']);
     }
 
-    public function toggleStatus($id)
+    public function toggleStatus(int $id)
     {
         $citizen = Citizen::with('user')->findOrFail($id);
         $user = $citizen->user;
