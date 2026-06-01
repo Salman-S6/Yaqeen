@@ -9,35 +9,62 @@ const RejectModal = ({ isOpen, onClose, onConfirm, isLoading, requestId }) => {
   if (!isOpen) return null;
 
   const handleConfirmClick = () => {
-    if (!reason.trim()) {
-        showToast('يرجى كتابة سبب الرفض أولاً.', 'warning');
-        return;
+    const trimmedReason = reason.trim();
+
+    if (!trimmedReason) {
+      showToast('يرجى كتابة سبب الرفض أولاً.', 'warning');
+      return;
     }
+
+    onConfirm(trimmedReason);
+  };
+
+  const handleClose = () => {
+    if (isLoading) return;
+
+    setReason('');
+    onClose();
   };
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modalCard}>
         <h3 className={styles.title}>رفض الطلب {requestId || 'المحدد'}</h3>
-        <p className={styles.message}>يجب كتابة سبب الرفض - سيُرسل للمواطن تلقائياً</p>
-        
+
+        <p className={styles.message}>
+          يجب كتابة سبب الرفض - سيُرسل للمواطن تلقائياً
+        </p>
+
         <div className={styles.inputArea}>
-          <label className={styles.label}>سبب الرفض *</label>
-          <textarea 
-            className={styles.textarea} 
+          <label className={styles.label} htmlFor="reject-reason">
+            سبب الرفض *
+          </label>
+
+          <textarea
+            id="reject-reason"
+            name="rejectReason"
+            className={styles.textarea}
             placeholder="اكتب سبب الرفض بوضوح..."
-          ></textarea>
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            disabled={isLoading}
+          />
         </div>
 
         <div className={styles.modalActions}>
-          <button 
-            className={styles.rejectBtn} 
+          <button
+            type="button"
+            className={styles.rejectBtn}
+            onClick={handleConfirmClick}
+            disabled={isLoading || !reason.trim()}
           >
             {isLoading ? 'جاري الإرسال...' : '✖ تأكيد الرفض'}
           </button>
-          <button 
-            className={styles.cancelBtn} 
-            onClick={onClose}
+
+          <button
+            type="button"
+            className={styles.cancelBtn}
+            onClick={handleClose}
             disabled={isLoading}
           >
             إلغاء

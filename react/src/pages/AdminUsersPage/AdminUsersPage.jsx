@@ -3,6 +3,7 @@ import { employeeService } from "../../api/employeeService";
 import { getApiErrorMessage, getResponseCollection, getResponseData } from "../../utils/apiResponse";
 import DeleteConfirmModal from '../../components/Modals/DeleteConfirmModal';
 import EmployeeFormModal from '../../components/Modals/EmployeeFormModal';
+import EmployeePermissionsModal from '../../components/Modals/EmployeePermissionsModal';
 import CitizensTable from '../../components/CitizensTable/CitizensTable';
 import { useToast } from '../../components/Common/ToastProvider';
 import { FaUserPlus, FaSearch, FaTrash, FaTimes, FaIdCard } from 'react-icons/fa';
@@ -31,6 +32,7 @@ const AdminUsersPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [activeTab, setActiveTab] = useState('team');
     const { showToast } = useToast();
 
     const showNotification = useCallback((message, type = 'success') => {
