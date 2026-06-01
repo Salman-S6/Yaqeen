@@ -12,7 +12,6 @@ import {
     Cell
 } from 'recharts';
 
-// Tooltip مخصص للمخططات
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         const item = payload[0];

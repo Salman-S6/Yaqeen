@@ -10,14 +10,12 @@ import { FaUserPlus, FaSearch, FaTrash, FaTimes, FaIdCard } from 'react-icons/fa
 import styles from './AdminUsersPage.module.css';
 
 const AdminUsersPage = () => {
-    // حالات الفريق الوظيفي
     const [employees, setEmployees] = useState([]);
     const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, employeeId: null });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddMode, setIsAddMode] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-    // 🟢 حالة مودال الصلاحيات
     const [permissionsModal, setPermissionsModal] = useState({ isOpen: false, employeeId: null, employeeName: '' });
 
     const [firstName, setFirstName] = useState('');
@@ -27,12 +25,10 @@ const AdminUsersPage = () => {
     const [password, setPassword] = useState('');
     const [userStatus, setUserStatus] = useState('active');
 
-    // حالات المواطنين
     const [citizens, setCitizens] = useState([]);
     const [selectedCitizenDetails, setSelectedCitizenDetails] = useState(null);
     const [isCitizenModalOpen, setIsCitizenModalOpen] = useState(false);
 
-    // حالات عامة
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -213,7 +209,6 @@ const AdminUsersPage = () => {
                                                 <td><span className={`${styles.statusBadge} ${emp.status === 'active' ? styles.active : styles.suspended}`}>{emp.status === 'active' ? 'نشط' : 'معلق'}</span></td>
                                                 <td>
                                                     <div className={styles.actionsContainer}>
-                                                        {/* 🟢 الزر الجديد الخاص بالصلاحيات باللون الأرجواني */}
                                                         <button 
                                                             type="button"
                                                             style={{ backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none', padding: '6px 12px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', transition: '0.2s' }}
@@ -238,7 +233,6 @@ const AdminUsersPage = () => {
                 )}
             </div>
 
-            {/* ======================= النوافذ المنبثقة ======================= */}
             <DeleteConfirmModal isOpen={confirmDelete.isOpen} onClose={() => setConfirmDelete({ isOpen: false, employeeId: null })} onConfirm={executeDeleteEmployee} />
             
             <EmployeeFormModal
@@ -249,7 +243,6 @@ const AdminUsersPage = () => {
                 isSaving={isSaving}
             />
 
-            {/* 🟢 نافذة الصلاحيات الديناميكية */}
             <EmployeePermissionsModal 
                 isOpen={permissionsModal.isOpen} 
                 employeeId={permissionsModal.employeeId}
@@ -258,7 +251,6 @@ const AdminUsersPage = () => {
                 showNotification={showNotification}
             />
 
-            {/* نافذة تفاصيل المواطن */}
             {isCitizenModalOpen && selectedCitizenDetails && (
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
                     <div style={{ backgroundColor: '#fff', width: '600px', borderRadius: '12px', overflow: 'hidden', direction: 'rtl', maxHeight: '90vh', overflowY: 'auto' }}>

@@ -5,12 +5,7 @@
     min-height: 100vh;
 }
 
-/* تنظيف الجرس والملحقات المكررة من اللوحة */
-.pageContainer :global(.notification-icon),
-.pageContainer :global(.bell-btn),
-.pageContainer :global(.notificationContainer) {
-    display: none !important;
-}
+
 
 .statsGrid {
     display: grid;

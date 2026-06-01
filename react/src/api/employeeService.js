@@ -22,7 +22,7 @@ export const employeeService = {
     update: (id, payload) => api.put(`admin/employees/${id}`, payload),
     delete: (id) => api.delete(`admin/employees/${id}`),
 
-    // 🟢 مسارات إدارة صلاحيات الموظفين الجديدة
+    //  مسارات إدارة صلاحيات الموظفين الجديدة
     getEmployeePermissions: (id) => api.get(`admin/employees/${id}/permissions`),
     updateEmployeePermissions: (id, permissions) => api.put(`admin/employees/${id}/permissions`, { permissions }),
 };

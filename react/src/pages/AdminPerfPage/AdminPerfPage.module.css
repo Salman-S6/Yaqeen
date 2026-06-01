@@ -24,7 +24,6 @@
     margin: 0;
 }
 
-/* 💡 إجبار الكروت على الاصطفاف كثلاثة أعمدة متساوية وأنيقة */
 .summaryGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -32,14 +31,12 @@
     margin-bottom: 35px;
 }
 
-/* تجاوب الشاشات المتوسطة (لابتوب/آيباد عرضي) */
 @media (max-width: 1100px) {
     .summaryGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* تجاوب شاشات الجوال */
 @media (max-width: 768px) {
     .summaryGrid {
         grid-template-columns: 1fr;
