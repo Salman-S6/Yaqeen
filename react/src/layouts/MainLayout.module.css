@@ -1,51 +1,37 @@
-/* الحاوية الكبرى للنظام */
 .layoutContainer {
     display: flex;
     width: 100%;
-    /* استخدام 100% بدلاً من 100vw لتجنب مشاكل التمرير العرضي */
     height: 100vh;
     overflow: hidden;
     direction: rtl;
-    /* اتجاه النص من اليمين لليسار */
     background-color: #f3f4f6;
 }
 
-/* تغليف منطقة الهيدر والمحتوى */
 .mainWrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
     height: 100vh;
     min-width: 0;
-    /* منع تمدد عناصر Flex خارج حدود الشاشة */
     overflow: hidden;
 }
 
-/* منطقة عرض الصفحات (مثل صفحة المراجعة أو الطلبات) */
 .contentArea {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
-    /* السماح بالتمرير العمودي فقط داخل المحتوى */
     overflow-x: hidden;
-    /* منع ظهور شريط التمرير العرضي المزعج */
     background-color: #f3f4f6;
     box-sizing: border-box;
 
 }
 
-/* أضيفي هذا في نهاية ملف MainLayout.module.css */
-/* في ملف MainLayout.module.css */
-/* هذا التعديل خاص بصفحتك فقط ولا يؤثر على صفحات رفيقك */
 .auditContent {
     padding: 0 !important;
-    /* مسحنا الـ 30px من كل الجهات */
     padding-top: 0 !important;
-    /* تأكيد إضافي لمسح الفراغ العلوي */
     margin-top: -30px !important;
 
     background-color: #ced6d8cb !important;
-    /* اللون الرمادي الفاتح جداً اللي طلبتيه */
 
     display: block !important;
     overflow-x: hidden;
@@ -56,23 +42,18 @@
 
 
 
-/* تحسينات للشاشات الصغيرة والمتوسطة (Tablets & Mobile) */
 @media (max-width: 1024px) {
     .contentArea {
         padding: 20px 15px;
-        /* تقليل الحشو لزيادة مساحة العرض */
     }
 }
 
-/* التعامل مع السايدبار في حال كان مخفياً أو ظاهراً (اختياري) */
 @media (max-width: 768px) {
     .layoutContainer {
-        /* إذا كنت تخطط لجعل السايدبار فوق المحتوى في الموبايل */
         position: relative;
     }
 }
 
-/* 🟢 طبقة التظليل السحرية للموبايل */
 .mobileOverlay {
     display: none;
 }
@@ -87,7 +68,6 @@
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 9998;
-        /* تحت السايدبار وفوق الباقي */
         backdrop-filter: blur(2px);
     }
 }

@@ -12,7 +12,6 @@
     margin-bottom: 8px;
 }
 
-/* 🟢 الحاوية الداخلية لحماية التموضع */
 .inputWrapper {
     position: relative;
     width: 100%;
@@ -21,7 +20,6 @@
 .input {
     width: 100%;
     box-sizing: border-box;
-    /* لضمان عدم خروج الحقل عن مساحته */
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -34,18 +32,15 @@
     border-color: #007c4d;
 }
 
-/* 🟢 تفريغ مساحة على اليسار لكي لا يطبع النص فوق الأيقونة */
 .passwordPadding {
     padding-left: 40px;
 }
 
-/* 🟢 تنسيق الأيقونة وتموضعها الدقيق داخل الحقل */
 .eyeIcon {
     position: absolute;
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    /* توسيط عمودي مثالي مهما كان ارتفاع الحقل */
     cursor: pointer;
     color: #9ca3af;
     font-size: 1.2rem;
