@@ -18,7 +18,6 @@ const AdminServicesPage = () => {
     const { showToast } = useToast();
     const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, serviceId: null });
 
-    // مقاييس التحكم في الـ Modal والـ Inputs
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddMode, setIsAddMode] = useState(false);
     const [selectedService, setSelectedService] = useState(null);

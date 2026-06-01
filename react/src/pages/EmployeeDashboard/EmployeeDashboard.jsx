@@ -21,11 +21,6 @@ const EmployeeDashboard = () => {
     try {
       const response = await employeeRequestService.getDashboardData();
 
-      /**
-       * getResponseData يتعامل مع شكل الاستجابة القادم من الباك.
-       * الباك يرجع البيانات داخل:
-       * response.data.data
-       */
       setDashboardData(getResponseData(response, null));
     } catch (err) {
       console.error('خطأ في جلب بيانات لوحة التحكم:', err);
@@ -106,10 +101,6 @@ const EmployeeDashboard = () => {
 
     request_number: req.request_number || `#${req.id}`,
 
-    /**
-     * الباك يرجع اسم المواطن مباشرة داخل citizen_name.
-     * تمت إضافة بدائل احتياطية فقط حتى لا تتعطل الواجهة إذا تغير شكل JSON لاحقًا.
-     */
     citizen_name:
       req.citizen_name ||
       req.applicant_name ||
@@ -118,10 +109,7 @@ const EmployeeDashboard = () => {
       `${req.citizen?.first_name || ''} ${req.citizen?.last_name || ''}`.trim() ||
       'غير محدد',
 
-    /**
-     * في JSON الحالي service_type عبارة عن نص مباشر وليس object.
-     * لذلك يجب قراءته مباشرة إذا كان string.
-     */
+   
     service_type:
       typeof req.service_type === 'string'
         ? req.service_type
@@ -130,9 +118,6 @@ const EmployeeDashboard = () => {
           req.service?.name ||
           'غير محدد',
 
-    /**
-     * الباك يرجع تاريخ التقديم مباشرة داخل submitted_date.
-     */
     submitted_date:
       req.submitted_date ||
       req.submitted_at?.split(' ')[0] ||

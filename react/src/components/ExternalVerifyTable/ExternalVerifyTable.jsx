@@ -35,7 +35,6 @@ const ExternalVerifyTable = ({ records, searchTerm, setSearchTerm }) => {
                         {records.length > 0 ? (
                             records.map((record) => (
                                 <tr key={record.id}>
-                                    {/* 🟢 ربط مفاتيح الباك-إند */}
                                     <td className={styles.documentId}>{record.request_number}</td>
                                     <td>{record.organization}</td>
                                     <td>
@@ -44,7 +43,6 @@ const ExternalVerifyTable = ({ records, searchTerm, setSearchTerm }) => {
                                             text={record.result === 'valid' ? 'صالحة' : record.result === 'forged' ? 'مزورة' : 'غير محدد'} 
                                         />
                                     </td>
-                                    {/* 🟢 دمج الوقت والتاريخ معاً */}
                                     <td>{`${record.date} - ${record.time}`}</td>
                                     <td className={styles.ipAddress}>{record.ip_address}</td>
                                 </tr>

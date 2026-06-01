@@ -21,7 +21,6 @@
     font-weight: 700;
 }
 
-/* تنسيقات البحث */
 .searchBox {
     position: relative;
     width: 300px;
@@ -108,7 +107,6 @@
     font-size: 0.9rem;
 }
 
-/* 💡 ملصقات نسبة الثقة الملونة (Badges) */
 .badge {
     padding: 5px 12px;
     border-radius: 20px;
@@ -134,7 +132,6 @@
     color: #ef4444;
 }
 
-/* 💡 زر الإجراء (مراجعة) */
 .actionBtn {
     background: #eff6ff;
     color: #3b82f6;
@@ -156,7 +153,6 @@
     color: #fff;
 }
 
-/* الترقيم */
 .pagination {
     display: flex;
     justify-content: space-between;

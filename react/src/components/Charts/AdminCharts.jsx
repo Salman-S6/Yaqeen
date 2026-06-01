@@ -12,7 +12,6 @@ import {
     Cell
 } from 'recharts';
 
-// Tooltip مخصص للمخططات
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         const item = payload[0];
@@ -57,7 +56,6 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-// المخطط الشريطي للطلبات اليومية
 export const DailyBarChart = ({ data = [] }) => {
     return (
         <ResponsiveContainer width="100%" height={250}>
@@ -119,9 +117,7 @@ export const DailyBarChart = ({ data = [] }) => {
     );
 };
 
-// المخطط الدائري لتوزيع الحالات
 export const StatusDonutChart = ({ data = [] }) => {
-    // نرسم داخل الدائرة فقط الحالات التي قيمتها أكبر من صفر
     const chartData = data.filter(item => Number(item.value) > 0);
 
     return (
@@ -151,7 +147,6 @@ export const StatusDonutChart = ({ data = [] }) => {
                 </PieChart>
             </ResponsiveContainer>
 
-            {/* شرح الألوان يظهر دائماً حتى لو القيمة صفر */}
             <div
                 style={{
                     display: 'flex',
