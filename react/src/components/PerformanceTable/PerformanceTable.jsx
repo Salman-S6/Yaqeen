@@ -7,6 +7,7 @@ const PerformanceTable = ({ data = [] }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
 
+    // 💡 فلترة البيانات مع حماية (Optional Chaining) لضمان عدم توقف النظام
     const filteredData = data.filter((emp) =>
         emp.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -14,6 +15,7 @@ const PerformanceTable = ({ data = [] }) => {
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow); 
+    // تأمين القيمة في حال كانت المصفوفة فارغة
     const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1; 
 
     const handleSearchChange = (e) => {
@@ -62,6 +64,7 @@ const PerformanceTable = ({ data = [] }) => {
                             currentRows.map((emp) => (
                                 <tr key={emp.id}>
                                     <td className={styles.empName}>{emp.name}</td>
+                                    {/* 🟢 ربط مفاتيح الباك-إند الحقيقية */}
                                     <td>{emp.processed_requests}</td>
                                     <td>{emp.avg_processing_time}</td>
                                     <td className={emp.sla_breaches > 2 ? styles.dangerText : ''}>
@@ -70,6 +73,7 @@ const PerformanceTable = ({ data = [] }) => {
                                     <td>{emp.acceptance_rate}</td>
                                     <td className={styles.progressCell}>
                                         <div className={styles.progressBarBg}>
+                                            {/* 🟢 برمجة شريط الأداء بناءً على performance_score */}
                                             <div
                                                 className={styles.progressBarFill}
                                                 style={{

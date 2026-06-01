@@ -9,6 +9,7 @@
 .tableHeaderControls {
     display: flex;
     justify-content: space-between;
+    /* يدفع البحث لليمين والعنوان لليسار */
     align-items: center;
     margin-bottom: 24px;
     width: 100%;
@@ -21,6 +22,7 @@
     margin: 0;
 }
 
+/* ستايل صندوق البحث الرمادي الأصلي الظاهر بالصورة */
 .searchContainer {
     display: flex;
     align-items: center;
@@ -35,6 +37,7 @@
 
 .searchIcon {
     color: #3182ce;
+    /* لون أيقونة البحث الزرقاء القياسي */
     font-size: 14px;
 }
 
