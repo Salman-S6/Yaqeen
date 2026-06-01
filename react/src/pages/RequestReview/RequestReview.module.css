@@ -1,3 +1,4 @@
+/* الحاوية الأساسية للموقع */
 .pageWrapper {
   background-color: #f8fafc;
   padding: 24px;
@@ -5,6 +6,7 @@
   min-height: 100vh;
 }
 
+/* التصفح السريع - Breadcrumb الأدمن */
 .adminBreadcrumb {
   display: flex;
   align-items: center;
@@ -23,6 +25,7 @@
   opacity: 0.8;
 }
 
+/* العنوان العلوي للطلبات */
 .topHeader {
   margin-bottom: 30px;
   border-bottom: 1px solid #e2e8f0;
@@ -42,6 +45,7 @@
   font-size: 1.1rem;
 }
 
+/* شبكة توزيع المحتوى المتجاوبة */
 .contentGrid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -49,6 +53,7 @@
   align-items: start;
 }
 
+/* تثبيت قسم الصورة أثناء سحب الصفحة لأسفل */
 .rightCol {
   position: sticky;
   top: 24px;
@@ -67,6 +72,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* عناوين الأقسام */
 .sectionLabel {
   color: #475569;
   font-size: 0.95rem;
@@ -234,4 +240,5 @@
   color: #1e293b;
   border-color: #cbd5e1;
   transform: translateX(-5px);
+  /* تأثير حركة خفيف عند التمرير */
 }

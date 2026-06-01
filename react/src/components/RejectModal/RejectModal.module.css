@@ -1,3 +1,4 @@
+/* 🟢 طبقة التظليل الخلفية */
 .overlay {
   position: fixed;
   top: 0;
@@ -10,8 +11,10 @@
   align-items: center;
   z-index: 9999;
   backdrop-filter: blur(3px);
+  /* تأثير ضبابي خفيف للخلفية */
 }
 
+/* 🟢 النافذة البيضاء المنبثقة */
 .modalCard {
   background-color: #ffffff;
   padding: 32px;
@@ -21,8 +24,10 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   direction: rtl;
   animation: popIn 0.2s ease-out;
+  /* أنيميشن ظهور ناعم */
 }
 
+/* 🟢 العناوين والنصوص */
 .title {
   font-size: 20px;
   font-weight: 700;
@@ -40,6 +45,7 @@
   margin-bottom: 24px;
 }
 
+/* 🟢 منطقة إدخال النص */
 .inputArea {
   display: flex;
   flex-direction: column;
@@ -63,25 +69,30 @@
   font-family: inherit;
   font-size: 14px;
   resize: vertical;
+  /* السماح بتكبير المربع عمودياً فقط */
   outline: none;
   transition: all 0.2s;
   background-color: #f8fafc;
 }
 
+/* تأثير عند الضغط على المربع (يصبح أحمر ليتناسب مع حالة الرفض) */
 .textarea:focus {
   border-color: #e53e3e;
   background-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15);
 }
 
+/* 🟢 منطقة الأزرار */
 .modalActions {
   display: flex;
   gap: 16px;
   justify-content: center;
 }
 
+/* زر الرفض الأحمر */
 .rejectBtn {
   flex: 1;
+  /* لجعل الزرين بنفس العرض */
   background-color: #e53e3e;
   color: #ffffff;
   border: none;
@@ -106,6 +117,7 @@
   cursor: not-allowed;
 }
 
+/* زر الإلغاء */
 .cancelBtn {
   flex: 1;
   background-color: #ffffff;
@@ -128,6 +140,7 @@
   cursor: not-allowed;
 }
 
+/* 🟢 أنيميشن الظهور السريع */
 @keyframes popIn {
   from {
     opacity: 0;
