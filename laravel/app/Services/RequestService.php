@@ -20,7 +20,7 @@ class RequestService
 
     public function getAll(User $user, array $filters = []): LengthAwarePaginator
     {
-        $query = Request::with(['citizen.user', 'serviceType', 'assignedEmployee'])->latest();
+        $query = Request::with(['citizen.user', 'serviceType', 'assignedEmployee', 'document.qrCode'])->latest();
 
         if ($user->hasRole('citizen')) {
             $query->where('citizen_id', $user->citizen?->id);
@@ -221,6 +221,7 @@ class RequestService
             'assignedEmployee',
             'rejectionReason',
             'attachments',
+            'document.qrCode',
         ]);
 
         if ($user->hasRole('citizen')) {

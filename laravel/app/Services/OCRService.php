@@ -18,15 +18,20 @@ class OCRService
             throw new Exception('الملف المؤقت غير موجود للتحقق.');
         }
 
-        $pythonScriptPath = base_path('../python_ocr/ocr.py');
+        $pythonBin = env('PYTHON_BINARY', 'python3');
+        $pythonScriptPath = env('OCR_SCRIPT_PATH', base_path('../python_ocr/ocr.py'));
 
         $env = [
-            'SystemRoot' => getenv('SystemRoot') ?: 'C:\Windows',
             'PATH' => getenv('PATH'),
         ];
 
+        if (PHP_OS_FAMILY === 'Windows') {
+            $env['SystemRoot'] = getenv('SystemRoot') ?: 'C:\\Windows';
+            $pythonBin = env('PYTHON_BINARY', 'python');
+        }
+
         $process = new Process(
-            ['python', $pythonScriptPath, $fullImagePath],
+            [$pythonBin, $pythonScriptPath, $fullImagePath],
             null,
             $env
         );

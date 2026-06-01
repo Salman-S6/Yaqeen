@@ -82,6 +82,16 @@ class AuthService
             throw ValidationException::withMessages(['email' => ['حسابك موقوف - يرجى التواصل مع الإدارة.']]);
         }
 
+        if (! in_array($user->status, ['active'])) {
+            $messages = [
+                'suspended' => 'حسابك موقوف - يرجى التواصل مع الإدارة.',
+                'inactive' => 'حسابك غير مفعل حالياً. لا يمكنك تسجيل الدخول.',
+            ];
+            throw ValidationException::withMessages([
+                'email' => [$messages[$user->status] ?? 'حسابك غير متاح.'],
+            ]);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return [

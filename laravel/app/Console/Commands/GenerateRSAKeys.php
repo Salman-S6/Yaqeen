@@ -16,8 +16,11 @@ class GenerateRSAKeys extends Command
             'digest_alg' => 'sha256',
             'private_key_bits' => 2048,
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            'config' => 'C:/xampp/php/extras/ssl/openssl.cnf',
         ];
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            $config['config'] = env('OPENSSL_CNF_PATH', null);
+        }
 
         $res = openssl_pkey_new($config);
 

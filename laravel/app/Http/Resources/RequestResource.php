@@ -17,8 +17,11 @@ class RequestResource extends JsonResource
         });
 
         $identityImageUrl = $identityAttachment
-            ? URL::signedRoute('attachments.view', ['id' => $identityAttachment->id])
-            : null;
+            ? URL::temporarySignedRoute(
+                'attachments.view',
+                now()->addMinutes(30),
+                ['id' => $identityAttachment->id]
+            ) : null;
 
         return [
             'id' => $this->id,
@@ -63,9 +66,10 @@ class RequestResource extends JsonResource
             'assigned_at' => $this->assigned_at?->format('Y-m-d H:i:s'),
             'resolved_at' => $this->resolved_at?->format('Y-m-d H:i:s'),
 
-            'qr_url' => $this->document && $this->document->qrCode
-                ? (json_decode($this->document->qrCode->payload, true)['verify_url'] ?? null)
-                : null,
+            'qr_url' => $this->when(
+                $this->relationLoaded('document') && $this->document?->relationLoaded('qrCode'),
+                fn () => json_decode($this->document->qrCode?->payload, true)['verify_url'] ?? null
+            ),
         ];
     }
 }
