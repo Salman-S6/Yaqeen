@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ServiceType;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class ServiceTypeService
 {
@@ -35,6 +36,12 @@ class ServiceTypeService
 
     public function delete(ServiceType $serviceType)
     {
-        return $serviceType->delete();
+        if ($serviceType->requests()->exists()) {
+            throw ValidationException::withMessages([
+                'service_type' => ['لا يمكن حذف هذه الخدمة لأن هناك طلبات مواطنين مرتبطة بها في الأرشيف. يُنصح بتعطيل الخدمة (إخفائها) بدلاً من حذفها نهائياً.'],
+            ]);
+        }
+
+        $serviceType->delete();
     }
 }
