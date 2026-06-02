@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\AuditLog;
+use App\Models\Document;
+use App\Models\RejectionReason;
+use App\Models\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -63,7 +67,21 @@ class EmployeeService
 
     public function delete(int $id)
     {
-        $user = $this->find($id);
-        $user->delete();
+        DB::transaction(function () use ($id) {
+            $user = $this->find($id);
+
+            Request::where('assigned_employee_id', $user->id)
+                ->update(['assigned_employee_id' => null]);
+
+            Document::where('issued_by', $user->id)
+                ->update(['issued_by' => User::role('admin')->firstOrFail()->id]);
+
+            RejectionReason::where('employee_id', $user->id)
+                ->update(['employee_id' => User::role('admin')->firstOrFail()->id]);
+
+            AuditLog::where('user_id', $user->id)->delete();
+
+            $user->delete();
+        });
     }
 }
