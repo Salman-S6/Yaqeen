@@ -6,7 +6,6 @@ class UserModel {
   final String nationalId;
   final String? idImage;
 
-  // 🌟 الحقول الجديدة
   final String email;
   final String fatherName;
   final String motherName;
